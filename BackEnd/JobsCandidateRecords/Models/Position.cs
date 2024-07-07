@@ -21,7 +21,6 @@ namespace JobsCandidateRecords.Models
         [Required]
         public int DepartmentId { get; set; }
         public Department? Department { get; set; }
-        public List<Job>? Jobs { get; set; }
 
     }
 }

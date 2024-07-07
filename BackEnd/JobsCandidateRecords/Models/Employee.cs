@@ -36,11 +36,6 @@ namespace JobsCandidateRecords.Models
         [Required]
         public string Address { get; set; } = string.Empty;
 
-        public bool IsHeadOfDepartment { get; set; } = false;
-
-        public bool IsTeacher { get; set; } = false;
-
-        public bool IsRecruiter { get; set; } = false;
 
         [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime HireDate { get; set; } = DateTime.Now;
@@ -54,11 +49,11 @@ namespace JobsCandidateRecords.Models
         public int IdentityUserId { get; set; }
         public IdentityUser? IdentityUser { get; set; }
 
-        public List<Notes>? Notes { get; set; }
-
         public List<Application>? Applications { get; set; }
 
         public List<EmployeeGrade>? EmployeeGrades { get; set; }
+
+        public List<Subject>? Subjects { get; set; }
 
     }
 

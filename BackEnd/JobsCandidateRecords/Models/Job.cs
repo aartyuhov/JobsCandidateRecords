@@ -5,14 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace JobsCandidateRecords.Models
 {
     [Table("Job")]
-    [Index(nameof(Code), IsUnique = true)]
+    [Index(nameof(Name), IsUnique = true)]
     public class Job
     {
         public int Id { get; set; }
 
         [Required]
         [MaxLength(30)]
-        public string? Code { get; set; } = null;
+        public string? Name { get; set; } = string.Empty;
+
+        [MaxLength(50)]
+        public string PostionTitle { get; set; } = string.Empty;
 
         public DateTime? PostedDate { get; set; } = null;
 
@@ -26,11 +29,9 @@ namespace JobsCandidateRecords.Models
         public int CompanyId { get; set; }
         public Company? Company { get; set; }
 
-        public int PositionId { get; set; }
-        public Position? Position { get; set; }
 
         public List<PostedOn>? PostedOns { get; set; }
 
-        public List<AppliedFor>? AppliedFors { get; set; }
+        public List<Application>? Applications { get; set; }
     }
 }

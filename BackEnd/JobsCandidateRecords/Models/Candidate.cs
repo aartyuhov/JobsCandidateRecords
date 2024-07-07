@@ -36,8 +36,6 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Summary { get; set; } = string.Empty;
 
-        public List<Notes>? Notes { get; set; }
-
         public List<RelatedDocument>? RelatedDocuments { get; set; }
 
     }

@@ -43,14 +43,14 @@ namespace JobsCandidateRecords.Data
                  );
 
             await _context.Subjects.AddRangeAsync(
-                 new Subject { Name = "Artificial intelligence", Description = "AI technologies for solving creative tasks. Branding and design.", DepartmentId = 4 },
-                 new Subject { Name = "UX/UI design", Description = "Creating a prototype from scratch. Animation for UX/UI", DepartmentId = 4 },
-                 new Subject { Name = "Networks, basic course", Description = "Understand all the IT Networking Fundamentals and learn how the computer network functions", DepartmentId = 2 },
-                 new Subject { Name = "Cloud technologies and DevOps tools", Description = "The course covers a wide range of essential topics, ensuring you will understand cloud technologies and DevOps practices holistically", DepartmentId = 2 },
-                 new Subject { Name = "ASP.NET", Description = "Development of web applications using ASP.NET Core in C# using MS SQL Server DBMS", DepartmentId = 3 },
-                 new Subject { Name = "C++", Description = "Object-oriented programming using the C++ language", DepartmentId = 3 },
-                 new Subject { Name = "PHP", Description = "Learning PHP. PHP is a server scripting language, and a powerful tool for making dynamic and interactive Web pages", DepartmentId = 3 },
-                 new Subject { Name = "Python", Description = "Learning Python", DepartmentId = 3 }
+                 new Subject { Name = "Artificial intelligence", Description = "AI technologies for solving creative tasks. Branding and design." },
+                 new Subject { Name = "UX/UI design", Description = "Creating a prototype from scratch. Animation for UX/UI" },
+                 new Subject { Name = "Networks, basic course", Description = "Understand all the IT Networking Fundamentals and learn how the computer network functions" },
+                 new Subject { Name = "Cloud technologies and DevOps tools", Description = "The course covers a wide range of essential topics, ensuring you will understand cloud technologies and DevOps practices holistically" },
+                 new Subject { Name = "ASP.NET", Description = "Development of web applications using ASP.NET Core in C# using MS SQL Server DBMS" },
+                 new Subject { Name = "C++", Description = "Object-oriented programming using the C++ language" },
+                 new Subject { Name = "PHP", Description = "Learning PHP. PHP is a server scripting language, and a powerful tool for making dynamic and interactive Web pages" },
+                 new Subject { Name = "Python", Description = "Learning Python" }
                  );
 
             await _context.Courses.AddRangeAsync(
