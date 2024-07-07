@@ -1,4 +1,4 @@
-﻿using JobsCandidateRecords.Constants;
+﻿using JobsCandidateRecords.Enums;
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
