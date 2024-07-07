@@ -1,0 +1,21 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace JobsCandidateRecords.Models
+{
+    [Table("Department")]
+    [Index(nameof(Name), IsUnique = true)]
+    public class Department
+    {
+
+        public int Id { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Name { get; set; } = string.Empty;
+
+        [MaxLength(255)]
+        public string Description { get; set; } = string.Empty;
+    }
+}
