@@ -1,4 +1,4 @@
-﻿namespace JobsCandidateRecords.Constants
+﻿namespace JobsCandidateRecords.Enums
 {
     public enum Roles
     {
