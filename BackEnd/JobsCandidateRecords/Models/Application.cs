@@ -9,25 +9,20 @@ namespace JobsCandidateRecords.Models
         public int Id { get; set; }
 
         public int CandidateId { get; set; }
-        public Candidate? Candidate { get; set; }
+        public virtual Candidate? Candidate { get; set; }
 
-        public int EmployeeId { get; set; }
-        public Employee? Employee { get; set; }
+        public int? EmployeeWhoCreatedId { get; set; }
+        public virtual Employee? EmployeeWhoCreated { get; set; }
 
-        public int ApplicationStatusId { get; set; }
-        public ApplicationStatus? ApplicationStatus { get; set; }
-
-        public DateTime? Created { get; set; } = DateTime.Now;
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
 
         [MaxLength(255)]
         public string Details { get; set; } = string.Empty;
 
-        public List<AppliedFor>? AppliedFors { get; set; }
+        public virtual ICollection<ApplicaionsForRequests>? ApplicaionsForRequests { get; set; }
 
-        public List<ApplicationStatusHistory>? ApplicationStatusHistories { get; set; }
-
-        public List<TestTaken>? TestTakens { get; set; }
-
-
+        public virtual ICollection<ApplicationStatusHistory>? ApplicationStatusHistories { get; set; }
+        public virtual ICollection<Notes>? Notes { get; set; }
+        public virtual ICollection<Attachment>? Attachments { get; set; }
     }
 }

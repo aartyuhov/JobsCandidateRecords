@@ -4,18 +4,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("TestStatus")]
+    [Table("AcademicSubject")]
     [Index(nameof(Name), IsUnique = true)]
-    public class TestStatus
+    public class AcademicSubject
     {
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
-        public List<TestTaken>? TestTakens { get; set; }
+        [MaxLength(255)]
+        public string Description { get; set; } = string.Empty;
 
-
+        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubject { get; set; }
     }
 }

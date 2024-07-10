@@ -18,12 +18,10 @@ namespace JobsCandidateRecords.Models
         [MaxLength(30)]
         public string LastName { get; set; } = string.Empty;
 
-        [Range(1, 100, ErrorMessage = "Age must be between 1 and 100")]
-        public int? Age { get; set; } = null;
+        public DateOnly? DateOfBirth { get; set; } = null;
 
         [MaxLength(20)]
         public string Gender { get; set; } = string.Empty;
-
 
         public string Email { get; set; } = string.Empty;
 
@@ -34,11 +32,6 @@ namespace JobsCandidateRecords.Models
         public string Address { get; set; } = string.Empty;
 
         [MaxLength(255)]
-        public string Summary { get; set; } = string.Empty;
-
-        public List<Notes>? Notes { get; set; }
-
-        public List<RelatedDocument>? RelatedDocuments { get; set; }
-
+        public string AboutInfo { get; set; } = string.Empty;
     }
 }
