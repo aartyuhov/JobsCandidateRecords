@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JobsCandidateRecords.Enums;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
@@ -8,16 +10,14 @@ namespace JobsCandidateRecords.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public int ApplicationId { get; set; }
-        public Application? Application { get; set; }
+        [SwaggerIgnore]
+        public virtual Application? Application { get; set; }
 
-        [MaxLength(100)]
-        public string UpdatedApplicationStatusName { get; set; } = string.Empty;
+        [Required]
+        public ApplicationStatusEnum ApplicationStatus { get; set; }
 
-        //public int ApplicationStatusId { get; set; }
-        //public ApplicationStatus? ApplicationStatus { get; set; }
-
-
-        public DateTime? StatusTime { get; set; } = null;
+        public DateTime? DecisionDate { get; set; } = null;
     }
 }

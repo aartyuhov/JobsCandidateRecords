@@ -5,11 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("Department")]
+    [Table("AcademicSubject")]
     [Index(nameof(Name), IsUnique = true)]
-    public class Department
+    public class AcademicSubject
     {
-
         public int Id { get; set; }
 
         [Required]
@@ -18,10 +17,7 @@ namespace JobsCandidateRecords.Models
 
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
-
-        public int CompanyId { get; set; }
-        public virtual Company? Company { get; set; }
         [SwaggerIgnore]
-        public virtual ICollection<Position>? Positions { get; set; }
+        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubject { get; set; }
     }
 }

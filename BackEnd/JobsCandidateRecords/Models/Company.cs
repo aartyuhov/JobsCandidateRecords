@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,7 +17,7 @@ namespace JobsCandidateRecords.Models
 
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
-
-        public List<Job>? Jobs { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<Department>? Departments { get; set; }
     }
 }

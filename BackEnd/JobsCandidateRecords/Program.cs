@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -18,26 +20,62 @@ builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedAccount = true;
-        options.Password.RequiredLength = 5;   // the minimum length of pass
-        options.Password.RequireNonAlphanumeric = false;   // are non-alphanumeric characters required
-        options.Password.RequireLowercase = false; // are lower case characters required?
-        options.Password.RequireUppercase = false; // are upper case characters required?
-        options.Password.RequireDigit = false; // are numbers required?
+        options.Password.RequiredLength = 5;   
+        options.Password.RequireNonAlphanumeric = false;   
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireDigit = false; 
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI().
     AddDefaultTokenProviders();
-builder.Services.AddControllersWithViews();
 
-builder.Services.AddRazorPages()
-                    .AddSessionStateTempDataProvider();
+builder.Services.AddControllers();
 
-builder.Services.AddControllersWithViews()
-                    .AddSessionStateTempDataProvider();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "My API",
+        Version = "v1"
+    });
+});
 
 builder.Services.AddSession();
 
 var app = builder.Build();
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseStaticFiles();
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = string.Empty;
+});
+
+app.UseSession();
+
+app.Run();
+
+
+
+
 
 //Create roles and admin and order statuses
 //using (var scope = app.Services.CreateScope())
@@ -55,38 +93,3 @@ var app = builder.Build();
 //        logger.LogError(ex, "An error occurred seeding the DB.");
 //    }
 //}
-
-
-
-
-
-
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseSession();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
-
-app.Run();

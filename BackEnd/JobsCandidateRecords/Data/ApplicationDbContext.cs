@@ -9,26 +9,21 @@ namespace JobsCandidateRecords.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
+        public DbSet<AcademicSubject> AcademicSubjects { get; set; }
+        public DbSet<ApplicaionsForRequests> ApplicaionsForRequests { get; set; }
         public DbSet<Application> Applications { get; set; }
-        public DbSet<ApplicationStatus> ApplicationStatuses { get; set; }
         public DbSet<ApplicationStatusHistory> ApplicationStatusHistories { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Candidate> Candidates { get; set; }
         public DbSet<Company> Companies { get; set; }
-        public DbSet<Course> Courses { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Document> Documents { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<EmployeeGrade> EmployeeGrades { get; set; }
-        public DbSet<Job> Jobs { get; set; }
         public DbSet<Notes> Notes { get; set; }
         public DbSet<Position> Positions { get; set; }
-        public DbSet<PostedOn> PostedOns { get; set; }
-        public DbSet<RelatedDocument> RelatedDocuments { get; set; }
-        public DbSet<Subject> Subjects { get; set; }
-        public DbSet<TestStatus> TestStatuses { get; set; }
-        public DbSet<TestTaken> TestTakens { get; set; }
-
+        public DbSet<PositionAcademicSubject> PositionAcademicSubjects { get; set; }
+        public DbSet<RequestForEmployee> RequestsForEmployees { get; set; }
     }
 }
