@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,10 +20,13 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         public int DepartmentId { get; set; }
+        [SwaggerIgnore]
         public virtual Department? Department { get; set; }
-
+        [SwaggerIgnore]
         public virtual ICollection<Employee>? Employees { get; set; }
+        [SwaggerIgnore]
         public virtual ICollection<RequestForEmployee>? RequestForEmployees { get; set; }
+        [SwaggerIgnore]
         public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubjects { get; set; }
     }
 }

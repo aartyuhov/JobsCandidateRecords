@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -39,14 +40,16 @@ namespace JobsCandidateRecords.Models
         public DateTime HireDate { get; set; } = DateTime.Now;
 
         public int PositionId { get; set; }
+        [SwaggerIgnore]
         public virtual Position? Position { get; set; }
 
         public string? IdentityUserId { get; set; }
         [ForeignKey(nameof(IdentityUserId))]
+        [SwaggerIgnore]
         public virtual IdentityUser? IdentityUser { get; set; }
-
+        [SwaggerIgnore]
         public virtual ICollection<Notes>? Notes { get; set; }
-
+        [SwaggerIgnore]
         public virtual ICollection<Application>? Applications { get; set; }
     }
 

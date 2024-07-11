@@ -1,4 +1,5 @@
 ﻿using JobsCandidateRecords.Enums;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,6 +12,7 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         public int ApplicationId { get; set; }
+        [SwaggerIgnore]
         public virtual Application? Application { get; set; }
 
         [Required]
