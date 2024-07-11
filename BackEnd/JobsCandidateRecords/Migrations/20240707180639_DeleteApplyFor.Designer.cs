@@ -4,6 +4,7 @@ using JobsCandidateRecords.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobsCandidateRecords.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240707180639_DeleteApplyFor")]
+    partial class DeleteApplyFor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,55 +24,6 @@ namespace JobsCandidateRecords.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("JobsCandidateRecords.Models.AcademicSubject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("AcademicSubject");
-                });
-
-            modelBuilder.Entity("JobsCandidateRecords.Models.ApplicaionsForRequests", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RequestForEmployeeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
-
-                    b.HasIndex("RequestForEmployeeId");
-
-                    b.ToTable("ApplicaionsForRequests");
-                });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Application", b =>
                 {
@@ -79,10 +33,13 @@ namespace JobsCandidateRecords.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ApplicationStatusId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CandidateId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreationDate")
+                    b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
@@ -90,7 +47,7 @@ namespace JobsCandidateRecords.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int?>("EmployeeWhoCreatedId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<int>("JobId")
@@ -98,13 +55,36 @@ namespace JobsCandidateRecords.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationStatusId");
+
                     b.HasIndex("CandidateId");
 
-                    b.HasIndex("EmployeeWhoCreatedId");
+                    b.HasIndex("EmployeeId");
 
                     b.HasIndex("JobId");
 
                     b.ToTable("Application");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.ApplicationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("ApplicationStatus");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.ApplicationStatusHistory", b =>
@@ -118,46 +98,24 @@ namespace JobsCandidateRecords.Migrations
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ApplicationStatus")
+                    b.Property<int?>("ApplicationStatusId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DecisionDate")
+                    b.Property<DateTime?>("StatusTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedApplicationStatusName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationId");
+
+                    b.HasIndex("ApplicationStatusId");
 
                     b.ToTable("ApplicationStatusHistory");
-                });
-
-            modelBuilder.Entity("JobsCandidateRecords.Models.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationId");
-
-                    b.ToTable("Attachment");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Candidate", b =>
@@ -168,17 +126,12 @@ namespace JobsCandidateRecords.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AboutInfo")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -203,6 +156,11 @@ namespace JobsCandidateRecords.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -237,7 +195,7 @@ namespace JobsCandidateRecords.Migrations
                     b.ToTable("Company");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.Department", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.Course", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -245,8 +203,42 @@ namespace JobsCandidateRecords.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubjectId")
                         .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Course");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -260,12 +252,36 @@ namespace JobsCandidateRecords.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Document");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Employee", b =>
@@ -280,8 +296,8 @@ namespace JobsCandidateRecords.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("DateOfBirth")
-                        .HasColumnType("date");
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -300,7 +316,10 @@ namespace JobsCandidateRecords.Migrations
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("IdentityUserId")
+                    b.Property<int>("IdentityUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdentityUserId1")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LastName")
@@ -308,7 +327,7 @@ namespace JobsCandidateRecords.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
@@ -316,16 +335,96 @@ namespace JobsCandidateRecords.Migrations
                     b.Property<int>("PositionId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("IdentityUserId");
+                    b.HasIndex("IdentityUserId1");
 
                     b.HasIndex("PositionId");
 
                     b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.EmployeeGrade", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int?>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TestTakenId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("TestTakenId");
+
+                    b.ToTable("EmployeeGrade");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Job", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("Employess_needed")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("PostedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PostionTitle")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Job");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Notes", b =>
@@ -336,21 +435,20 @@ namespace JobsCandidateRecords.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ApplicationId")
+                    b.Property<int>("ApplicationId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreationDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationId");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Notes");
                 });
@@ -386,30 +484,7 @@ namespace JobsCandidateRecords.Migrations
                     b.ToTable("Position");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.PositionAcademicSubject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademicSubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PositionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademicSubjectId");
-
-                    b.HasIndex("PositionId");
-
-                    b.ToTable("PositionAcademicSubject");
-                });
-
-            modelBuilder.Entity("JobsCandidateRecords.Models.RequestForEmployee", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.PostedOn", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -419,34 +494,140 @@ namespace JobsCandidateRecords.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("PostedOn");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.RelatedDocument", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("DocumentId");
+
+                    b.ToTable("RelatedDocument");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Subject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("NumberEmployessRequired")
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Subject");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.TestStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("PositionId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("TestStatus");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.TestTaken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PublicationDate")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RequestedEmployeeId")
+                    b.Property<DateTime?>("End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaxScore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("Start")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TestStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalScore")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PositionId");
+                    b.HasIndex("ApplicationId");
 
-                    b.HasIndex("RequestedEmployeeId");
+                    b.HasIndex("TestStatusId");
 
-                    b.ToTable("RequestForEmployee");
+                    b.ToTable("TestTaken");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -647,40 +828,39 @@ namespace JobsCandidateRecords.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.ApplicaionsForRequests", b =>
-                {
-                    b.HasOne("JobsCandidateRecords.Models.Application", "Application")
-                        .WithMany("ApplicaionsForRequests")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JobsCandidateRecords.Models.RequestForEmployee", "RequestForEmployee")
-                        .WithMany("ApplicaionsForRequests")
-                        .HasForeignKey("RequestForEmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Application");
-
-                    b.Navigation("RequestForEmployee");
-                });
-
             modelBuilder.Entity("JobsCandidateRecords.Models.Application", b =>
                 {
+                    b.HasOne("JobsCandidateRecords.Models.ApplicationStatus", "ApplicationStatus")
+                        .WithMany("Applications")
+                        .HasForeignKey("ApplicationStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("JobsCandidateRecords.Models.Candidate", "Candidate")
                         .WithMany()
                         .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobsCandidateRecords.Models.Employee", "EmployeeWhoCreated")
+                    b.HasOne("JobsCandidateRecords.Models.Employee", "Employee")
                         .WithMany("Applications")
-                        .HasForeignKey("EmployeeWhoCreatedId");
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobsCandidateRecords.Models.Job", "Job")
+                        .WithMany("Applications")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationStatus");
 
                     b.Navigation("Candidate");
 
-                    b.Navigation("EmployeeWhoCreated");
+                    b.Navigation("Employee");
+
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.ApplicationStatusHistory", b =>
@@ -691,39 +871,32 @@ namespace JobsCandidateRecords.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Application");
-                });
-
-            modelBuilder.Entity("JobsCandidateRecords.Models.Attachment", b =>
-                {
-                    b.HasOne("JobsCandidateRecords.Models.Application", "Application")
-                        .WithMany("Attachments")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("JobsCandidateRecords.Models.ApplicationStatus", null)
+                        .WithMany("ApplicationStatusHistory")
+                        .HasForeignKey("ApplicationStatusId");
 
                     b.Navigation("Application");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.Department", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.Course", b =>
                 {
-                    b.HasOne("JobsCandidateRecords.Models.Company", "Company")
-                        .WithMany("Departments")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("JobsCandidateRecords.Models.Subject", "Subject")
+                        .WithMany("Courses")
+                        .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Employee", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
                         .WithMany()
-                        .HasForeignKey("IdentityUserId");
+                        .HasForeignKey("IdentityUserId1");
 
                     b.HasOne("JobsCandidateRecords.Models.Position", "Position")
-                        .WithMany("Employees")
+                        .WithMany()
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -733,27 +906,47 @@ namespace JobsCandidateRecords.Migrations
                     b.Navigation("Position");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.Notes", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.EmployeeGrade", b =>
                 {
-                    b.HasOne("JobsCandidateRecords.Models.Application", "Application")
-                        .WithMany("Notes")
-                        .HasForeignKey("ApplicationId");
-
                     b.HasOne("JobsCandidateRecords.Models.Employee", "Employee")
-                        .WithMany("Notes")
+                        .WithMany("EmployeeGrades")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Application");
+                    b.HasOne("JobsCandidateRecords.Models.TestTaken", null)
+                        .WithMany("EmployeeGrades")
+                        .HasForeignKey("TestTakenId");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Job", b =>
+                {
+                    b.HasOne("JobsCandidateRecords.Models.Company", "Company")
+                        .WithMany("Jobs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Notes", b =>
+                {
+                    b.HasOne("JobsCandidateRecords.Models.Application", "Application")
+                        .WithMany("Notes")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Position", b =>
                 {
                     b.HasOne("JobsCandidateRecords.Models.Department", "Department")
-                        .WithMany("Positions")
+                        .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -761,40 +954,64 @@ namespace JobsCandidateRecords.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.PositionAcademicSubject", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.PostedOn", b =>
                 {
-                    b.HasOne("JobsCandidateRecords.Models.AcademicSubject", "AcademicSubject")
-                        .WithMany("PositionAcademicSubject")
-                        .HasForeignKey("AcademicSubjectId")
+                    b.HasOne("JobsCandidateRecords.Models.Job", "Job")
+                        .WithMany("PostedOns")
+                        .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JobsCandidateRecords.Models.Position", "Position")
-                        .WithMany("PositionAcademicSubjects")
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AcademicSubject");
-
-                    b.Navigation("Position");
+                    b.Navigation("Job");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.RequestForEmployee", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.RelatedDocument", b =>
                 {
-                    b.HasOne("JobsCandidateRecords.Models.Position", "Position")
-                        .WithMany("RequestForEmployees")
-                        .HasForeignKey("PositionId");
-
-                    b.HasOne("JobsCandidateRecords.Models.Employee", "RequestedEmployee")
-                        .WithMany()
-                        .HasForeignKey("RequestedEmployeeId")
+                    b.HasOne("JobsCandidateRecords.Models.Candidate", "Candidate")
+                        .WithMany("RelatedDocuments")
+                        .HasForeignKey("CandidateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Position");
+                    b.HasOne("JobsCandidateRecords.Models.Document", "Document")
+                        .WithMany("RelatedDocuments")
+                        .HasForeignKey("DocumentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("RequestedEmployee");
+                    b.Navigation("Candidate");
+
+                    b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Subject", b =>
+                {
+                    b.HasOne("JobsCandidateRecords.Models.Employee", "Employee")
+                        .WithMany("Subjects")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.TestTaken", b =>
+                {
+                    b.HasOne("JobsCandidateRecords.Models.Application", "Application")
+                        .WithMany("TestTakens")
+                        .HasForeignKey("ApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobsCandidateRecords.Models.TestStatus", "TestStatus")
+                        .WithMany("TestTakens")
+                        .HasForeignKey("TestStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Application");
+
+                    b.Navigation("TestStatus");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -848,51 +1065,66 @@ namespace JobsCandidateRecords.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.AcademicSubject", b =>
-                {
-                    b.Navigation("PositionAcademicSubject");
-                });
-
             modelBuilder.Entity("JobsCandidateRecords.Models.Application", b =>
                 {
-                    b.Navigation("ApplicaionsForRequests");
-
                     b.Navigation("ApplicationStatusHistories");
 
-                    b.Navigation("Attachments");
-
                     b.Navigation("Notes");
+
+                    b.Navigation("TestTakens");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.ApplicationStatus", b =>
+                {
+                    b.Navigation("ApplicationStatusHistory");
+
+                    b.Navigation("Applications");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.Candidate", b =>
+                {
+                    b.Navigation("RelatedDocuments");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Company", b =>
                 {
-                    b.Navigation("Departments");
+                    b.Navigation("Jobs");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.Department", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.Document", b =>
                 {
-                    b.Navigation("Positions");
+                    b.Navigation("RelatedDocuments");
                 });
 
             modelBuilder.Entity("JobsCandidateRecords.Models.Employee", b =>
                 {
                     b.Navigation("Applications");
 
-                    b.Navigation("Notes");
+                    b.Navigation("EmployeeGrades");
+
+                    b.Navigation("Subjects");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.Position", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.Job", b =>
                 {
-                    b.Navigation("Employees");
+                    b.Navigation("Applications");
 
-                    b.Navigation("PositionAcademicSubjects");
-
-                    b.Navigation("RequestForEmployees");
+                    b.Navigation("PostedOns");
                 });
 
-            modelBuilder.Entity("JobsCandidateRecords.Models.RequestForEmployee", b =>
+            modelBuilder.Entity("JobsCandidateRecords.Models.Subject", b =>
                 {
-                    b.Navigation("ApplicaionsForRequests");
+                    b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.TestStatus", b =>
+                {
+                    b.Navigation("TestTakens");
+                });
+
+            modelBuilder.Entity("JobsCandidateRecords.Models.TestTaken", b =>
+                {
+                    b.Navigation("EmployeeGrades");
                 });
 #pragma warning restore 612, 618
         }
