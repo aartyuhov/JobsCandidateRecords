@@ -17,9 +17,8 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
 
-        [Required]
-        public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
+        public int EmployeeId { get; set; }
+        public Employee? Employee { get; set; }
         public List<Course>? Courses { get; set; }
     }
 }

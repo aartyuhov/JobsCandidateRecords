@@ -14,7 +14,6 @@ namespace JobsCandidateRecords.Data
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationStatus> ApplicationStatuses { get; set; }
         public DbSet<ApplicationStatusHistory> ApplicationStatusHistories { get; set; }
-        public DbSet<AppliedFor> AppliedFors { get; set; }
         public DbSet<Candidate> Candidates { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Course> Courses { get; set; }

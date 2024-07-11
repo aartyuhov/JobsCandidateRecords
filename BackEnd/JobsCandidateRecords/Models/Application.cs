@@ -14,6 +14,9 @@ namespace JobsCandidateRecords.Models
         public int EmployeeId { get; set; }
         public Employee? Employee { get; set; }
 
+        public int JobId { get; set; }
+        public Job? Job { get; set; }
+
         public int ApplicationStatusId { get; set; }
         public ApplicationStatus? ApplicationStatus { get; set; }
 
@@ -22,11 +25,13 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Details { get; set; } = string.Empty;
 
-        public List<AppliedFor>? AppliedFors { get; set; }
 
         public List<ApplicationStatusHistory>? ApplicationStatusHistories { get; set; }
 
         public List<TestTaken>? TestTakens { get; set; }
+
+        public List<Notes>? Notes { get; set; }
+
 
 
     }

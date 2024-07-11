@@ -8,11 +8,8 @@ namespace JobsCandidateRecords.Models
     {
         public int Id { get; set; }
 
-        public int? CandidateId { get; set; }
-        public Candidate? Candidate { get; set; }
-
-        public int EmployeeId { get; set; }
-        public Employee? Employee { get; set; }
+        public int ApplicationId { get; set; }
+        public Application? Application { get; set; }
 
         [MaxLength(255)]
         public string Text { get; set; } = string.Empty;
