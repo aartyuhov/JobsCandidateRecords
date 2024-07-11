@@ -20,46 +20,34 @@ namespace JobsCandidateRecords.Models
         [MaxLength(30)]
         public string LastName { get; set; } = string.Empty;
 
-        [Range(1, 100, ErrorMessage = "Age must be between 1 and 100")]
-        public int? Age { get; set; } = null;
+        public DateOnly? DateOfBirth { get; set; } = null;
 
         [MaxLength(20)]
         public string Gender { get; set; } = string.Empty;
 
-
+        [Required]
         public string Email { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(30)]
-        public string Phone { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
         public string Address { get; set; } = string.Empty;
 
-        public bool IsHeadOfDepartment { get; set; } = false;
-
-        public bool IsTeacher { get; set; } = false;
-
-        public bool IsRecruiter { get; set; } = false;
-
         [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime HireDate { get; set; } = DateTime.Now;
 
-        [Precision(18, 2)]
-        public decimal Salary { get; set; } = decimal.Zero;
-
         public int PositionId { get; set; }
-        public Position? Position { get; set; }
+        public virtual Position? Position { get; set; }
 
-        public int IdentityUserId { get; set; }
-        public IdentityUser? IdentityUser { get; set; }
+        public string? IdentityUserId { get; set; }
+        [ForeignKey(nameof(IdentityUserId))]
+        public virtual IdentityUser? IdentityUser { get; set; }
 
-        public List<Notes>? Notes { get; set; }
+        public virtual ICollection<Notes>? Notes { get; set; }
 
-        public List<Application>? Applications { get; set; }
-
-        public List<EmployeeGrade>? EmployeeGrades { get; set; }
-
+        public virtual ICollection<Application>? Applications { get; set; }
     }
 
     public static class IEnumerableExtensions

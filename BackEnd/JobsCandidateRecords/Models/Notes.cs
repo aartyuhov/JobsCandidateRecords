@@ -8,16 +8,15 @@ namespace JobsCandidateRecords.Models
     {
         public int Id { get; set; }
 
-        public int? CandidateId { get; set; }
-        public Candidate? Candidate { get; set; }
+        public int? ApplicationId { get; set; }
+        public virtual Application? Application { get; set; }
 
         public int EmployeeId { get; set; }
-        public Employee? Employee { get; set; }
+        public virtual Employee? Employee { get; set; }
 
-        [MaxLength(255)]
         public string Text { get; set; } = string.Empty;
 
-        public DateTime CreateDate { get; set; } = DateTime.Now;
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
     }
 }

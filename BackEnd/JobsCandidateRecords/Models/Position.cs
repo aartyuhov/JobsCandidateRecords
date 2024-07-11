@@ -12,7 +12,6 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         [MaxLength(50)]
-
         public string Title { get; set; } = string.Empty;
 
         [MaxLength(255)]
@@ -20,8 +19,10 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
-        public List<Job>? Jobs { get; set; }
+        public virtual Department? Department { get; set; }
 
+        public virtual ICollection<Employee>? Employees { get; set; }
+        public virtual ICollection<RequestForEmployee>? RequestForEmployees { get; set; }
+        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubjects { get; set; }
     }
 }

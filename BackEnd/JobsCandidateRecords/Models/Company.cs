@@ -17,6 +17,6 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
 
-        public List<Job>? Jobs { get; set; }
+        public virtual ICollection<Department>? Departments { get; set; }
     }
 }

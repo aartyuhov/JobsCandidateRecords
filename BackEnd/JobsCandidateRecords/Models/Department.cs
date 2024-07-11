@@ -17,5 +17,10 @@ namespace JobsCandidateRecords.Models
 
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
+
+        public int CompanyId { get; set; }
+        public virtual Company? Company { get; set; }
+
+        public virtual ICollection<Position>? Positions { get; set; }
     }
 }
