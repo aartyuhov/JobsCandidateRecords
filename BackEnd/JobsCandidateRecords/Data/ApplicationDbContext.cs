@@ -13,7 +13,7 @@ namespace JobsCandidateRecords.Data
         }
 
         public DbSet<AcademicSubject> AcademicSubjects { get; set; }
-        public DbSet<ApplicaionsForRequests> ApplicaionsForRequests { get; set; }
+        public DbSet<ApplicationsForRequests> ApplicationsForRequests { get; set; }
         public DbSet<Application> Applications { get; set; }
         public DbSet<ApplicationStatusHistory> ApplicationStatusHistories { get; set; }
         public DbSet<Attachment> Attachments { get; set; }

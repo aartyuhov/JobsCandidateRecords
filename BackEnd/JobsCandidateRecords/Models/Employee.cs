@@ -48,7 +48,7 @@ namespace JobsCandidateRecords.Models
         [SwaggerIgnore]
         public virtual IdentityUser? IdentityUser { get; set; }
         [SwaggerIgnore]
-        public virtual ICollection<Notes>? Notes { get; set; }
+        public virtual ICollection<Position>? Notes { get; set; }
         [SwaggerIgnore]
         public virtual ICollection<Application>? Applications { get; set; }
     }
