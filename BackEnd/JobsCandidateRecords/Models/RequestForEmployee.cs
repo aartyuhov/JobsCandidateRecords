@@ -27,6 +27,6 @@ namespace JobsCandidateRecords.Models
         [SwaggerIgnore]
         public virtual Employee? RequestedEmployee { get; set; }
         [SwaggerIgnore]
-        public virtual ICollection<ApplicaionsForRequests>? ApplicaionsForRequests { get; set; }
+        public virtual ICollection<ApplicationsForRequests>? ApplicaionsForRequests { get; set; }
     }
 }

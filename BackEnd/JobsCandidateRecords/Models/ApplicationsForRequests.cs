@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace JobsCandidateRecords.Models
 {
     [Table("ApplicaionsForRequests")]
-    public class ApplicaionsForRequests
+    public class ApplicationsForRequests
     {
         public int Id { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,47 +8,47 @@ namespace JobsCandidateRecords.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class PositionController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeesController(ApplicationDbContext context)
+        public PositionController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Employees
+        // GET: api/Position
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<Position>>> GetPositions()
         {
-            return await _context.Employees.ToListAsync();
+            return await _context.Positions.ToListAsync();
         }
 
-        // GET: api/Employees/5
+        // GET: api/Position/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<Position>> GetPosition(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var notes = await _context.Positions.FindAsync(id);
 
-            if (employee == null)
+            if (notes == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return notes;
         }
 
-        // PUT: api/Employees/5
+        // PUT: api/Position/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutPosition(int id, Position position)
         {
-            if (id != employee.Id)
+            if (id != position.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
+            _context.Entry(position).State = EntityState.Modified;
 
             try
             {
@@ -55,7 +56,7 @@ namespace JobsCandidateRecords.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EmployeeExists(id))
+                if (!PositionExists(id))
                 {
                     return NotFound();
                 }
@@ -68,41 +69,40 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Employees
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Position
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Position>> PostNote(Position position)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Employees.Add(employee);
+            _context.Positions.Add(position);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+
+            return CreatedAtAction(nameof(GetPosition), new { id = position.Id }, position);
         }
 
-        // DELETE: api/Employees/5
+        // DELETE: api/Position/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeletePosition(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var position = await _context.Positions.FindAsync(id);
+            if (position == null)
             {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
+            _context.Positions.Remove(position);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
-        private bool EmployeeExists(int id)
+        private bool PositionExists(int id)
         {
-            return _context.Employees.Any(e => e.Id == id);
+            return _context.Positions.Any(e => e.Id == id);
         }
     }
 }

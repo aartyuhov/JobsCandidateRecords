@@ -19,10 +19,10 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Details { get; set; } = string.Empty;
 
-        public virtual ICollection<ApplicaionsForRequests>? ApplicaionsForRequests { get; set; }
+        public virtual ICollection<ApplicationsForRequests>? ApplicaionsForRequests { get; set; }
 
         public virtual ICollection<ApplicationStatusHistory>? ApplicationStatusHistories { get; set; }
-        public virtual ICollection<Notes>? Notes { get; set; }
+        public virtual ICollection<Position>? Notes { get; set; }
         public virtual ICollection<Attachment>? Attachments { get; set; }
     }
 }
