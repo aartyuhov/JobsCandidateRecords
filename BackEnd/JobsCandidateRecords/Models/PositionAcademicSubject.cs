@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("PositionAcademicSubject")]
+    [Table("PositionAcademicSubjects")]
     public class PositionAcademicSubject
     {
         public int Id { get; set; }

@@ -15,6 +15,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddCors();
 
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -68,6 +69,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
     c.RoutePrefix = string.Empty;
 });
+
+app.UseCors(builder => builder.AllowAnyOrigin());
 
 app.UseSession();
 

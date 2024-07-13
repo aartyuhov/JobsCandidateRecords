@@ -19,14 +19,14 @@ namespace JobsCandidateRecords.Controllers
 
         // GET: api/Notes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Notes>>> GetNotes()
+        public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
             return await _context.Notes.ToListAsync();
         }
 
         // GET: api/Notes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Notes>> GetNotes(int id)
+        public async Task<ActionResult<Note>> GetNotes(int id)
         {
             var notes = await _context.Notes.FindAsync(id);
 
@@ -71,7 +71,7 @@ namespace JobsCandidateRecords.Controllers
 
         // POST: api/Notes
         [HttpPost]
-        public async Task<ActionResult<Notes>> PostNote(Notes notes)
+        public async Task<ActionResult<Note>> PostNote(Note notes)
         {
             if (!ModelState.IsValid)
             {

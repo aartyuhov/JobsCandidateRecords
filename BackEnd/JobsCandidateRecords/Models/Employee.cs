@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("Employee")]
+    [Table("Employees")]
     [Index(nameof(Email), IsUnique = true)]
     public class Employee
     {
@@ -48,7 +48,7 @@ namespace JobsCandidateRecords.Models
         [SwaggerIgnore]
         public virtual IdentityUser? IdentityUser { get; set; }
         [SwaggerIgnore]
-        public virtual ICollection<Position>? Notes { get; set; }
+        public virtual ICollection<Note>? Notes { get; set; }
         [SwaggerIgnore]
         public virtual ICollection<Application>? Applications { get; set; }
     }

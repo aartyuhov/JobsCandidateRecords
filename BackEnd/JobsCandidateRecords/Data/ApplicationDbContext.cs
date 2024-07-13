@@ -21,7 +21,7 @@ namespace JobsCandidateRecords.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Notes> Notes { get; set; }
+        public DbSet<Note> Notes { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<PositionAcademicSubject> PositionAcademicSubjects { get; set; }
         public DbSet<RequestForEmployee> RequestsForEmployees { get; set; }

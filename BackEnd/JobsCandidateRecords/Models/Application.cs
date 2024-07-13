@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("Application")]
+    [Table("Applications")]
     public class Application
     {
         public int Id { get; set; }
@@ -19,10 +19,10 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Details { get; set; } = string.Empty;
 
-        public virtual ICollection<ApplicationsForRequests>? ApplicaionsForRequests { get; set; }
+        public virtual ICollection<ApplicationsForRequests>? ApplicationsForRequests { get; set; }
 
         public virtual ICollection<ApplicationStatusHistory>? ApplicationStatusHistories { get; set; }
-        public virtual ICollection<Position>? Notes { get; set; }
+        public virtual ICollection<Note>? Notes { get; set; }
         public virtual ICollection<Attachment>? Attachments { get; set; }
     }
 }
