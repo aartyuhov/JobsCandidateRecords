@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("Position")]
+    [Table("Positions")]
     [Index(nameof(Title), IsUnique = true)]
     public class Position
     {
@@ -12,7 +13,6 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         [MaxLength(50)]
-
         public string Title { get; set; } = string.Empty;
 
         [MaxLength(255)]
@@ -20,8 +20,13 @@ namespace JobsCandidateRecords.Models
 
         [Required]
         public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
-        public List<Job>? Jobs { get; set; }
-
+        [SwaggerIgnore]
+        public virtual Department? Department { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<Employee>? Employees { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<RequestForEmployee>? RequestForEmployees { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubjects { get; set; }
     }
 }

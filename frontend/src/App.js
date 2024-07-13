@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React from 'react';
+import LoginForm from './components/LoginForm';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout/Layout';
+import Dashboard from './components/Sidebar/Dashboard';
+import Shortcuts from './components/Sidebar/Shortcuts';
+import ProfileSettings from './components/Profile/ProfileSettings';
+import axios from 'axios';
 
-function App() {
+const App = () => {
+  axios.defaults.baseURL = 'https://localhost:7087/';
+  //axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+  //axios.defaults.xsrfCookieName = "csrftoken";
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/shortcuts" element={<Shortcuts />} />
+            <Route path="/profilesettings" element={<ProfileSettings />} />
+          </Routes>
+        </Layout>
+      </Router>
+      {/* <LoginForm></LoginForm> */}
     </div>
   );
-}
+};
 
 export default App;
