@@ -51,6 +51,8 @@ namespace JobsCandidateRecords.Models
         public virtual ICollection<Note>? Notes { get; set; }
         [SwaggerIgnore]
         public virtual ICollection<Application>? Applications { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<RequestForEmployee>? RequestsForEmployees { get; set; }
     }
 
     public static class IEnumerableExtensions

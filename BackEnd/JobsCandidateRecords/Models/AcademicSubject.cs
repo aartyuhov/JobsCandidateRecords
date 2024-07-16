@@ -18,6 +18,6 @@ namespace JobsCandidateRecords.Models
         [MaxLength(255)]
         public string Description { get; set; } = string.Empty;
         [SwaggerIgnore]
-        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubject { get; set; }
+        public virtual ICollection<PositionAcademicSubject>? PositionAcademicSubjects { get; set; }
     }
 }
