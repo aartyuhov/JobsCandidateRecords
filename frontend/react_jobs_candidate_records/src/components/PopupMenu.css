@@ -1,0 +1,68 @@
+.popup-menu {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 230px;
+  height: 100%;
+  padding: 20px;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  margin-top: 3.65%;
+}
+
+.popup-menu.visible {
+  left: 0;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.company-logo {
+  max-width: 80%;
+  height: auto;
+  margin: -10%;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 0.5fr);
+  gap: 15px;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  transition: background 0.3s ease;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.menu-text {
+  font-size: 14px;
+  text-align: center;
+}
+
+body, html {
+  overflow: hidden;
+}
