@@ -1,61 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const INPUT_CLASS = "form-control mt-1";
-const LABEL_CLASS = "form-label";
+import axios from 'axios';
+import { TextField } from '@mui/material';
 
 const ProfileSettings = () => {
+
+  
+  const getdata = async (id) =>
+    {
+      try {
+        const response = await axios.get(`/api/Employees/${id}`);
+        if (!response.status) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        setEmployee(response.data);
+      } catch (error) {
+        console.error(`Error fetching employee: ${error.message}`);
+      }
+    }
+  const [employee, setEmployee] = useState(() => getdata(1));
+
   return (
     <div className="d-flex align-items-center justify-content-center bg-light py-6 px-5">
       <div className="shadow-sm rounded-lg max-w-4xl w-100 d-flex flex-column flex-md-row">
-        
+
         <div className="w-md-25 bg-primary text-white p-4 d-flex flex-column align-items-center">
           <img src="https://placehold.co/100x100" alt="profile-picture" className="rounded-circle mb-4" />
-          <h2 className="h5 font-weight-semibold">Edogaru</h2>
-          <p className="small">edogaru@mail.com.my</p>
+          <h2 className="h5 font-weight-semibold">{employee.firstName} {employee.lastName}</h2>
+          <p className="small">{employee.email}</p>
         </div>
-        
+
         <div className="w-100 w-md-75 p-4">
           <h2 className="h4 font-weight-semibold mb-4">Profile Settings</h2>
-          <form className="space-y-4">
-            <div className="d-flex flex-column flex-md-row space-y-4 space-md-y-0 space-md-x-4">
-              <div className="w-100 w-md-50">
-                <label className={LABEL_CLASS}>First Name</label>
-                <input type="text" className={INPUT_CLASS} placeholder="first name" />
+          <form>
+            <div className="d-flex flex-column flex-md-row mb-3 gap-4">
+              <TextField required id="firstName" label="First name" variant="outlined" value={employee.firstName} defaultValue="none"/>
+              <TextField required id="lastName" label="Last name" variant="outlined" value={employee.lastName} defaultValue="none"/>
+            </div>
+            <div className="d-flex flex-column flex-md-row mb-3">
+              <div className="w-100 w-md-50 me-md-3">
+                <div className="form-floating mb-3">
+                <input type="text" className="form-control" id="phoneNumber" placeholder="Enter phone number" value={employee.phoneNumber}/>
+                <label htmlFor="phoneNumber">Phone Number</label>
+                </div>
               </div>
               <div className="w-100 w-md-50">
-                <label className={LABEL_CLASS}>Surname</label>
-                <input type="text" className={INPUT_CLASS} placeholder="surname" />
+                <div className="form-floating mb-3">
+                  <input type="email" className="form-control" id="email" placeholder="Enter email" value={employee.email}/>
+                  <label htmlFor="email">Email</label>
+                </div>
               </div>
             </div>
-            <div>
-              <label className={LABEL_CLASS}>Phone Number</label>
-              <input type="text" className={INPUT_CLASS} placeholder="enter phone number" />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Address Line 1</label>
-              <input type="text" className={INPUT_CLASS} placeholder="enter address line 1" />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Address Line 2</label>
-              <input type="text" className={INPUT_CLASS} placeholder="enter address line 2" />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Email</label>
-              <input type="email" className={INPUT_CLASS} placeholder="enter email id" />
-            </div>
-            <div>
-              <label className={LABEL_CLASS}>Education</label>
-              <input type="text" className={INPUT_CLASS} placeholder="education" />
-            </div>
-            <div className="d-flex flex-column flex-md-row space-y-4 space-md-y-0 space-md-x-4">
-              <div className="w-100 w-md-50">
-                <label className={LABEL_CLASS}>Country</label>
-                <input type="text" className={INPUT_CLASS} placeholder="country" />
+            <div className="d-flex flex-column flex-md-row mb-3">
+              <div className="w-100 w-md-50 me-md-3">
+                <div className="form-floating mb-3">
+                  <input type="text" className="form-control" id="position" placeholder="Position" value='Possss'/>
+                  <label htmlFor="position">Position</label>
+                </div>
               </div>
               <div className="w-100 w-md-50">
-                <label className={LABEL_CLASS}>State/Region</label>
-                <input type="text" className={INPUT_CLASS} placeholder="state" />
+                <div className="form-floating mb-3">
+                  <input type="text" className="form-control" id="gender" placeholder="Gender" value={employee.gender}/>
+                  <label htmlFor="gender">Gender</label>
+                </div>
+              </div>
+            </div>
+            <div className="d-flex flex-column flex-md-row mb-3">
+              <div className="w-100 w-md-50 me-md-3">
+                <div className="form-floating mb-3">
+                  <input type="text" className="form-control" id="hireDate" placeholder="Hire Date" value={employee.hireDate} />
+                  <label htmlFor="hireDate">Hire Date</label>
+                </div>
+              </div>
+              <div className="w-100 w-md-50">
+                <div className="form-floating mb-3">
+                  <input type="text" className="form-control" id="dateOfBirth" placeholder="Date Of Birth" value={employee.dateOfBirth}/>
+                  <label htmlFor="dateOfBirth">Date Of Birth</label>
+                </div>
+              </div>
+            </div>
+            <div className="mb-3">
+              <div className="form-floating mb-3">
+                <input type="text" className="form-control" id="addressLine" placeholder="Enter address" value={employee.address} />
+                <label htmlFor="addressLine">Address</label>
               </div>
             </div>
             <button type="submit" className="btn btn-primary mt-4">Save Profile</button>

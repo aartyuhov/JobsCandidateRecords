@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Layout.css';
+import { Avatar } from '@mui/material';
 
 const Layout = ({ children }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(false);
@@ -12,31 +13,33 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="d-flex vh-100">
+    <div className="d-flex min-vh-100">
       {isSidebarVisible && (
-        <div className="bg-secondary text-white" style={{ width: '250px' }}>
-          <div className="d-flex justify-content-between align-items-center p-4">
-            <div className="text-lg fw-bold">
-              <CustomerServiceIcon /><span className='px-3'>HR app</span>
+        <aside className="bg-secondary text-white min-vh-100" style={{ width: '250px' }}>
+          <nav>
+            <div className="d-flex justify-content-between align-items-center p-4">
+              <div className="text-lg fw-bold">
+                <CustomerServiceIcon /><span className='px-3'>HR app</span>
+              </div>
+              <i className="nav-item btn-sm btn-light cursor-pointer" onClick={toggleSidebar}>
+                <SidebarRightIcon />
+              </i>
             </div>
-            <i className="nav-item btn-sm btn-light cursor-pointer" onClick={toggleSidebar}>
-              <SidebarRightIcon />
-            </i>
-          </div>
-          <ul className="list-unstyled">
-            <li className="mb-1 d-flex align-items-center cursor-pointer">
-              <Link to="/dashboard" className="nav-item text-white no-underline">
-                <DashboardIcon /> <span className='px-3'>Dashboard</span>
-              </Link>
-            </li>
-            <li className="mb-1 d-flex align-items-center cursor-pointer">
-              <Link to="/shortcuts" className="nav-item text-white no-underline">
-                <ShortcutsIcon /> <span className='px-3'>Shortcuts</span>
-              </Link>
-            </li>
-            {/* Add more navigation items as needed */}
-          </ul>
-        </div>
+            <ul className="list-unstyled">
+              <li className="mb-1 d-flex align-items-center cursor-pointer">
+                <Link to="/dashboard" className="nav-item text-white no-underline">
+                  <DashboardIcon /> <span className='px-3'>Dashboard</span>
+                </Link>
+              </li>
+              <li className="mb-1 d-flex align-items-center cursor-pointer">
+                <Link to="/shortcuts" className="nav-item text-white no-underline">
+                  <ShortcutsIcon /> <span className='px-3'>Shortcuts</span>
+                </Link>
+              </li>
+              {/* Add more navigation items as needed */}
+            </ul>
+          </nav>
+        </aside>
       )}
       <div className="flex-grow-1 p-4 d-flex flex-column">
         <div className="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
@@ -47,11 +50,11 @@ const Layout = ({ children }) => {
               </i>
             )}
           </div>
-          <div className="d-flex align-items-center ms-auto cursor-pointer">
-            <Link to="/profilesettings" className="nav-item fw-bold no-underline">
-                  <img src="https://get.wallhere.com/photo/face-field-Person-man-skarf-adventurer-johannes-strate-776717.jpg" alt="User Avatar" className="rounded-circle me-2" width="32" height="32" />
+          <div className="d-flex align-items-center ms-auto">
+            <Link to="/account" className="nav-item fw-bold no-underline cursor-pointer">
                   <span className="me-3">Test User</span>
             </Link>
+            <Avatar alt="User Avatar" src="https://get.wallhere.com/photo/face-field-Person-man-skarf-adventurer-johannes-strate-776717.jpg" />
             <i className="nav-item cursor-pointer" onClick={() => console.log('Logout')}>
               <LogoutIcon />
             </i>

@@ -8,7 +8,7 @@ const LoginForm = () => {
     const username = event.target.username.value;//не использовал
     const password = event.target.password.value;// не использовал
     try {
-      await axios.get('api/AcademicSubject').then(resp => console.log(resp));
+      await axios.get('/api/AcademicSubject').then(resp => console.log(resp));
     }
     catch (e) {
         console.error(e.message);
