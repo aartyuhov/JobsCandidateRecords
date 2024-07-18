@@ -22,14 +22,18 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Models.Attachment>>> GetAttachments()
         {
-            return await _context.Attachments.ToListAsync();
+            return await _context.Attachments
+                            .Include(a => a.Application)
+                            .ToListAsync();
         }
 
         // GET: api/Attachment/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Attachment>> GetAttacment(int id)
         {
-            var attachment = await _context.Attachments.FindAsync(id);
+            var attachment = await _context.Attachments
+                                        .Include(a => a.Application)
+                                        .FirstOrDefaultAsync(a => a.Id == id);
 
             if (attachment == null)
             {
