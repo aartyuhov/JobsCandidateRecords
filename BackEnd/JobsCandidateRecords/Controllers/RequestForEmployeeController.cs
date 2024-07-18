@@ -21,14 +21,22 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RequestForEmployee>>> GetRequestForEmployees()
         {
-            return await _context.RequestsForEmployees.ToListAsync();
+            return await _context.RequestsForEmployees
+                            .Include(r => r.Position)
+                            .Include(r => r.RequestedEmployee)
+                            .Include(r => r.ApplicaionsForRequests)
+                            .ToListAsync();
         }
 
         // GET: api/RequestForEmployee/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestForEmployee>> GetRequestForEmployee(int id)
         {
-            var requestForEmployee = await _context.RequestsForEmployees.FindAsync(id);
+            var requestForEmployee = await _context.RequestsForEmployees
+                                                .Include(r => r.Position)
+                                                .Include(r => r.RequestedEmployee)
+                                                .Include(r => r.ApplicaionsForRequests)
+                                                .FirstOrDefaultAsync(r => r.Id == id);
 
             if (requestForEmployee == null)
             {
