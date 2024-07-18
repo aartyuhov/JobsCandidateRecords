@@ -11,7 +11,7 @@ import {
     OutlinedInput,
     TextField
 } from '@mui/material';
-import SidebarLink from '../small-components/SidebarLink';
+import SidebarLink from '../../small-components/SidebarLink';
 import {AccountCircle, SecurityOutlined, Visibility, VisibilityOff} from "@mui/icons-material";
 import {Link} from "react-router-dom";
 
@@ -109,7 +109,7 @@ const SecurityForm = () => {
     );
 };
 
-const SecurityPage = () => {
+const Security = () => {
     return (
         <div className="d-flex min-vh-100 bg-light">
             <AccountSidebar/>
@@ -118,4 +118,4 @@ const SecurityPage = () => {
     );
 };
 
-export default SecurityPage;
+export default Security;

@@ -1,17 +1,32 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
+import {useCookies} from "react-cookie";
 
-const LoginForm = () => {
+const Login = () => {
+  const [cookies, setCookie] = useCookies(['user']);
+  if(cookies.user)
+    window.location.replace(window.location.origin);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const username = event.target.username.value;//не использовал
     const password = event.target.password.value;// не использовал
     try {
-      await axios.get('/api/AcademicSubject').then(resp => console.log(resp));
+      const result = await axios.get('/api/Employees/1');
+      if(result.status === 200)
+      {
+        setCookie('user', JSON.stringify(result.data));
+        window.location.replace(window.location.origin);
+      }
     }
     catch (e) {
         console.error(e.message);
+        setCookie('user', JSON.stringify({
+          "lastName" : "test",
+          "firstName" : "user"
+        }));
+        window.location.replace(window.location.origin);
     }
   };
 
@@ -50,4 +65,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Login;

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import {Avatar, Chip, CircularProgress, TextField} from '@mui/material';
-import SidebarLink from '../small-components/SidebarLink';
+import SidebarLink from '../../small-components/SidebarLink';
 import {AccountCircle, SecurityOutlined} from "@mui/icons-material";
 import {Link} from "react-router-dom";
 
@@ -122,7 +122,7 @@ const AccountForm = ( { data } ) => {
   );
 };
 
-const AccountPage = () => {
+const Account = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -162,4 +162,4 @@ const AccountPage = () => {
   );
 };
 
-export default AccountPage;
+export default Account;

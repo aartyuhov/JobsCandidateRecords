@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { TextField } from '@mui/material';
 
-const ProfileSettings = () => {
+const EmployeeSettings = () => {
 
   
   const getdata = async (id) =>
@@ -93,4 +93,4 @@ const ProfileSettings = () => {
   );
 };
 
-export default ProfileSettings;
+export default EmployeeSettings;
