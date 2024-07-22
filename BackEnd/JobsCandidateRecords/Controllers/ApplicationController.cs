@@ -22,14 +22,28 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
         {
-            return await _context.Applications.ToListAsync();
+            return await _context.Applications
+                .Include(a => a.Candidate)
+                .Include(a => a.EmployeeWhoCreated)
+                .Include(a => a.ApplicationsForRequests)
+                .Include(a => a.ApplicationStatusHistories)
+                .Include(a => a.Notes)
+                .Include(a => a.Attachments)
+                .ToListAsync();
         }
 
         // GET: api/Application/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Application>> GetApplication(int id)
         {
-            var application = await _context.Applications.FindAsync(id);
+            var application = await _context.Applications
+                .Include(a => a.Candidate)
+                .Include(a => a.EmployeeWhoCreated)
+                .Include(a => a.ApplicationsForRequests)
+                .Include(a => a.ApplicationStatusHistories)
+                .Include(a => a.Notes)
+                .Include(a => a.Attachments)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application == null)
             {

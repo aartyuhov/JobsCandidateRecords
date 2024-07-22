@@ -20,6 +20,7 @@ namespace JobsCandidateRecords.Models
         public string Description { get; set; } = string.Empty;
 
         public int CompanyId { get; set; }
+        [SwaggerIgnore]
         public virtual Company? Company { get; set; }
         [SwaggerIgnore]
         public virtual ICollection<Position>? Positions { get; set; }
