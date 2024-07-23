@@ -1,7 +1,9 @@
-﻿using JobsCandidateRecords.Models.Input;
+﻿using JobsCandidateRecords.Models.DTO;
+using JobsCandidateRecords.Models.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -49,6 +51,29 @@ namespace JobsCandidateRecords.Controllers
             return Ok(roles);
         }
         /// <summary>
+        /// GetAllUsersWithRoles.
+        /// </summary>
+        [HttpGet]
+        [Route("UserRoles/")]
+        public async Task<IActionResult> GetAllUsersWithRoles()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var usersDto = users.Select(async u => new UserDTO
+            {
+                Id = u.Id,
+                Username = u.UserName,
+                Email = u.Email,
+                Roles = await _userManager.GetRolesAsync(u)
+            });
+
+            if (usersDto == null)
+            {
+                return NotFound("Users with roles weren't found");
+            }
+
+            return Ok(usersDto);
+        }
+        /// <summary>
         /// GetUserRoleByEmail.
         /// </summary>
         [HttpGet]
@@ -58,12 +83,12 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
             var roles = await _userManager.GetRolesAsync(user);
             if (roles == null)
             {
-                return NotFound("Role wasn't find");
+                return NotFound("Role wasn't found");
             }
 
             return Ok(roles);
@@ -78,7 +103,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             return Ok(user);
@@ -92,7 +117,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             return Ok(user);
@@ -106,7 +131,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             return Ok(user);
@@ -139,7 +164,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             user.Email = model.Email;
@@ -162,7 +187,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             user.Email = model.Email;
@@ -188,7 +213,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             var result = await _userManager.DeleteAsync(user);
@@ -207,7 +232,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             var result = await _userManager.DeleteAsync(user);

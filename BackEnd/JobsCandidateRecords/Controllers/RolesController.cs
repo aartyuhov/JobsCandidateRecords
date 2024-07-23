@@ -72,7 +72,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             var role = await _roleManager.FindByNameAsync(roleName);
@@ -97,7 +97,7 @@ namespace JobsCandidateRecords.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound("User wasn't find");
+                return NotFound("User wasn't found");
             }
 
             var result = await _userManager.RemoveFromRoleAsync(user, roleName);
