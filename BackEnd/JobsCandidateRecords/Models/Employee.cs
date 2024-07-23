@@ -39,6 +39,8 @@ namespace JobsCandidateRecords.Models
         [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime HireDate { get; set; } = DateTime.Now;
 
+        public string? AvatarUrl {  get; set; } = string.Empty;
+
         public int PositionId { get; set; }
         [SwaggerIgnore]
         public virtual Position? Position { get; set; }
@@ -51,6 +53,8 @@ namespace JobsCandidateRecords.Models
         public virtual ICollection<Note>? Notes { get; set; }
         [SwaggerIgnore]
         public virtual ICollection<Application>? Applications { get; set; }
+        [SwaggerIgnore]
+        public virtual ICollection<RequestForEmployee>? RequestsForEmployees { get; set; }
     }
 
     public static class IEnumerableExtensions

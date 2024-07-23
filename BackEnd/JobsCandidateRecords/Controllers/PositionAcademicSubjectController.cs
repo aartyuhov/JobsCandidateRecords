@@ -21,14 +21,20 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PositionAcademicSubject>>> GetPositionAcademicSubjects()
         {
-            return await _context.PositionAcademicSubjects.ToListAsync();
+            return await _context.PositionAcademicSubjects
+                            .Include(p => p.Position)
+                            .Include(p => p.AcademicSubject)
+                            .ToListAsync();
         }
 
         // GET: api/PositionAcademicSubject/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PositionAcademicSubject>> GetPositionAcademicSubject(int id)
         {
-            var positionAcademicSubject = await _context.PositionAcademicSubjects.FindAsync(id);
+            var positionAcademicSubject = await _context.PositionAcademicSubjects
+                                                    .Include(p => p.Position)
+                                                    .Include(p => p.AcademicSubject)
+                                                    .FirstOrDefaultAsync(p => p.Id == id);
 
             if (positionAcademicSubject == null)
             {

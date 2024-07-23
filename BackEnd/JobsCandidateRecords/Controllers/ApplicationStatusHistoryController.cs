@@ -22,14 +22,18 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistories()
         {
-            return await _context.ApplicationStatusHistories.ToListAsync();
+            return await _context.ApplicationStatusHistories
+                .Include(a => a.Application)
+                .ToListAsync();
         }
 
         // GET: api/ApplicationStatusHistory/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationStatusHistory>> GetApplicationStatusHistory(int id)
         {
-            var applicationStatusHistory = await _context.ApplicationStatusHistories.FindAsync(id);
+            var applicationStatusHistory = await _context.ApplicationStatusHistories
+                                                    .Include(a => a.Application)        
+                                                    .FirstOrDefaultAsync(a => a.Id == id);
 
             if (applicationStatusHistory == null)
             {
