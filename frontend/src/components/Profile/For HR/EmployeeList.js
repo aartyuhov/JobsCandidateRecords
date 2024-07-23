@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Select, MenuItem, FormControl, Card, CardContent, Typography, Avatar, List, ListItem, ListItemAvatar, ListItemText, IconButton } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Edit} from "@mui/icons-material";
+import {Link} from "react-router-dom";
 
 const EmployeeList = () => {
     return (
@@ -10,7 +11,11 @@ const EmployeeList = () => {
                 <CardContent>
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <Typography variant="h4" component="h1" className="fw-bold">Employee List</Typography>
-                        <Button variant="contained" color="primary" className="shadow-md transition duration-300">Create</Button>
+                        <Button variant="contained" color="primary" className="shadow-md transition duration-300">
+                            <Link to="/employeecard" className="text-white no-underline">
+                                Create
+                            </Link>
+                        </Button>
                     </div>
                     <div className="d-flex align-items-center mb-4">
                         <FormControl className="mr-4">
