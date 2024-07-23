@@ -2,8 +2,6 @@
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/Application
+        /// <summary>
+        /// GetApplications.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
         {
@@ -32,7 +32,9 @@ namespace JobsCandidateRecords.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/Application/5
+        /// <summary>
+        /// GetApplication.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Application>> GetApplication(int id)
         {
@@ -53,8 +55,9 @@ namespace JobsCandidateRecords.Controllers
             return application;
         }
 
-        // PUT: api/AcademicSubjects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutApplication.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutApplication(int id, Application application)
         {
@@ -84,7 +87,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Application
+        /// <summary>
+        /// PostApplication.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Application>> PostApplication(Application application)
         {
@@ -100,7 +105,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, application);
         }
 
-        // DELETE: api/Application/5
+        /// <summary>
+        /// DeleteApplication.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApplication(int id)
         {

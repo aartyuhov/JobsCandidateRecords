@@ -1,6 +1,4 @@
-using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -14,7 +12,9 @@ namespace JobsCandidateRecords.Controllers
         {
             _logger = logger;
         }
-
+        /// <summary>
+        /// Get.
+        /// </summary>
         [HttpGet(Name = "Home")]
         public string Get()
         {

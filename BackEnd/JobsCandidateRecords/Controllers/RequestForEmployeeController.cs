@@ -1,6 +1,5 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/RequestForEmployee
+        /// <summary>
+        /// GetRequestForEmployees.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RequestForEmployee>>> GetRequestForEmployees()
         {
@@ -28,7 +29,9 @@ namespace JobsCandidateRecords.Controllers
                             .ToListAsync();
         }
 
-        // GET: api/RequestForEmployee/5
+        /// <summary>
+        /// GetRequestForEmployee.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestForEmployee>> GetRequestForEmployee(int id)
         {
@@ -46,8 +49,9 @@ namespace JobsCandidateRecords.Controllers
             return requestForEmployee;
         }
 
-        // PUT: api/RequestForEmployee/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutRequestForEmployee.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRequestForEmployee(int id, RequestForEmployee requestForEmployee)
         {
@@ -77,7 +81,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/RequestForEmployee
+        /// <summary>
+        /// PostpositionAcademicSubject.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Position>> PostpositionAcademicSubject(RequestForEmployee requestForEmployee)
         {
@@ -93,7 +99,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetRequestForEmployee), new { id = requestForEmployee.Id }, requestForEmployee);
         }
 
-        // DELETE: api/RequestForEmployee/5
+        /// <summary>
+        /// DeleteRequestForEmployee.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestForEmployee(int id)
         {

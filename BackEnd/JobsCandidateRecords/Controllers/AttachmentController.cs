@@ -1,9 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
-using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Mail;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +15,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/Attachment
+        /// <summary>
+        /// GetAttachments.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Models.Attachment>>> GetAttachments()
         {
@@ -27,7 +26,9 @@ namespace JobsCandidateRecords.Controllers
                             .ToListAsync();
         }
 
-        // GET: api/Attachment/5
+        /// <summary>
+        /// GetAttacment.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Attachment>> GetAttacment(int id)
         {
@@ -43,8 +44,9 @@ namespace JobsCandidateRecords.Controllers
             return attachment;
         }
 
-        // PUT: api/Attachment/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutAttachment.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAttachment(int id, Models.Attachment attachment)
         {
@@ -74,7 +76,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Attachment
+        /// <summary>
+        /// PostApplicationsForRequests.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Models.Attachment>> PostApplicationsForRequests(Models.Attachment attachment)
         {
@@ -90,7 +94,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetAttachments), new { id = attachment.Id }, attachment);
         }
 
-        // DELETE: api/Attachment/5
+        /// <summary>
+        /// DeleteAttachment.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAttachment(int id)
         {

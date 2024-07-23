@@ -1,6 +1,5 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/Department
+        /// <summary>
+        /// GetDepartments.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
@@ -27,7 +28,9 @@ namespace JobsCandidateRecords.Controllers
                             .ToListAsync();
         }
 
-        // GET: api/Department/5
+        /// <summary>
+        /// GetDepartment.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
@@ -44,8 +47,9 @@ namespace JobsCandidateRecords.Controllers
             return department;
         }
 
-        // PUT: api/Department/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutDepartment.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(int id, Department department)
         {
@@ -75,7 +79,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Department
+        /// <summary>
+        /// PostDepartment.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(Department department)
         {
@@ -91,7 +97,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetDepartment), new { id = department.Id }, department);
         }
 
-        // DELETE: api/Department/5
+        /// <summary>
+        /// DeleteDepartment.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDepartment(int id)
         {

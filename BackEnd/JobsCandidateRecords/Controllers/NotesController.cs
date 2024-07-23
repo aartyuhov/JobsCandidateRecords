@@ -1,6 +1,5 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/Notes
+        /// <summary>
+        /// GetNotes.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
@@ -27,7 +28,9 @@ namespace JobsCandidateRecords.Controllers
                             .ToListAsync();
         }
 
-        // GET: api/Notes/5
+        /// <summary>
+        /// GetNotes.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Note>> GetNotes(int id)
         {
@@ -44,8 +47,9 @@ namespace JobsCandidateRecords.Controllers
             return notes;
         }
 
-        // PUT: api/Notes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutNotes.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutNotes(int id, Position notes)
         {
@@ -75,7 +79,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Notes
+        /// <summary>
+        /// PostNote.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Note>> PostNote(Note notes)
         {
@@ -91,7 +97,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetNotes), new { id = notes.Id }, notes);
         }
 
-        // DELETE: api/Notes/5
+        /// <summary>
+        /// DeleteNote.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNote(int id)
         {

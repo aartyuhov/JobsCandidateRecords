@@ -2,8 +2,6 @@
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/ApplicationStatusHistory
+        /// <summary>
+        /// GetApplicationStatusHistories.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistories()
         {
@@ -27,12 +27,14 @@ namespace JobsCandidateRecords.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/ApplicationStatusHistory/5
+        /// <summary>
+        /// GetApplicationStatusHistory.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationStatusHistory>> GetApplicationStatusHistory(int id)
         {
             var applicationStatusHistory = await _context.ApplicationStatusHistories
-                                                    .Include(a => a.Application)        
+                                                    .Include(a => a.Application)
                                                     .FirstOrDefaultAsync(a => a.Id == id);
 
             if (applicationStatusHistory == null)
@@ -43,8 +45,9 @@ namespace JobsCandidateRecords.Controllers
             return applicationStatusHistory;
         }
 
-        // PUT: api/ApplicationStatusHistory/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutApplicationStatusHistory.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutApplicationStatusHistory(int id, ApplicationStatusHistory applicationStatusHistory)
         {
@@ -74,7 +77,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/ApplicationStatusHistory
+        /// <summary>
+        /// PostApplicationStatusHistory.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<ApplicationStatusHistory>> PostApplicationStatusHistory(ApplicationStatusHistory applicationStatusHistory)
         {
@@ -90,7 +95,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetApplicationStatusHistory), new { id = applicationStatusHistory.Id }, applicationStatusHistory);
         }
 
-        // DELETE: api/ApplicationStatusHistory/5
+        /// <summary>
+        /// DeleteApplicationStatusHistory.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApplicationStatusHistory(int id)
         {
@@ -99,7 +106,7 @@ namespace JobsCandidateRecords.Controllers
             {
                 return NotFound();
             }
-            
+
             _context.ApplicationStatusHistories.Remove(applicationStatusHistory);
             await _context.SaveChangesAsync();
 

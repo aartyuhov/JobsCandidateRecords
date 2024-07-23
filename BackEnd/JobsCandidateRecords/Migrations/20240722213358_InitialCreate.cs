@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JobsCandidateRecords.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDB : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AcademicSubject",
+                name: "AcademicSubjects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -22,7 +22,7 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AcademicSubject", x => x.Id);
+                    table.PrimaryKey("PK_AcademicSubjects", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,7 +65,7 @@ namespace JobsCandidateRecords.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Candidate",
+                name: "Candidates",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -81,11 +81,11 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Candidate", x => x.Id);
+                    table.PrimaryKey("PK_Candidates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Company",
+                name: "Companies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -95,7 +95,7 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Company", x => x.Id);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,7 +205,7 @@ namespace JobsCandidateRecords.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Department",
+                name: "Departments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -216,17 +216,17 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Department", x => x.Id);
+                    table.PrimaryKey("PK_Departments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Department_Company_CompanyId",
+                        name: "FK_Departments_Companies_CompanyId",
                         column: x => x.CompanyId,
-                        principalTable: "Company",
+                        principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Position",
+                name: "Positions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -237,17 +237,17 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Position", x => x.Id);
+                    table.PrimaryKey("PK_Positions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Position_Department_DepartmentId",
+                        name: "FK_Positions_Departments_DepartmentId",
                         column: x => x.DepartmentId,
-                        principalTable: "Department",
+                        principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employee",
+                name: "Employees",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -265,22 +265,22 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employee", x => x.Id);
+                    table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employee_AspNetUsers_IdentityUserId",
+                        name: "FK_Employees_AspNetUsers_IdentityUserId",
                         column: x => x.IdentityUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Employee_Position_PositionId",
+                        name: "FK_Employees_Positions_PositionId",
                         column: x => x.PositionId,
-                        principalTable: "Position",
+                        principalTable: "Positions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PositionAcademicSubject",
+                name: "PositionAcademicSubjects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -290,23 +290,23 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PositionAcademicSubject", x => x.Id);
+                    table.PrimaryKey("PK_PositionAcademicSubjects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PositionAcademicSubject_AcademicSubject_AcademicSubjectId",
+                        name: "FK_PositionAcademicSubjects_AcademicSubjects_AcademicSubjectId",
                         column: x => x.AcademicSubjectId,
-                        principalTable: "AcademicSubject",
+                        principalTable: "AcademicSubjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PositionAcademicSubject_Position_PositionId",
+                        name: "FK_PositionAcademicSubjects_Positions_PositionId",
                         column: x => x.PositionId,
-                        principalTable: "Position",
+                        principalTable: "Positions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Application",
+                name: "Applications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -318,22 +318,22 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Application", x => x.Id);
+                    table.PrimaryKey("PK_Applications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Application_Candidate_CandidateId",
+                        name: "FK_Applications_Candidates_CandidateId",
                         column: x => x.CandidateId,
-                        principalTable: "Candidate",
+                        principalTable: "Candidates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Application_Employee_EmployeeWhoCreatedId",
+                        name: "FK_Applications_Employees_EmployeeWhoCreatedId",
                         column: x => x.EmployeeWhoCreatedId,
-                        principalTable: "Employee",
+                        principalTable: "Employees",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "RequestForEmployee",
+                name: "RequestForEmployees",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -347,17 +347,17 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RequestForEmployee", x => x.Id);
+                    table.PrimaryKey("PK_RequestForEmployees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RequestForEmployee_Employee_RequestedEmployeeId",
+                        name: "FK_RequestForEmployees_Employees_RequestedEmployeeId",
                         column: x => x.RequestedEmployeeId,
-                        principalTable: "Employee",
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RequestForEmployee_Position_PositionId",
+                        name: "FK_RequestForEmployees_Positions_PositionId",
                         column: x => x.PositionId,
-                        principalTable: "Position",
+                        principalTable: "Positions",
                         principalColumn: "Id");
                 });
 
@@ -375,15 +375,15 @@ namespace JobsCandidateRecords.Migrations
                 {
                     table.PrimaryKey("PK_ApplicationStatusHistory", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ApplicationStatusHistory_Application_ApplicationId",
+                        name: "FK_ApplicationStatusHistory_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Attachment",
+                name: "Attachments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -395,11 +395,11 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Attachment", x => x.Id);
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Attachment_Application_ApplicationId",
+                        name: "FK_Attachments_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -419,20 +419,20 @@ namespace JobsCandidateRecords.Migrations
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notes_Application_ApplicationId",
+                        name: "FK_Notes_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Notes_Employee_EmployeeId",
+                        name: "FK_Notes_Employees_EmployeeId",
                         column: x => x.EmployeeId,
-                        principalTable: "Employee",
+                        principalTable: "Employees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApplicaionsForRequests",
+                name: "ApplicationsForRequests",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -442,46 +442,46 @@ namespace JobsCandidateRecords.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicaionsForRequests", x => x.Id);
+                    table.PrimaryKey("PK_ApplicationsForRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ApplicaionsForRequests_Application_ApplicationId",
+                        name: "FK_ApplicationsForRequests_Applications_ApplicationId",
                         column: x => x.ApplicationId,
-                        principalTable: "Application",
+                        principalTable: "Applications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ApplicaionsForRequests_RequestForEmployee_RequestForEmployeeId",
+                        name: "FK_ApplicationsForRequests_RequestForEmployees_RequestForEmployeeId",
                         column: x => x.RequestForEmployeeId,
-                        principalTable: "RequestForEmployee",
+                        principalTable: "RequestForEmployees",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AcademicSubject_Name",
-                table: "AcademicSubject",
+                name: "IX_AcademicSubjects_Name",
+                table: "AcademicSubjects",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicaionsForRequests_ApplicationId",
-                table: "ApplicaionsForRequests",
-                column: "ApplicationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicaionsForRequests_RequestForEmployeeId",
-                table: "ApplicaionsForRequests",
-                column: "RequestForEmployeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Application_CandidateId",
-                table: "Application",
+                name: "IX_Applications_CandidateId",
+                table: "Applications",
                 column: "CandidateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Application_EmployeeWhoCreatedId",
-                table: "Application",
+                name: "IX_Applications_EmployeeWhoCreatedId",
+                table: "Applications",
                 column: "EmployeeWhoCreatedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationsForRequests_ApplicationId",
+                table: "ApplicationsForRequests",
+                column: "ApplicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationsForRequests_RequestForEmployeeId",
+                table: "ApplicationsForRequests",
+                column: "RequestForEmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ApplicationStatusHistory_ApplicationId",
@@ -528,47 +528,47 @@ namespace JobsCandidateRecords.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Attachment_ApplicationId",
-                table: "Attachment",
+                name: "IX_Attachments_ApplicationId",
+                table: "Attachments",
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Candidate_Email",
-                table: "Candidate",
+                name: "IX_Candidates_Email",
+                table: "Candidates",
                 column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_Name",
-                table: "Company",
+                name: "IX_Companies_Name",
+                table: "Companies",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Department_CompanyId",
-                table: "Department",
+                name: "IX_Departments_CompanyId",
+                table: "Departments",
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Department_Name",
-                table: "Department",
+                name: "IX_Departments_Name",
+                table: "Departments",
                 column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_Email",
-                table: "Employee",
+                name: "IX_Employees_Email",
+                table: "Employees",
                 column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_IdentityUserId",
-                table: "Employee",
+                name: "IX_Employees_IdentityUserId",
+                table: "Employees",
                 column: "IdentityUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_PositionId",
-                table: "Employee",
+                name: "IX_Employees_PositionId",
+                table: "Employees",
                 column: "PositionId");
 
             migrationBuilder.CreateIndex(
@@ -582,34 +582,34 @@ namespace JobsCandidateRecords.Migrations
                 column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Position_DepartmentId",
-                table: "Position",
+                name: "IX_PositionAcademicSubjects_AcademicSubjectId",
+                table: "PositionAcademicSubjects",
+                column: "AcademicSubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PositionAcademicSubjects_PositionId",
+                table: "PositionAcademicSubjects",
+                column: "PositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Positions_DepartmentId",
+                table: "Positions",
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Position_Title",
-                table: "Position",
+                name: "IX_Positions_Title",
+                table: "Positions",
                 column: "Title",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_PositionAcademicSubject_AcademicSubjectId",
-                table: "PositionAcademicSubject",
-                column: "AcademicSubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PositionAcademicSubject_PositionId",
-                table: "PositionAcademicSubject",
+                name: "IX_RequestForEmployees_PositionId",
+                table: "RequestForEmployees",
                 column: "PositionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequestForEmployee_PositionId",
-                table: "RequestForEmployee",
-                column: "PositionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RequestForEmployee_RequestedEmployeeId",
-                table: "RequestForEmployee",
+                name: "IX_RequestForEmployees_RequestedEmployeeId",
+                table: "RequestForEmployees",
                 column: "RequestedEmployeeId");
         }
 
@@ -617,7 +617,7 @@ namespace JobsCandidateRecords.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicaionsForRequests");
+                name: "ApplicationsForRequests");
 
             migrationBuilder.DropTable(
                 name: "ApplicationStatusHistory");
@@ -638,43 +638,43 @@ namespace JobsCandidateRecords.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Attachment");
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "Notes");
 
             migrationBuilder.DropTable(
-                name: "PositionAcademicSubject");
+                name: "PositionAcademicSubjects");
 
             migrationBuilder.DropTable(
-                name: "RequestForEmployee");
+                name: "RequestForEmployees");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Application");
+                name: "Applications");
 
             migrationBuilder.DropTable(
-                name: "AcademicSubject");
+                name: "AcademicSubjects");
 
             migrationBuilder.DropTable(
-                name: "Candidate");
+                name: "Candidates");
 
             migrationBuilder.DropTable(
-                name: "Employee");
+                name: "Employees");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Position");
+                name: "Positions");
 
             migrationBuilder.DropTable(
-                name: "Department");
+                name: "Departments");
 
             migrationBuilder.DropTable(
-                name: "Company");
+                name: "Companies");
         }
     }
 }

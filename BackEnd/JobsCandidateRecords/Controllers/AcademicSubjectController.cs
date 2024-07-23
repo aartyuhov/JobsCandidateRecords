@@ -2,8 +2,6 @@
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/AcademicSubjects
+        /// <summary>
+        /// GetAcademicSubjects.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AcademicSubject>>> GetAcademicSubjects()
         {
@@ -27,7 +27,9 @@ namespace JobsCandidateRecords.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/AcademicSubjects/5
+        /// <summary>
+        /// GetAcademicSubject.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<AcademicSubject>> GetAcademicSubject(int id)
         {
@@ -43,8 +45,9 @@ namespace JobsCandidateRecords.Controllers
             return academicSubject;
         }
 
-        // PUT: api/AcademicSubjects/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutAcademicSubject.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAcademicSubject(int id, AcademicSubject academicSubject)
         {
@@ -74,8 +77,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/AcademicSubjects
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PostAcademicSubject.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<AcademicSubject>> PostAcademicSubject(AcademicSubject academicSubject)
         {
@@ -90,7 +94,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction("GetAcademicSubject", new { id = academicSubject.Id }, academicSubject);
         }
 
-        // DELETE: api/AcademicSubjects/5
+        /// <summary>
+        /// DeleteAcademicSubject.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAcademicSubject(int id)
         {
