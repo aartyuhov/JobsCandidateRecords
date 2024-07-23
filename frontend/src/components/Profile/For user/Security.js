@@ -1,17 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import {
-    Avatar,
-    Chip,
-    CircularProgress,
     FormControl, IconButton,
     InputAdornment,
     InputLabel,
     OutlinedInput,
     TextField
 } from '@mui/material';
-import SidebarLink from '../../small-components/SidebarLink';
 import {AccountCircle, SecurityOutlined, Visibility, VisibilityOff} from "@mui/icons-material";
 import {Link} from "react-router-dom";
 

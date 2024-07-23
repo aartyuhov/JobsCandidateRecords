@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import {Avatar, Chip, CircularProgress, TextField} from '@mui/material';
-import SidebarLink from '../../small-components/SidebarLink';
 import {AccountCircle, SecurityOutlined} from "@mui/icons-material";
 import {Link} from "react-router-dom";
 
