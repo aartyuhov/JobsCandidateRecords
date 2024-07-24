@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Shared Bootstrap classes
 const cardClasses = 'bg-light rounded shadow-lg p-4';
 const buttonClasses = 'btn btn-primary';
 
