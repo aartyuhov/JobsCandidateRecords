@@ -5,7 +5,8 @@ import { Avatar } from '@mui/material'
 import DashboardIcon from '../SVGIcons/DashboardIcon'
 import { SidebarLeftIcon, SidebarRightIcon } from '../SVGIcons/SidebarIcons'
 import MainIcon from '../SVGIcons/MainIcon'
-import LogoutIcon from '../SVGIcons/LogoutIcon'
+import LogoutIcon_1 from '../SVGIcons/LogoutIcon'
+import LogoutIcon_2 from '../SVGIcons/LogoutIconAfter'
 import EmployeeListIcon from '../SVGIcons/EmployeeListIcon'
 
 const Layout = ({
@@ -14,6 +15,7 @@ const Layout = ({
 	logoutHandler = () => console.log('logout'),
 }) => {
 	const [isSidebarVisible, setSidebarVisible] = useState(false)
+	const [isHoveringLogout, setIsHoveringLogout] = useState(false)
 
 	const showSidebar = () => {
 		setSidebarVisible(true)
@@ -21,6 +23,14 @@ const Layout = ({
 
 	const hideSidebar = () => {
 		setSidebarVisible(false)
+	}
+
+	const handleMouseEnter = () => {
+		setIsHoveringLogout(true)
+	}
+
+	const handleMouseLeave = () => {
+		setIsHoveringLogout(false)
 	}
 
 	return (
@@ -73,8 +83,13 @@ const Layout = ({
 							alt='User Avatar'
 							src='https://get.wallhere.com/photo/face-field-Person-man-skarf-adventurer-johannes-strate-776717.jpg'
 						/>
-						<i className='nav-item cursor-pointer' onClick={logoutHandler}>
-							<LogoutIcon />
+						<i
+							className='nav-item cursor-pointer'
+							onClick={logoutHandler}
+							onMouseEnter={handleMouseEnter}
+							onMouseLeave={handleMouseLeave}
+						>
+							{isHoveringLogout ? <LogoutIcon_2 /> : <LogoutIcon_1 />}
 						</i>
 					</div>
 				</div>

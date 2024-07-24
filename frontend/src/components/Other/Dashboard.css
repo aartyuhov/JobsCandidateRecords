@@ -13,8 +13,8 @@ body {
   transition: background-position-x 0.05s ease-out;
 }
 
-*{
-    font-family: "Montserrat", sans-serif;
+* {
+  font-family: "Montserrat", sans-serif;
 }
 
 h1, h2, h3 {
@@ -28,12 +28,19 @@ h1, h2, h3 {
   padding: 20px;
   box-sizing: border-box;
   border-radius: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
 }
 
 .dashboard-title {
   font-size: 50px;
   margin-top: 50px;
   text-align: center;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
+  animation-delay: 1s;
 }
 
 .card {
@@ -43,11 +50,19 @@ h1, h2, h3 {
   border-radius: 10px;
   padding: 20px;
   margin-top: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
+  animation-delay: 0.4s;
 }
 
 .card-title {
   font-size: 2rem;
   margin-bottom: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
+  animation-delay: 0.6s;
 }
 
 .employee-list-items {
@@ -63,6 +78,10 @@ h1, h2, h3 {
   padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
+  animation-delay: 0.8s;
 }
 
 .employee-card:hover {
@@ -109,7 +128,7 @@ h1, h2, h3 {
   color: #000000;
   cursor: pointer;
   display: inline-flex;
-  font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   height: 2.5em;
   justify-content: center;
@@ -177,4 +196,11 @@ h1, h2, h3 {
 .col {
   flex: 1;
   min-width: 300px;
+}
+
+@keyframes enlarge {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
