@@ -1,29 +1,73 @@
+span {
+  color:#000000
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -230px;
+  width: 250px;
+  height: 100vh;
+  background-color: rgba(216, 216, 216, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: black;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid #9b9b9b;
+}
+
+.sidebar.visible {
+  left: 0;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 30px;
+  transition: margin-left 0.3s ease;
+}
+
+.content.shifted {
+  margin-left: 250px;
+}
+
+.sidebar-hover-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 100vh;
+  z-index: 1001;
+}
+
+.d-flex:hover .sidebar-hover-area + .sidebar {
+  left: 0;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
-/* Основные стили для списка */
+
 ul {
   list-style-type: none;
   padding: 0;
 }
 
-/* Стили для элементов списка */
 li {
   padding: 10px;
-  transition: background-color 0.3s ease; /* Плавное изменение цвета фона */
+  transition: background-color 0.3s ease;
 }
 
-/* Стили для активного элемента */
 li.active {
-  background-color: #343a40; /* Цвет фона для активного элемента */
+  background-color: #acacac;
 }
 
-/* Стили для элемента при наведении */
 li:hover {
-  background-color: #495057; /* Цвет фона при наведении на элемент */
+  background-color: #acacac;
 }
 
-/* Дополнительные стили для текста и иконок внутри элементов списка */
 .nav-item {
   margin-left: 10px;
 }
@@ -31,4 +75,3 @@ li:hover {
 .no-underline {
   text-decoration: none;
 }
-
