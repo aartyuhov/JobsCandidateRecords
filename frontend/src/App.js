@@ -15,8 +15,8 @@ import EmployeeCard from "./components/Profile/For HR/EmployeeCard";
 
 const App = () => {
   axios.defaults.baseURL = 'https://localhost:7087';
-  //axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-  //axios.defaults.xsrfCookieName = "csrftoken";
+  axios.defaults.withCredentials = true;
+
   const [cookies, , removeCookie] = useCookies();
   const [user, setUser] = React.useState(cookies.user);
   const navigate = useNavigate();
@@ -30,7 +30,9 @@ const App = () => {
   return (
     <div className='App'>
         <Routes>
-          <Route index path="login" element={<Login />} />
+          <Route element={ <ProtectedRoute isAllowed={!user} redirectPath={"/"}/> }>
+            <Route path="login" element={<Login />} />
+          </Route>
           <Route element={
             <Layout user={user} logoutHandler={logoutHandler}>
               <ProtectedRoute isAllowed={!!user}/>
