@@ -51,11 +51,11 @@ const AccountForm = ( { data } ) => {
           <div className="d-flex align-items-center mb-lg-2">
             <Avatar
                 sx={{width: 80, height: 80}}
-                src='https://get.wallhere.com/photo/face-field-Person-man-skarf-adventurer-johannes-strate-776717.jpg'
+                src={data.avatarUrl ?? ''}
             />
             <button type="button" className="btn btn-outline-danger ms-3">Remove</button>
             <div className={"mx-lg-3 d-flex gap-2"}>
-              <Chip className={"fs-6"} label={data.position ?? "Asp .Net Developer"} variant="outlined"/>
+              <Chip className={"fs-6"} label={data.positionName ?? "Asp .Net Developer"} variant="outlined"/>
               <Chip className={"fs-6 text-bg-info"} label={data.gender ?? "None gender"} variant="outlined"/>
               <Chip className={"fs-6 text-dark-50"} style={{background: "#89b2d9"}}
                     label={"Date of birth " + new Date(data.dateOfBirth).toLocaleDateString() ?? "None date"}
@@ -126,13 +126,10 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
-    const fetchData = async (id) => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/Employees/${id}`);
-        if (response.status !== 200) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        setData(response.data);
+        const response = await axios.get(`/api/EmployeeDTO`);
+        setData(response.data["$values"][0]);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -141,7 +138,7 @@ const Account = () => {
       }
     };
 
-    fetchData(1);
+    fetchData();
   }, []);
   return (
     <div className="d-flex min-vh-100 bg-light">
