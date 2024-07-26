@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Select, MenuItem, FormControl, Card, CardContent, Typography, Avatar, List, ListItem, ListItemAvatar, ListItemText, IconButton } from '@mui/material';
+import { Button, Card, CardContent, Typography, Avatar, List, ListItem, ListItemAvatar, ListItemText, IconButton } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Edit} from "@mui/icons-material";
 import {Link} from "react-router-dom";
@@ -17,15 +17,15 @@ const EmployeeList = () => {
                             </Link>
                         </Button>
                     </div>
-                    <div className="d-flex align-items-center mb-4">
-                        <FormControl className="mr-4">
-                            <Select id="filter" defaultValue="all" className="border-primary rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-primary transition duration-300">
-                                <MenuItem value="all">All</MenuItem>
-                                <MenuItem value="active">Active</MenuItem>
-                                <MenuItem value="inactive">Inactive</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
+                    {/*<div className="d-flex align-items-center mb-4">*/}
+                    {/*    <FormControl className="mr-4">*/}
+                    {/*        <Select id="filter" defaultValue="all" className="border-primary rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-primary transition duration-300">*/}
+                    {/*            <MenuItem value="all">All</MenuItem>*/}
+                    {/*            <MenuItem value="active">Active</MenuItem>*/}
+                    {/*            <MenuItem value="inactive">Inactive</MenuItem>*/}
+                    {/*        </Select>*/}
+                    {/*    </FormControl>*/}
+                    {/*</div>*/}
                     <List className="w-100 bg-white rounded-lg overflow-hidden shadow-lg">
                         <ListItem className="d-flex align-items-center justify-content-between p-4 border-bottom border-primary hover:bg-muted transition duration-300">
                             <ListItemAvatar>
