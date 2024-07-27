@@ -1,11 +1,12 @@
 using JobsCandidateRecords.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -22,11 +23,11 @@ builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedAccount = true;
-        options.Password.RequiredLength = 5;   
-        options.Password.RequireNonAlphanumeric = false;   
+        options.Password.RequiredLength = 5;
+        options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireLowercase = false;
         options.Password.RequireUppercase = false;
-        options.Password.RequireDigit = false; 
+        options.Password.RequireDigit = false;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI().
@@ -42,8 +43,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "My API",
-        Version = "v1"
+        Version = "v1",
+        Description = "REST APIs "
     });
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddSession();
@@ -65,24 +70,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-    c.RoutePrefix = string.Empty;
-});
-
-app.UseCors(builder => builder.AllowAnyOrigin());
-
-app.UseSession();
-
-app.Run();
-
-
-
-
-
-//Create roles and admin and order statuses
+//Create roles and admin
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
@@ -98,3 +86,19 @@ app.Run();
 //        logger.LogError(ex, "An error occurred seeding the DB.");
 //    }
 //}
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = string.Empty;
+});
+
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
+                                .AllowCredentials()
+                                .AllowAnyHeader()
+                                .AllowAnyMethod());
+
+app.UseSession();
+
+app.Run();

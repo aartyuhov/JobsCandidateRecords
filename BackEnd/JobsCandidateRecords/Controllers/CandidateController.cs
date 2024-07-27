@@ -1,9 +1,7 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Mail;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/Candidate
+        /// <summary>
+        /// GetCandidates.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidates()
         {
@@ -27,7 +27,9 @@ namespace JobsCandidateRecords.Controllers
                             .ToListAsync();
         }
 
-        // GET: api/Candidate/5
+        /// <summary>
+        /// GetCandidate.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Candidate>> GetCandidate(int id)
         {
@@ -43,8 +45,9 @@ namespace JobsCandidateRecords.Controllers
             return candidate;
         }
 
-        // PUT: api/Candidate/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutCandidate.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCandidate(int id, Candidate candidate)
         {
@@ -74,7 +77,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/Candidate
+        /// <summary>
+        /// PostCandidate.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<Candidate>> PostCandidate(Candidate candidate)
         {
@@ -90,7 +95,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetCandidates), new { id = candidate.Id }, candidate);
         }
 
-        // DELETE: api/Candidate/5
+        /// <summary>
+        /// DeleteCandidate.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCandidate(int id)
         {

@@ -2,8 +2,6 @@
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,9 @@ namespace JobsCandidateRecords.Controllers
             _context = context;
         }
 
-        // GET: api/ApplicationsForRequests
+        /// <summary>
+        /// GetApplications.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ApplicationsForRequests>>> GetApplications()
         {
@@ -28,7 +28,9 @@ namespace JobsCandidateRecords.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/ApplicationsForRequests/5
+        /// <summary>
+        /// GetApplication.
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationsForRequests>> GetApplication(int id)
         {
@@ -45,8 +47,9 @@ namespace JobsCandidateRecords.Controllers
             return applicationsForRequests;
         }
 
-        // PUT: api/ApplicationsForRequests/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// PutApplicationsForRequests.
+        /// </summary>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutApplicationsForRequests(int id, ApplicationsForRequests applicationsForRequests)
         {
@@ -76,7 +79,9 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
-        // POST: api/ApplicationsForRequests
+        /// <summary>
+        /// PostApplicationsForRequests.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<ApplicationsForRequests>> PostApplicationsForRequests(ApplicationsForRequests applicationsForRequests)
         {
@@ -92,7 +97,9 @@ namespace JobsCandidateRecords.Controllers
             return CreatedAtAction(nameof(GetApplication), new { id = applicationsForRequests.Id }, applicationsForRequests);
         }
 
-        // DELETE: api/ApplicationsForRequests/5
+        /// <summary>
+        /// DeleteApplicationsForRequests.
+        /// </summary>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApplicationsForRequests(int id)
         {
