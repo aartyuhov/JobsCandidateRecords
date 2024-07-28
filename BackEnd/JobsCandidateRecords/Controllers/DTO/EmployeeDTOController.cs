@@ -1,100 +1,72 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
 using JobsCandidateRecords.Models.DTO;
+using JobsCandidateRecords.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers.DTO
 {
+    /// <summary>
+    /// Controller for managing EmployeeDTO operations.
+    /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EmployeeDTOController"/> class.
+    /// </remarks>
+    /// <param name="employeeService">The employee service.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeDTOController : ControllerBase
+    public class EmployeeDTOController(EmployeeService employeeService) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly EmployeeService _employeeService = employeeService;
 
-        public EmployeeDTOController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // Преобразование Employee в EmployeeDTO
-        private static EmployeeDTO EmployeeToDTO(Employee employee)
-        {
-            return new EmployeeDTO(
-                employee.Id,
-                employee.FirstName,
-                employee.LastName,
-                employee.DateOfBirth,
-                employee.Gender,
-                employee.Email,
-                employee.PhoneNumber,
-                employee.Address,
-                employee.HireDate,
-                employee.Position?.Title,
-                employee.AvatarUrl
-            );
-        }
-
-        // GET: api/EmployeeDTO
+        /// <summary>
+        /// Gets the list of employees.
+        /// </summary>
+        /// <returns>A list of EmployeeDTO objects.</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmployeeDTO>>> GetEmployees()
         {
-            var employees = await _context.Employees
-                                    .Include(e => e.Position)
-                                    .ToListAsync();
-
-            var employeeDTOs = employees.Select(e => EmployeeToDTO(e)).ToList();
-
+            var employeeDTOs = await _employeeService.GetAllEmployeesAsync();
             return Ok(employeeDTOs);
         }
 
-        // GET: api/EmployeeDTO/5
+        /// <summary>
+        /// Gets an employee by id.
+        /// </summary>
+        /// <param name="id">The employee id.</param>
+        /// <returns>An EmployeeDTO object.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeDTO>> GetEmployee(int id)
         {
-            var employee = await _context.Employees
-                                    .Include(e => e.Position)
-                                    .FirstOrDefaultAsync(e => e.Id == id);
-
-            if (employee == null)
+            var employeeDTO = await _employeeService.GetEmployeeByIdAsync(id);
+            if (employeeDTO == null)
             {
                 return NotFound();
             }
-
-            return Ok(EmployeeToDTO(employee));
+            return Ok(employeeDTO);
         }
 
-        // PUT: api/EmployeeDTO
+        /// <summary>
+        /// Updates an employee.
+        /// </summary>
+        /// <param name="employee">The employee object to update.</param>
+        /// <returns>No content if update is successful.</returns>
         [HttpPut]
         public async Task<IActionResult> PutEmployee(Employee employee)
         {
-            if (!EmployeeExists(employee.Id))
+            if (!await _employeeService.UpdateEmployeeAsync(employee))
             {
                 return NotFound();
             }
-
-            _context.Entry(employee).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(employee.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
-        // POST: api/EmployeeDTO
+        /// <summary>
+        /// Creates a new employee.
+        /// </summary>
+        /// <param name="employee">The employee object to create.</param>
+        /// <returns>The created EmployeeDTO object.</returns>
         [HttpPost]
         public async Task<ActionResult<EmployeeDTO>> PostEmployee(Employee employee)
         {
@@ -103,33 +75,23 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return BadRequest(ModelState);
             }
 
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
-            var employeeDTO = EmployeeToDTO(employee);
-
+            var employeeDTO = await _employeeService.CreateEmployeeAsync(employee);
             return CreatedAtAction(nameof(GetEmployee), new { id = employeeDTO.Id }, employeeDTO);
         }
 
-        // DELETE: api/EmployeeDTO/5
+        /// <summary>
+        /// Deletes an employee by id.
+        /// </summary>
+        /// <param name="id">The employee id.</param>
+        /// <returns>No content if delete is successful.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            if (!await _employeeService.DeleteEmployeeAsync(id))
             {
                 return NotFound();
             }
-
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

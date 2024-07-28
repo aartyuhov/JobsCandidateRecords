@@ -1,4 +1,5 @@
 using JobsCandidateRecords.Data;
+using JobsCandidateRecords.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -32,6 +33,9 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI().
     AddDefaultTokenProviders();
+
+builder.Services.AddScoped<RequestForEmployeeService>();
+builder.Services.AddScoped<EmployeeService>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
