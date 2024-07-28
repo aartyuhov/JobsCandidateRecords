@@ -39,7 +39,7 @@ namespace JobsCandidateRecords.Models
         [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTime HireDate { get; set; } = DateTime.Now;
 
-        public string? AvatarUrl {  get; set; } = string.Empty;
+        public string? AvatarUrl { get; set; } = string.Empty;
 
         public int PositionId { get; set; }
         [SwaggerIgnore]

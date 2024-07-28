@@ -1,5 +1,6 @@
 using JobsCandidateRecords.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -19,6 +20,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddCors();
 
+
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -30,13 +32,20 @@ builder.Services
         options.Password.RequireDigit = false;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultUI().
-    AddDefaultTokenProviders();
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(1); // Set token lifespan
+});
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -67,6 +76,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+
+//app.UseAuthentication();
 
 app.MapControllers();
 

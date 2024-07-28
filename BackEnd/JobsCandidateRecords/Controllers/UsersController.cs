@@ -1,4 +1,5 @@
-﻿using JobsCandidateRecords.Models.DTO;
+﻿using JobsCandidateRecords.Data;
+using JobsCandidateRecords.Models.DTO;
 using JobsCandidateRecords.Models.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -7,23 +8,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
-    [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserStore<IdentityUser> _userStore;
+        private readonly ApplicationDbContext _context;
 
-        public UsersController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore)
+        public UsersController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore, ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
+            _context = context;
         }
 
         /// <summary>
-        /// GetAllUsers.
+        /// GetAllUsers. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpGet]
         public IActionResult GetAllUsers()
         {
@@ -31,10 +34,11 @@ namespace JobsCandidateRecords.Controllers
             return Ok(users);
         }
         /// <summary>
-        /// GetUserRoleById.
+        /// GetUserRoleById. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpGet]
-        [Route("UserRoles/UsersId/{userId}")]
+        [Route("{userId}")]
         public async Task<IActionResult> GetUserRoleById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -51,10 +55,10 @@ namespace JobsCandidateRecords.Controllers
             return Ok(roles);
         }
         /// <summary>
-        /// GetAllUsersWithRoles.
+        /// GetAllUsersWithRoles. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpGet]
-        [Route("UserRoles/")]
         public async Task<IActionResult> GetAllUsersWithRoles()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -74,10 +78,11 @@ namespace JobsCandidateRecords.Controllers
             return Ok(usersDto);
         }
         /// <summary>
-        /// GetUserRoleByEmail.
+        /// GetUserRoleByEmail. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpGet]
-        [Route("UserRoles/UsersEmail/{userEmail}")]
+        [Route("{userEmail}")]
         public async Task<IActionResult> GetUserRoleByEmail(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
@@ -94,10 +99,11 @@ namespace JobsCandidateRecords.Controllers
             return Ok(roles);
         }
         /// <summary>
-        /// GetUserById.
+        /// GetUserById. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpGet]
-        [Route("UsersId/{userId}")]
+        [Route("{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -109,9 +115,10 @@ namespace JobsCandidateRecords.Controllers
             return Ok(user);
         }
         /// <summary>
-        /// GetUserByEmail.
+        /// GetUserByEmail. Permission - Admin.
         /// </summary>
-        [HttpGet("UsersEmail/{userEmail}")]
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpGet("{userEmail}")]
         public async Task<IActionResult> GetUserByEmail(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
@@ -123,9 +130,10 @@ namespace JobsCandidateRecords.Controllers
             return Ok(user);
         }
         /// <summary>
-        /// GetUserByName.
+        /// GetUserByName. Permission - Admin.
         /// </summary>
-        [HttpGet("UsersName/{userName}")]
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpGet("{userName}")]
         public async Task<IActionResult> GetUserByName(string userName)
         {
             var user = await _userManager.FindByNameAsync(userName);
@@ -137,8 +145,9 @@ namespace JobsCandidateRecords.Controllers
             return Ok(user);
         }
         /// <summary>
-        /// CreateUser.
+        /// CreateUser. Permission - Admin.
         /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
         {
@@ -156,9 +165,10 @@ namespace JobsCandidateRecords.Controllers
 
         }
         /// <summary>
-        /// UpdateUserById.
+        /// UpdateUserById. Permission - Admin.
         /// </summary>
-        [HttpPut("UsersId/{userId}")]
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUserById(string userId, [FromBody] UpdateUserModel model)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -166,10 +176,42 @@ namespace JobsCandidateRecords.Controllers
             {
                 return NotFound("User wasn't found");
             }
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                user.Email = model.Email;
+            }
+            if (!string.IsNullOrEmpty(model.Username))
+            {
+                user.UserName = model.Username;
+            }
 
-            user.Email = model.Email;
-            user.UserName = model.Username;
+            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("Old password is empty");
+            }
 
+            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("New password is empty");
+            }
+
+
+            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
+                if (comparePasswords != PasswordVerificationResult.Success)
+                {
+                    return BadRequest("Old password is wrong");
+                }
+
+                if (model.NewPassword == model.OldPassword)
+                {
+                    return BadRequest("Old password is the same with new password");
+                }
+
+                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+                user.PasswordHash = hashedNewPassword;
+            }
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -179,9 +221,10 @@ namespace JobsCandidateRecords.Controllers
             return BadRequest(result.Errors);
         }
         /// <summary>
-        /// UpdateUserByEmail.
+        /// UpdateUserByEmail. Permission - Admin.
         /// </summary>
-        [HttpPut("UsersEmail/{userEmail}")]
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpPut("{userEmail}")]
         public async Task<IActionResult> UpdateUserByEmail(string userEmail, [FromBody] UpdateUserModel model)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
@@ -189,11 +232,42 @@ namespace JobsCandidateRecords.Controllers
             {
                 return NotFound("User wasn't found");
             }
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                user.Email = model.Email;
+            }
+            if (!string.IsNullOrEmpty(model.Username))
+            {
+                user.UserName = model.Username;
+            }
 
-            user.Email = model.Email;
-            user.UserName = model.Username;
-            var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.Password);
-            user.PasswordHash = hashedNewPassword;
+            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("Old password is empty");
+            }
+
+            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("New password is empty");
+            }
+
+
+            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
+                if (comparePasswords != PasswordVerificationResult.Success)
+                {
+                    return BadRequest("Old password is wrong");
+                }
+
+                if (model.NewPassword == model.OldPassword)
+                {
+                    return BadRequest("Old password is the same with new password");
+                }
+
+                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+                user.PasswordHash = hashedNewPassword;
+            }
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -204,10 +278,146 @@ namespace JobsCandidateRecords.Controllers
         }
 
         /// <summary>
-        /// DeleteUserById.
+        /// UpdateLoggedUser.Permission - Admin, User.
         /// </summary>
+        [Authorize(Roles = "Admin, User")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateLoggedUser([FromBody] UpdateUserModel model)
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User wasn't found");
+            }
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                user.Email = model.Email;
+            }
+            if (!string.IsNullOrEmpty(model.Username))
+            {
+                user.UserName = model.Username;
+            }
 
-        [HttpDelete("UsersId/{userId}")]
+            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("Old password is empty");
+            }
+
+            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                return BadRequest("New password is empty");
+            }
+
+
+            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+            {
+                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
+                if (comparePasswords != PasswordVerificationResult.Success)
+                {
+                    return BadRequest("Old password is wrong");
+                }
+
+                if (model.NewPassword == model.OldPassword)
+                {
+                    return BadRequest("Old password is the same with new password");
+                }
+
+                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+                user.PasswordHash = hashedNewPassword;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok("User updated successfully");
+            }
+            return BadRequest(result.Errors);
+        }
+        /// <summary>
+        /// GetLoggedUserWithRole. Permission - Admin, User.
+        /// </summary>
+        [Authorize(Roles = "Admin, User")]
+        [HttpGet]
+        public async Task<IActionResult> GetLoggedUserWithRole()
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User wasn't found");
+            }
+
+            var usersDto = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+
+            if (usersDto == null)
+            {
+                return NotFound("User with roles wasn't found");
+            }
+
+            return Ok(usersDto);
+        }
+
+        /// <summary>
+        /// GetLoggedUserWithRoleEmployee. Permission - Admin, User.
+        /// </summary>
+        [Authorize(Roles = "Admin, User")]
+        [HttpGet("get-tuple")]
+        public async Task<IActionResult> GetLoggedUserWithRoleEmployee()
+        {
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.FindByIdAsync(userId);
+            var usersDto = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.UserName,
+
+                Email = user.Email,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
+
+            if (usersDto == null)
+            {
+                return NotFound("User with roles wasn't found");
+            }
+
+            var employeeDto = await _context.Employees.Where(e => e.IdentityUserId == user.Id).Select(e => new EmployeeDTO
+            (
+                e.Id,
+                e.FirstName,
+                e.LastName,
+                e.DateOfBirth,
+                e.Gender,
+                e.Email,
+                e.PhoneNumber,
+                e.Address,
+                e.HireDate,
+                _context.Positions.Where(p => p.Id == e.PositionId).Select(p => p.Title).FirstOrDefault().ToString(),
+                e.AvatarUrl
+            )).FirstOrDefaultAsync();
+
+            if (employeeDto == null)
+            {
+                return NotFound("Employee wasn't found");
+            }
+
+            return Ok(new { usersDto, employeeDto });
+
+            //return Ok((usersDto, employeeDto));
+        }
+
+        /// <summary>
+        /// DeleteUserById. Permission - Admin.
+        /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteUserById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -224,9 +434,10 @@ namespace JobsCandidateRecords.Controllers
             return BadRequest(result.Errors);
         }
         /// <summary>
-        /// DeleteUserByEmail.
+        /// DeleteUserByEmail. Permission - Admin.
         /// </summary>
-        [HttpDelete("UsersEmail/{userEmail}")]
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpDelete("{userEmail}")]
         public async Task<IActionResult> DeleteUserByEmail(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
@@ -241,6 +452,32 @@ namespace JobsCandidateRecords.Controllers
                 return Ok("User deleted successfully");
             }
             return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// AssignEmployee. Permission - Admin.
+        /// </summary>
+        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        [HttpPost("{userId}/assign/{employeeId}")]
+        public async Task<IActionResult> AssignEmployee(string userId, int employeeId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User wasn't found");
+            }
+            var employee = await _context.Employees.Where(e => e.Id == employeeId).FirstOrDefaultAsync();
+            if (employee == null)
+            {
+                return NotFound("Employee wasn't found");
+            }
+
+            employee.IdentityUserId = user.Id;
+
+            await _context.SaveChangesAsync();
+
+            return Ok($"User '{user.UserName}' assigned to emplyee '{employee.FirstName} {employee.LastName}' successfully");
+
         }
     }
 }
