@@ -44,7 +44,7 @@ const SecurityForm = () => {
             <h1 className="fs-2 fw-semibold">Security</h1>
             <div className="mt-4 bg-white p-4 rounded shadow-sm">
                 <h2 className="fs-4 fw-semibold">Password</h2>
-                <form className="mt-4 w-50" onSubmit={onSubmitHandler}>
+                <form autoComplete="off" className="mt-4 w-50" onSubmit={onSubmitHandler}>
                     <div className="d-flex flex-lg-column flex-md-row mb-3">
                         <TextField
                             id="oldPassword"

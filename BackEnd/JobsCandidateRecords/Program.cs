@@ -105,7 +105,10 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty;
 });
 
-app.UseCors(builder => builder.AllowAnyOrigin());
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
+                                .AllowCredentials()
+                                .AllowAnyHeader()
+                                .AllowAnyMethod());
 
 app.UseSession();
 
