@@ -28,7 +28,7 @@ namespace JobsCandidateRecords.Controllers
         }
 
         /// <summary>
-        /// GetAllRoles.
+        /// GetAllRoles. Permission - Admin.
         /// </summary>
         [HttpGet]
         public IActionResult GetAllRoles()
@@ -37,7 +37,7 @@ namespace JobsCandidateRecords.Controllers
             return Ok(roles);
         }
         /// <summary>
-        /// CreateRole.
+        /// CreateRole. Permission - Admin.
         /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
@@ -53,7 +53,7 @@ namespace JobsCandidateRecords.Controllers
             return BadRequest(result.Errors);
         }
         /// <summary>
-        /// DeleteRole.
+        /// DeleteRole. Permission - Admin.
         /// </summary>
         [HttpDelete("{roleName}")]
         public async Task<IActionResult> DeleteRole(string roleName)
@@ -73,7 +73,7 @@ namespace JobsCandidateRecords.Controllers
             return BadRequest(result.Errors);
         }
         /// <summary>
-        /// AssignRole.
+        /// AssignRole. Permission - Admin.
         /// </summary>
         [HttpPost("{userId}/assign/{roleName}")]
         public async Task<IActionResult> AssignRole(string userId, string roleName)
@@ -98,7 +98,7 @@ namespace JobsCandidateRecords.Controllers
             return BadRequest(result.Errors);
         }
         /// <summary>
-        /// RemoveRole.
+        /// RemoveRole. Permission - Admin.
         /// </summary>
         [HttpDelete("{userId}/remove/{roleName}")]
         public async Task<IActionResult> RemoveRole(string userId, string roleName)

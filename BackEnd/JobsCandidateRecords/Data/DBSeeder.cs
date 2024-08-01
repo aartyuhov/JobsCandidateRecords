@@ -1,8 +1,4 @@
-﻿using JobsCandidateRecords.Enums;
-using JobsCandidateRecords.Models;
-using Microsoft.AspNetCore.Identity;
-
-namespace JobsCandidateRecords.Data
+﻿namespace JobsCandidateRecords.Data
 {
     //public class DBSeeder(ApplicationDbContext context)
     //{
@@ -60,6 +56,12 @@ namespace JobsCandidateRecords.Data
     //        //    new Course { Name = "DevOps engineer", StartDate = DateTime.ParseExact("2024.09.20", "yyyy.MM.dd", CultureInfo.CurrentCulture), EndDate = DateTime.ParseExact("2025.05.20", "yyyy.MM.dd", CultureInfo.CurrentCulture), Description = "After training as a DevOps engineer, you will acquire confident skills in installing servers from scratch, configuring networks, preparing operating systems, monitoring processes, including using the Python programming language.", SubjectId = 3 }
     //        //    );
 
+            //await _context.Departments.AddRangeAsync(
+            //     new Department { Name = "Administration", Description = "Coordinating all administrative processes, managing budgets, policies and events, resolving conflicts or other issues as they occur", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() },
+            //     new Department { Name = "Networkinq and Cybersecurity", Description = "Creation and maintenance of computer networks", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() },
+            //     new Department { Name = "Software development", Description = "Focuses on teaching programming languages, software architecture, and development methodologies.", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() },
+            //     new Department { Name = "Computer graphics and design", Description = "Create ads, take photos and videos, create animations, develop sites and applications", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() }
+            //     );
 
     //        await _context.SaveChangesAsync();
     //    }

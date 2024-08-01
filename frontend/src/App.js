@@ -12,6 +12,8 @@ import ProtectedRoute from "./components/small-components/ProtectedRoute";
 import {useCookies} from "react-cookie";
 import EmployeesList from "./components/Profile/For HR/EmployeeList";
 import EmployeeCard from "./components/Profile/For HR/EmployeeCard";
+import PositionsManagement from "./components/Position/PositionsManagment";
+import CandidateList from "./components/Candidates/CandidateList";
 
 const App = () => {
   axios.defaults.baseURL = 'https://localhost:7087';
@@ -42,9 +44,17 @@ const App = () => {
             <Route path="account" element={<Account />} />
             <Route path="security" element={<Security />} />
 
+
             <Route path="employees" element={<EmployeesList />} />
             <Route path="employeecard/:id?" element={<EmployeeCard />} />
+
+            <Route path="candidates" element={<CandidateList />} />
             {/*=======!For authorized users=========*/}
+            
+            
+            {/*=======For admin=========*/}
+            <Route path="positions" element={<PositionsManagement />} />
+            {/*=======!For admin=========*/}
           </Route>
           <Route path="*" element={<NotExistPage />} />
         </Routes>
