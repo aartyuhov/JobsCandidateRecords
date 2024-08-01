@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing roles and user roles.
+    /// </summary>
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin")] // Requires "Admin" role for access
     [ApiController]
@@ -13,11 +16,17 @@ namespace JobsCandidateRecords.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RolesController"/> class.
+        /// </summary>
+        /// <param name="roleManager">The role manager to be used.</param>
+        /// <param name="userManager">The user manager to be used.</param>
         public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
+
         /// <summary>
         /// GetAllRoles. Permission - Admin.
         /// </summary>

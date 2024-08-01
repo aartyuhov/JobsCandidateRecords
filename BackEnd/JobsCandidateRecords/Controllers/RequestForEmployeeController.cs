@@ -5,16 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing requests for employees.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class RequestForEmployeeController : ControllerBase
+    public class RequestForEmployeeController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public RequestForEmployeeController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetRequestForEmployees.
@@ -25,7 +24,7 @@ namespace JobsCandidateRecords.Controllers
             return await _context.RequestsForEmployees
                             .Include(r => r.Position)
                             .Include(r => r.RequestedEmployee)
-                            .Include(r => r.ApplicaionsForRequests)
+                            .Include(r => r.ApplicationsForRequests)
                             .ToListAsync();
         }
 
@@ -38,7 +37,7 @@ namespace JobsCandidateRecords.Controllers
             var requestForEmployee = await _context.RequestsForEmployees
                                                 .Include(r => r.Position)
                                                 .Include(r => r.RequestedEmployee)
-                                                .Include(r => r.ApplicaionsForRequests)
+                                                .Include(r => r.ApplicationsForRequests)
                                                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (requestForEmployee == null)

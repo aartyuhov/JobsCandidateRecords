@@ -5,12 +5,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing application status history.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ApplicationStatusHistoryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationStatusHistoryController"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public ApplicationStatusHistoryController(ApplicationDbContext context)
         {
             _context = context;

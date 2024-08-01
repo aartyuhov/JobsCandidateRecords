@@ -5,12 +5,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing positions.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PositionController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PositionController"/> class.
+        /// </summary>
+        /// <param name="context">The database context to be used.</param>
         public PositionController(ApplicationDbContext context)
         {
             _context = context;

@@ -8,20 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    /// <summary>
+    /// Controller for managing users.
+    /// </summary>
+    /// /// <param name="userManager">The user manager to be used.</param>
+    /// <param name="userStore">The user store to be used.</param>
+    [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")] // Requires "Admin" role for access
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore) : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly ApplicationDbContext _context;
-
-        public UsersController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore, ApplicationDbContext context)
-        {
-            _userManager = userManager;
-            _userStore = userStore;
-            _context = context;
-        }
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        //private readonly IUserStore<IdentityUser> _userStore = userStore;
 
         /// <summary>
         /// GetAllUsers. Permission - Admin.

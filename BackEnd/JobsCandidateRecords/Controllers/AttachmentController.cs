@@ -4,12 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing attachments.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AttachmentController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AttachmentController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public AttachmentController(ApplicationDbContext context)
         {
             _context = context;
