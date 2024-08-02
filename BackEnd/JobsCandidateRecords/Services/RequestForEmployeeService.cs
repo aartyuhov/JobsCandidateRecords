@@ -8,7 +8,7 @@ namespace JobsCandidateRecords.Services
     /// <summary>
     /// Service for handling requests related to employees.
     /// </summary>
-    public class RequestForEmployeeService(ApplicationDbContext context)
+    public class RequestForEmployeeService(ApplicationDbContext context) : IRequestForEmployeeService
     {
         private readonly ApplicationDbContext _context = context;
 

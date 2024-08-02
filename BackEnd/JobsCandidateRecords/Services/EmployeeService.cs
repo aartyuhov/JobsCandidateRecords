@@ -12,7 +12,7 @@ namespace JobsCandidateRecords.Services
     /// Initializes a new instance of the <see cref="EmployeeService"/> class.
     /// </remarks>
     /// <param name="context">The application database context.</param>
-    public class EmployeeService(ApplicationDbContext context)
+    public class EmployeeService(ApplicationDbContext context) : IEmployeeService
     {
         private readonly ApplicationDbContext _context = context;
 
