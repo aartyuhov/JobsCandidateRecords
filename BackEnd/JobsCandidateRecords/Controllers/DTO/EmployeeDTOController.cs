@@ -16,9 +16,9 @@ namespace JobsCandidateRecords.Controllers.DTO
     /// <param name="employeeService">The employee service.</param>
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeeDTOController(EmployeeService employeeService) : ControllerBase
+    public class EmployeeDTOController(IEmployeeService employeeService) : ControllerBase
     {
-        private readonly EmployeeService _employeeService = employeeService;
+        private readonly IEmployeeService _employeeService = employeeService;
 
         /// <summary>
         /// Gets the list of employees.

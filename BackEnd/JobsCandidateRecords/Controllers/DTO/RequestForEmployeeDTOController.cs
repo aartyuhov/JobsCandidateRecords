@@ -10,9 +10,9 @@ namespace JobsCandidateRecords.Controllers.DTO
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class RequestForEmployeeDTOController(RequestForEmployeeService service) : ControllerBase
+    public class RequestForEmployeeDTOController(IRequestForEmployeeService service) : ControllerBase
     {
-        private readonly RequestForEmployeeService _service = service;
+        private readonly IRequestForEmployeeService _service = service;
 
         /// <summary>
         /// Gets all employee requests.
