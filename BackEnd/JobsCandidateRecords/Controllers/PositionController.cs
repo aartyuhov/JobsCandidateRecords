@@ -30,10 +30,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Position>>> GetPositions()
         {
             return await _context.Positions
-                            .Include(p => p.Department)
-                            .Include(p => p.Employees)
-                            .Include(p => p.RequestForEmployees)
-                            .Include(p => p.PositionAcademicSubjects)
                             .ToListAsync();
         }
 
@@ -44,10 +40,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Position>> GetPosition(int id)
         {
             var notes = await _context.Positions
-                                .Include(p => p.Department)
-                                .Include(p => p.Employees)
-                                .Include(p => p.RequestForEmployees)
-                                .Include(p => p.PositionAcademicSubjects)
                                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (notes == null)

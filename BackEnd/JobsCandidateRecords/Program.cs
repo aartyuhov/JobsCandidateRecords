@@ -39,8 +39,7 @@ builder.Services
 builder.Services.AddScoped<RequestForEmployeeService>();
 builder.Services.AddScoped<EmployeeService>();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -89,21 +88,21 @@ app.UseAuthorization();
 app.MapControllers();
 
 //Create roles and admin
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
-//    try
-//    {
-//        var context = services.GetRequiredService<ApplicationDbContext>();
-//        await DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
-//    }
-//    catch (Exception ex)
-//    {
-//        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "An error occurred seeding the DB.");
-//    }
-//}
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        await DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

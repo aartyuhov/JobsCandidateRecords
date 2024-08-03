@@ -14,6 +14,7 @@ import EmployeesList from "./components/Profile/For HR/EmployeeList";
 import EmployeeCard from "./components/Profile/For HR/EmployeeCard";
 import PositionsManagement from "./components/Position/PositionsManagment";
 import CandidateList from "./components/Candidates/CandidateList";
+import EmployeeEdit from "./components/Profile/For HR/EmployeeEdit";
 
 const App = () => {
   axios.defaults.baseURL = 'https://localhost:7087';
@@ -44,9 +45,9 @@ const App = () => {
             <Route path="account" element={<Account />} />
             <Route path="security" element={<Security />} />
 
-
             <Route path="employees" element={<EmployeesList />} />
-            <Route path="employeecard/:id?" element={<EmployeeCard />} />
+            <Route path="employeecard" element={<EmployeeCard />} />
+            <Route path="/employeeedit/:id" element={<EmployeeEdit />} />
 
             <Route path="candidates" element={<CandidateList />} />
             {/*=======!For authorized users=========*/}

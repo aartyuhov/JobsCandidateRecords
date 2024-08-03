@@ -30,8 +30,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
             return await _context.Notes
-                            .Include(n => n.Application)
-                            .Include(n => n.Employee)
                             .ToListAsync();
         }
 
@@ -42,8 +40,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Note>> GetNotes(int id)
         {
             var notes = await _context.Notes
-                                .Include(n => n.Application)
-                                .Include(n => n.Employee)
                                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (notes == null)

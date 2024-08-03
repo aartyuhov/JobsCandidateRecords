@@ -1,6 +1,7 @@
 import {DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
 
 const BasicDatePicker = (
     props
@@ -8,10 +9,7 @@ const BasicDatePicker = (
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DatePicker']}>
-                <DatePicker label={props.label}
-                            name={props.name}
-                            className={props.className}
-                            required/>
+                <DatePicker {...props} value={dayjs(props.value)} defaultValue={dayjs(props.defaultValue)}/>
             </DemoContainer>
         </LocalizationProvider>
     );

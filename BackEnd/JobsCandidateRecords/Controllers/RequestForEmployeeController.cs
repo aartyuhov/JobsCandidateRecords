@@ -22,9 +22,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<RequestForEmployee>>> GetRequestForEmployees()
         {
             return await _context.RequestsForEmployees
-                            .Include(r => r.Position)
-                            .Include(r => r.RequestedEmployee)
-                            .Include(r => r.ApplicationsForRequests)
                             .ToListAsync();
         }
 
@@ -35,9 +32,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<RequestForEmployee>> GetRequestForEmployee(int id)
         {
             var requestForEmployee = await _context.RequestsForEmployees
-                                                .Include(r => r.Position)
-                                                .Include(r => r.RequestedEmployee)
-                                                .Include(r => r.ApplicationsForRequests)
                                                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (requestForEmployee == null)

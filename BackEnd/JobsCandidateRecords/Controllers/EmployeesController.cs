@@ -30,11 +30,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
             return await _context.Employees
-                            .Include(e => e.Position)
-                            .Include(e => e.IdentityUser)
-                            .Include(e => e.Notes)
-                            .Include(e => e.Applications)
-                            .Include(e => e.RequestsForEmployees)
                             .ToListAsync();
         }
 
@@ -45,11 +40,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
             var employee = await _context.Employees
-                                    .Include(e => e.Position)
-                                    .Include(e => e.IdentityUser)
-                                    .Include(e => e.Notes)
-                                    .Include(e => e.Applications)
-                                    .Include(e => e.RequestsForEmployees)
                                     .FirstOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)

@@ -21,12 +21,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
         {
             return await _context.Applications
-                .Include(a => a.Candidate)
-                .Include(a => a.EmployeeWhoCreated)
-                .Include(a => a.ApplicationsForRequests)
-                .Include(a => a.ApplicationStatusHistories)
-                .Include(a => a.Notes)
-                .Include(a => a.Attachments)
                 .ToListAsync();
         }
 
@@ -37,12 +31,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Application>> GetApplication(int id)
         {
             var application = await _context.Applications
-                .Include(a => a.Candidate)
-                .Include(a => a.EmployeeWhoCreated)
-                .Include(a => a.ApplicationsForRequests)
-                .Include(a => a.ApplicationStatusHistories)
-                .Include(a => a.Notes)
-                .Include(a => a.Attachments)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application == null)

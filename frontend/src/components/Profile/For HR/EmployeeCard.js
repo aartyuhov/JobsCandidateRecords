@@ -29,7 +29,7 @@ const PositionList = () => {
                 if (response.status !== 200) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                setData(response.data["$values"]);
+                setData(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);

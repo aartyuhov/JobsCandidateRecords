@@ -30,7 +30,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidates()
         {
             return await _context.Candidates
-                            .Include(c => c.Applications)
                             .ToListAsync();
         }
 
@@ -41,7 +40,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Candidate>> GetCandidate(int id)
         {
             var candidate = await _context.Candidates
-                .Include(c => c.Applications)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (candidate == null)
