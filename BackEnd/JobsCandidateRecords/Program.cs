@@ -45,6 +45,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IRequestForEmployeeService, RequestForEmployeeService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
