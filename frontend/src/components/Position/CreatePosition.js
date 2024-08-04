@@ -16,7 +16,7 @@ const CreatePosition = ({ onCreate }) => {
     const handleCreate = (e) => {
         e.preventDefault();
         onCreate(newPosition);
-        setNewPosition({ title: '', responsibilities: '', departmentId: newPosition.departmentId });
+        setNewPosition({ id:'0', title: '', responsibilities: '', departmentId: newPosition.departmentId });
     };
 
     return (
@@ -54,7 +54,7 @@ const DepartmentList = ({onChange, departmentId}) => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`/api/Department`);
-                setData(response.data["$values"]);
+                setData(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);

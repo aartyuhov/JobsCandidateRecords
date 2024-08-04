@@ -245,6 +245,7 @@ namespace JobsCandidateRecords.Services
                     e.PhoneNumber,
                     e.Address,
                     e.HireDate,
+                    e.PositionId,
                     _context.Positions.Where(p => p.Id == e.PositionId).Select(p => p.Title).FirstOrDefault(),
                     e.AvatarUrl
                 ))

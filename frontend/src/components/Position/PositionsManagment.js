@@ -12,7 +12,7 @@ const PositionsManagement = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`/api/Position`);
-                setPositions(response.data["$values"]);
+                setPositions(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);

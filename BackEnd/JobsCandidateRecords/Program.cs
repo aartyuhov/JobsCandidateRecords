@@ -76,12 +76,14 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<RequestForEmployeeService>();
 builder.Services.AddScoped<EmployeeService>();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IRequestForEmployeeService, RequestForEmployeeService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>

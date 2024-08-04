@@ -128,8 +128,8 @@ const Account = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/EmployeeDTO`);
-        setData(response.data["$values"][0]);
+        const response = await axios.get(`/api/EmployeeDTO/1`);
+        setData(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -32,7 +32,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Models.Attachment>>> GetAttachments()
         {
             return await _context.Attachments
-                            .Include(a => a.Application)
                             .ToListAsync();
         }
 
@@ -43,7 +42,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Models.Attachment>> GetAttacment(int id)
         {
             var attachment = await _context.Attachments
-                                        .Include(a => a.Application)
                                         .FirstOrDefaultAsync(a => a.Id == id);
 
             if (attachment == null)

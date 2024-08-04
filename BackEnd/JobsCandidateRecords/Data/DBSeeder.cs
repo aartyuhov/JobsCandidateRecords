@@ -1,6 +1,7 @@
-﻿using JobsCandidateRecords.Enums;
+using JobsCandidateRecords.Enums;
 using JobsCandidateRecords.Models;
 using Microsoft.AspNetCore.Identity;
+
 
 namespace JobsCandidateRecords.Data
 {
@@ -32,7 +33,6 @@ namespace JobsCandidateRecords.Data
             await _context.Companies.AddRangeAsync(
                 new Company { Name = "ITSTEP", Description = "Computer academy" }
                 );
-
             await _context.Departments.AddRangeAsync(
                  new Department { Name = "Administration", Description = "Coordinating all administrative processes, managing budgets, policies and events, resolving conflicts or other issues as they occur", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() },
                  new Department { Name = "Networkinq and Cybersecurity", Description = "Creation and maintenance of computer networks", CompanyId = _context.Companies.Where(c => c.Name == "ITSTEP").Select(c => c.Id).FirstOrDefault() },

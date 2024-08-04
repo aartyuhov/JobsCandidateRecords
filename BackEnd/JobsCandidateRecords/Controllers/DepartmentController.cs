@@ -33,8 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
             return await _context.Departments
-                            .Include(d => d.Company)
-                            .Include(d => d.Positions)
                             .ToListAsync();
         }
 
@@ -45,8 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
             var department = await _context.Departments
-                                        .Include(d => d.Company)
-                                        .Include(d => d.Positions)
                                         .FirstOrDefaultAsync(d => d.Id == id);
 
             if (department == null)

@@ -33,7 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistories()
         {
             return await _context.ApplicationStatusHistories
-                .Include(a => a.Application)
                 .ToListAsync();
         }
 
@@ -44,7 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<ApplicationStatusHistory>> GetApplicationStatusHistory(int id)
         {
             var applicationStatusHistory = await _context.ApplicationStatusHistories
-                                                    .Include(a => a.Application)
                                                     .FirstOrDefaultAsync(a => a.Id == id);
 
             if (applicationStatusHistory == null)
