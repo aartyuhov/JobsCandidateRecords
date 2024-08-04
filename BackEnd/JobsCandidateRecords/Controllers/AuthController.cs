@@ -1,8 +1,16 @@
-﻿using JobsCandidateRecords.Models.Input;
+﻿using JobsCandidateRecords.Data;
+using JobsCandidateRecords.Models.DTO.Auth;
+using JobsCandidateRecords.Models.DTO.Auth.Request;
+using JobsCandidateRecords.Models.Input;
+using JobsCandidateRecords.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 
@@ -19,19 +27,29 @@ namespace JobsCandidateRecords.Controllers
     /// <param name="configuration">The configuration service for retrieving app settings.</param>
     /// <param name="logger">The logger service for logging information and errors.</param>
     /// <param name="emailSender">The email sender service for sending email messages.</param>
+    /// <param name="jwtService">The jwt service for managing tokins.</param>
+    /// <param name="userService">The user service for managing users.</param>
+    /// <param name="context">The context service for communicate with DB.</param>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(UserManager<IdentityUser> userManager,
                           SignInManager<IdentityUser> signInManager,
                           IConfiguration configuration,
                           ILogger<AuthController> logger,
-                          IEmailSender emailSender) : ControllerBase
+                          IEmailSender emailSender,
+                          IJwtService jwtService,
+                          IUserService userService,
+                          ApplicationDbContext context) : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
         private readonly SignInManager<IdentityUser> _signInManager = signInManager;
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
         private readonly IEmailSender _emailSender = emailSender;
+        private readonly IJwtService _jwtService = jwtService;
+        private readonly IUserService _userService = userService;
+        private readonly ApplicationDbContext _context = context;
+
 
         /// <summary>
         /// Registers a new user.
@@ -52,7 +70,9 @@ namespace JobsCandidateRecords.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
-                return Ok("User created successfully.");
+                AuthResult authResult = await _jwtService.GenerateToken(user);
+                //return Ok("User created successfully.");
+                return Ok(authResult);
             }
 
             return BadRequest(result.Errors);
@@ -66,20 +86,28 @@ namespace JobsCandidateRecords.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var emailResult = await _userManager.FindByEmailAsync(model.Email);
-            if (emailResult != null)
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(emailResult, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return Ok("User logged in.");
-                }
+                //var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
+                //if (result.Succeeded)
+                //{
+                //    _logger.LogInformation("User logged in.");
+                //    return Ok("User logged in.");
+                //}
 
-                if (result.IsLockedOut)
+                //if (result.IsLockedOut)
+                //{
+                //    _logger.LogWarning("User account locked out.");
+                //    return Ok("User account locked out.");
+                //}
+
+                bool isUserCorrect = await _userManager.CheckPasswordAsync(user, model.Password);
+                if (isUserCorrect)
                 {
-                    _logger.LogWarning("User account locked out.");
-                    return Ok("User account locked out.");
+                    AuthResult authResult = await _jwtService.GenerateToken(user);
+                    //return a token
+                    return Ok(authResult);
                 }
             }
 
@@ -90,12 +118,37 @@ namespace JobsCandidateRecords.Controllers
         /// Logs out the current user.
         /// </summary>
         /// <returns>An IActionResult indicating the outcome of the logout process.</returns>
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-            return Ok("User logged out.");
+
+            var userId = HttpContext.User.FindFirstValue("Id");
+
+            //var userId = _userService.GetUserId(User);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            //await _signInManager.SignOutAsync();
+            //_logger.LogInformation("User logged out.");
+
+            var refreshTokens = await _context.RefreshTokens.Where(rt => rt.IdentityUserId == userId).ToListAsync();
+
+            if (refreshTokens != null)
+            {
+                foreach (var rt in refreshTokens)
+                {
+                    rt.IsRevoked = true;
+                }
+
+                _logger.LogInformation("Refresh tokens were revoked");
+                await _context.SaveChangesAsync();
+
+            }
+
+            return NoContent();
         }
 
         /// <summary>
@@ -175,6 +228,45 @@ namespace JobsCandidateRecords.Controllers
             }
 
             return BadRequest(result.Errors.FirstOrDefault()?.Description);
+        }
+        /// <summary>
+        /// Refresh token.
+        /// </summary>
+        /// <param name="tokenRequest">The token request model containing the access token and refresh token.</param>
+        /// <returns>An IActionResult indicating the access and refresh tokens.</returns>
+        [HttpPost("refreshtoken")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var verified = await _jwtService.VerifyToken(tokenRequest);
+                //
+                if (!verified.Success)
+                {
+                    return BadRequest(new AuthResult()
+                    {
+                        // Errors = new List<string> { "invalid Token" },
+                        Errors = verified.Errors,
+                        Success = false
+                    });
+                }
+
+                var tokenUser = await _userManager.FindByIdAsync(verified.IdentityUserId);
+                AuthResult authResult = await _jwtService.GenerateToken(tokenUser);
+                //return a token
+                return Ok(authResult);
+
+
+            }
+
+            return BadRequest(new AuthResult()
+            {
+                Errors = new List<string> { "invalid Payload" },
+                Success = false
+            });
+
+
+
         }
     }
 }

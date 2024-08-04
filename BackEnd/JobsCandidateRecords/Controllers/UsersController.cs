@@ -1,11 +1,9 @@
-﻿using JobsCandidateRecords.Data;
-using JobsCandidateRecords.Models.DTO;
-using JobsCandidateRecords.Models.Input;
+﻿using JobsCandidateRecords.Models.Input;
 using JobsCandidateRecords.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -18,7 +16,8 @@ namespace JobsCandidateRecords.Controllers
     /// </remarks>
     /// <param name="userService">User management service.</param>
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+    //[Authorize(Roles = "Admin")] // Requires "Admin" role for access
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class UsersController(IUserService userService) : ControllerBase
     {
@@ -223,7 +222,8 @@ namespace JobsCandidateRecords.Controllers
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> UpdateLoggedUser([FromBody] UpdateUserModel model)
         {
-            var userId = _userService.GetUserId(User);
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
             if (userId == null)
             {
                 return NotFound("User with roles wasn't found");
@@ -245,7 +245,8 @@ namespace JobsCandidateRecords.Controllers
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> GetLoggedUserWithRole()
         {
-            var userId = _userService.GetUserId(User);
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
             if (userId == null)
             {
                 return NotFound("User with roles wasn't found");
@@ -268,7 +269,8 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet("get-tuple")]
         public async Task<IActionResult> GetLoggedUserWithRoleEmployee()
         {
-            var userId = _userService.GetUserId(User);
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
             if (userId == null)
             {
                 return NotFound("User with roles wasn't found");
