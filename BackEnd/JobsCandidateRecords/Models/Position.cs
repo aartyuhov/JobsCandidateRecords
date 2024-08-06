@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobsCandidateRecords.Models
 {
-    [Table("Position")]
+    [Table("Positions")]
     [Index(nameof(Title), IsUnique = true)]
     public class Position
     {
