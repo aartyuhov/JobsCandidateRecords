@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace JobsCandidateRecords.Models.DTO
 {
     public class CreateDepartmentDTO

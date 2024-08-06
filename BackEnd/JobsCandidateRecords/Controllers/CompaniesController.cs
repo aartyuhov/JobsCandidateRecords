@@ -1,5 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,41 +21,64 @@ namespace JobsCandidateRecords.Controllers
         /// GetCompanies.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetCompanies()
         {
-            return await _context.Companies
-                            .Include(c => c.Departments)
-                            .ToListAsync();
+            var companies = await _context.Companies
+                .Include(c => c.Departments)
+                .ToListAsync();
+
+            var companyDTOs = companies.Select(c => new CompanyDTO(
+                c.Id,
+                c.Name,
+                c.Description
+            ));
+
+            return Ok(companyDTOs);
         }
 
         /// <summary>
         /// GetCompany.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Company>> GetCompany(int id)
+        public async Task<ActionResult<CompanyDTO>> GetCompany(int id)
         {
             var company = await _context.Companies
-                                    .Include(c => c.Departments)
-                                    .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(c => c.Departments)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null)
             {
                 return NotFound();
             }
 
-            return company;
+            var companyDTO = new CompanyDTO(
+                company.Id,
+                company.Name,
+                company.Description
+            );
+
+            return Ok(companyDTO);
         }
 
         /// <summary>
         /// PutCompany.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(int id, Company company)
+        public async Task<IActionResult> PutCompany(int id, UpdateCompanyDTO updateCompanyDTO)
         {
-            if (id != company.Id)
+            if (id != updateCompanyDTO.Id)
             {
                 return BadRequest();
             }
+
+            var company = await _context.Companies.FindAsync(id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            company.Name = updateCompanyDTO.Name;
+            company.Description = updateCompanyDTO.Description;
 
             _context.Entry(company).State = EntityState.Modified;
 
@@ -77,16 +101,29 @@ namespace JobsCandidateRecords.Controllers
             return NoContent();
         }
 
+
         /// <summary>
         /// PostCompany.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany(Company company)
+        public async Task<ActionResult<CompanyDTO>> PostCompany(CreateCompanyDTO createCompanyDTO)
         {
+            var company = new Company
+            {
+                Name = createCompanyDTO.Name,
+                Description = createCompanyDTO.Description
+            };
+
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+            var companyDTO = new CompanyDTO(
+                company.Id,
+                company.Name,
+                company.Description
+            );
+
+            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, companyDTO);
         }
 
         /// <summary>
