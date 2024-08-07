@@ -1,9 +1,11 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using JobsCandidateRecords.Models.DTO;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -30,17 +32,29 @@ namespace JobsCandidateRecords.Controllers
         /// GetDepartments.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
+        public async Task<ActionResult<IEnumerable<DepartmentDTO>>> GetDepartments()
         {
-            return await _context.Departments
+            var departments = await _context.Departments
+                            .Include(d => d.Company)
+                            .Include(d => d.Positions)
                             .ToListAsync();
+
+            var departmentDTOs = departments.Select(d => new DepartmentDTO(
+                d.Id,
+                d.Name,
+                d.Description,
+                d.CompanyId,
+                d.Company?.Name
+            )).ToList();
+
+            return Ok(departmentDTOs);
         }
 
         /// <summary>
         /// GetDepartment.
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public async Task<ActionResult<DepartmentDTO>> GetDepartment(int id)
         {
             var department = await _context.Departments
                                         .FirstOrDefaultAsync(d => d.Id == id);
@@ -50,19 +64,37 @@ namespace JobsCandidateRecords.Controllers
                 return NotFound();
             }
 
-            return department;
+            var departmentDTO = new DepartmentDTO(
+                department.Id,
+                department.Name,
+                department.Description,
+                department.CompanyId,
+                department.Company?.Name
+            );
+
+            return Ok(departmentDTO);
         }
 
         /// <summary>
         /// PutDepartment.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
+        public async Task<IActionResult> PutDepartment(int id, UpdateDepartmentDTO departmentDTO)
         {
-            if (id != department.Id)
+            if (id != departmentDTO.Id)
             {
                 return BadRequest();
             }
+
+            var department = await _context.Departments.FindAsync(id);
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            department.Name = departmentDTO.Name;
+            department.Description = departmentDTO.Description;
+            department.CompanyId = departmentDTO.CompanyId;
 
             _context.Entry(department).State = EntityState.Modified;
 
@@ -89,18 +121,30 @@ namespace JobsCandidateRecords.Controllers
         /// PostDepartment.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public async Task<ActionResult<Department>> PostDepartment(CreateDepartmentDTO createDepartmentDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            var department = new Department
+            {
+                Name = createDepartmentDTO.Name,
+                Description = createDepartmentDTO.Description,
+                CompanyId = createDepartmentDTO.CompanyId
+            };
+
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
 
-
-            return CreatedAtAction(nameof(GetDepartment), new { id = department.Id }, department);
+            return CreatedAtAction(nameof(GetDepartment), new { id = department.Id }, new DepartmentDTO(
+                department.Id,
+                department.Name,
+                department.Description,
+                department.CompanyId,
+                department.Company?.Name
+            ));
         }
 
         /// <summary>
