@@ -1,5 +1,7 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +12,7 @@ namespace JobsCandidateRecords.Controllers
     /// </summary>
     /// <param name="context">The database context.</param>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class RequestForEmployeeController(ApplicationDbContext context) : ControllerBase
     {

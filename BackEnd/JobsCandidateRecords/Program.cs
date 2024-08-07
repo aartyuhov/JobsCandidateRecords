@@ -1,9 +1,14 @@
+using JobsCandidateRecords.Config;
 using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +41,38 @@ builder.Services
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
+//JWT Config
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+// Validation params
+Byte[]? key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
+TokenValidationParameters? tokenValidationParams = new TokenValidationParameters
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false,
+    ValidateAudience = false,
+    ValidateLifetime = true,
+    RequireExpirationTime = false,
+    ClockSkew = TimeSpan.Zero
+};
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(jwt =>
+{
+    jwt.RequireHttpsMetadata = false;
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = tokenValidationParams;
+});
+
+builder.Services.AddSingleton(tokenValidationParams);
+
+builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<RequestForEmployeeService>();
 builder.Services.AddScoped<EmployeeService>();
 
@@ -47,6 +84,7 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IRequestForEmployeeService, RequestForEmployeeService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
@@ -64,6 +102,29 @@ builder.Services.AddSwaggerGen(c =>
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    //Add JWT Bearer Authentication support to Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter 'Bearer' [space] followed by your token. Example: 'Bearer 12345abcdef'.",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+   {
+     new OpenApiSecurityScheme
+     {
+       Reference = new OpenApiReference
+       {
+         Type = ReferenceType.SecurityScheme,
+         Id = "Bearer"
+       }
+      },
+      new string[] { }
+    }
+  });
 });
 
 builder.Services.AddSession();
@@ -83,26 +144,26 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.UseAuthentication();
+app.UseAuthentication();
 
 app.MapControllers();
 
-//Create roles and admin
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+//Create roles and admin - run DBSeeder
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
 
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        await DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred seeding the DB.");
-    }
-}
+//    try
+//    {
+//        var context = services.GetRequiredService<ApplicationDbContext>();
+//        await DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
+//    }
+//    catch (Exception ex)
+//    {
+//        var logger = services.GetRequiredService<ILogger<Program>>();
+//        logger.LogError(ex, "an error occurred seeding the db.");
+//    }
+//}
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
