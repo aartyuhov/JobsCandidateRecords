@@ -1,17 +1,27 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobsCandidateRecords.Models.DTO;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing positions.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class PositionController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PositionController"/> class.
+        /// </summary>
+        /// <param name="context">The database context to be used.</param>
         public PositionController(ApplicationDbContext context)
         {
             _context = context;

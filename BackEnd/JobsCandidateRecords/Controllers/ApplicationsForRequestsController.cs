@@ -1,16 +1,26 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing applications for requests.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class ApplicationsForRequestsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationsForRequestsController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public ApplicationsForRequestsController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,8 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<ApplicationsForRequests>>> GetApplications()
         {
             return await _context.ApplicationsForRequests
-                .Include(a => a.Application)
-                .Include(a => a.RequestForEmployee)
                 .ToListAsync();
         }
 
@@ -35,8 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<ApplicationsForRequests>> GetApplication(int id)
         {
             var applicationsForRequests = await _context.ApplicationsForRequests
-                                                    .Include(a => a.Application)
-                                                    .Include(a => a.RequestForEmployee)
                                                     .FirstOrDefaultAsync(a => a.Id == id);
 
             if (applicationsForRequests == null)

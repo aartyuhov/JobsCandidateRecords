@@ -1,16 +1,26 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing PositionAcademicSubject entities.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class PositionAcademicSubjectController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PositionAcademicSubjectController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public PositionAcademicSubjectController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,8 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<PositionAcademicSubject>>> GetPositionAcademicSubjects()
         {
             return await _context.PositionAcademicSubjects
-                            .Include(p => p.Position)
-                            .Include(p => p.AcademicSubject)
                             .ToListAsync();
         }
 
@@ -35,8 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<PositionAcademicSubject>> GetPositionAcademicSubject(int id)
         {
             var positionAcademicSubject = await _context.PositionAcademicSubjects
-                                                    .Include(p => p.Position)
-                                                    .Include(p => p.AcademicSubject)
                                                     .FirstOrDefaultAsync(p => p.Id == id);
 
             if (positionAcademicSubject == null)

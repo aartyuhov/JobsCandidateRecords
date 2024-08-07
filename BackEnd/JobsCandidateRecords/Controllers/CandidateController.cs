@@ -1,16 +1,26 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing candidates.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class CandidateController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CandidateController"/> class.
+        /// </summary>
+        /// <param name="context">The database context to be used.</param>
         public CandidateController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,7 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidates()
         {
             return await _context.Candidates
-                            .Include(c => c.Applications)
                             .ToListAsync();
         }
 
@@ -34,7 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Candidate>> GetCandidate(int id)
         {
             var candidate = await _context.Candidates
-                .Include(c => c.Applications)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (candidate == null)

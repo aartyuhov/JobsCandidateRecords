@@ -1,20 +1,22 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing requests for employees.
+    /// </summary>
+    /// <param name="context">The database context.</param>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class RequestForEmployeeController : ControllerBase
+    public class RequestForEmployeeController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public RequestForEmployeeController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetRequestForEmployees.
@@ -23,9 +25,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<RequestForEmployee>>> GetRequestForEmployees()
         {
             return await _context.RequestsForEmployees
-                            .Include(r => r.Position)
-                            .Include(r => r.RequestedEmployee)
-                            .Include(r => r.ApplicaionsForRequests)
                             .ToListAsync();
         }
 
@@ -36,9 +35,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<RequestForEmployee>> GetRequestForEmployee(int id)
         {
             var requestForEmployee = await _context.RequestsForEmployees
-                                                .Include(r => r.Position)
-                                                .Include(r => r.RequestedEmployee)
-                                                .Include(r => r.ApplicaionsForRequests)
                                                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (requestForEmployee == null)

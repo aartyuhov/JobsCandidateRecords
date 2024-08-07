@@ -55,6 +55,7 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
         transform: 'translate(-50%, -50%)',
     };
 
+    console.log(positions);
     return (
         <>
             <TableContainer component={Paper}>

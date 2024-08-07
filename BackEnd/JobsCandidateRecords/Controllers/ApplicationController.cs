@@ -1,20 +1,21 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Represents the database context for the application.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class ApplicationController : ControllerBase
+    public class ApplicationController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public ApplicationController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetApplications.
@@ -23,12 +24,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Application>>> GetApplications()
         {
             return await _context.Applications
-                .Include(a => a.Candidate)
-                .Include(a => a.EmployeeWhoCreated)
-                .Include(a => a.ApplicationsForRequests)
-                .Include(a => a.ApplicationStatusHistories)
-                .Include(a => a.Notes)
-                .Include(a => a.Attachments)
                 .ToListAsync();
         }
 
@@ -39,12 +34,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Application>> GetApplication(int id)
         {
             var application = await _context.Applications
-                .Include(a => a.Candidate)
-                .Include(a => a.EmployeeWhoCreated)
-                .Include(a => a.ApplicationsForRequests)
-                .Include(a => a.ApplicationStatusHistories)
-                .Include(a => a.Notes)
-                .Include(a => a.Attachments)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (application == null)

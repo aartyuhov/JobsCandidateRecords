@@ -1,18 +1,28 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
 using JobsCandidateRecords.Models.DTO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobsCandidateRecords.Models.DTO;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing departments.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class DepartmentController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DepartmentController"/> class.
+        /// </summary>
+        /// <param name="context">The database context to be used.</param>
         public DepartmentController(ApplicationDbContext context)
         {
             _context = context;
@@ -47,8 +57,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<DepartmentDTO>> GetDepartment(int id)
         {
             var department = await _context.Departments
-                                        .Include(d => d.Company)
-                                        .Include(d => d.Positions)
                                         .FirstOrDefaultAsync(d => d.Id == id);
 
             if (department == null)

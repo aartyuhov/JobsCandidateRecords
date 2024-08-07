@@ -1,483 +1,289 @@
-﻿using JobsCandidateRecords.Data;
-using JobsCandidateRecords.Models.DTO;
-using JobsCandidateRecords.Models.Input;
+﻿using JobsCandidateRecords.Models.Input;
+using JobsCandidateRecords.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobsCandidateRecords.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    /// <summary>
+    /// Controller for managing users and their roles.
+    /// Provides API for getting, creating, updating and deleting users, as well as managing roles and relationships with employees.    
+    /// </summary>
+    /// /// <remarks>
+    /// Initializes a new instance of the <see cref="UsersController"/> class.
+    /// </remarks>
+    /// <param name="userService">User management service.</param>
+    [Route("api/[controller]")]
+    //[Authorize(Roles = "Admin")] // Requires "Admin" role for access
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController(IUserService userService) : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly ApplicationDbContext _context;
-
-        public UsersController(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore, ApplicationDbContext context)
-        {
-            _userManager = userManager;
-            _userStore = userStore;
-            _context = context;
-        }
+        private readonly IUserService _userService = userService;
 
         /// <summary>
-        /// GetAllUsers. Permission - Admin.
+        /// Retrieves a list of all users.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        /// <returns>An action result containing the list of users.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            var users = _userManager.Users;
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
-        /// <summary>
-        /// GetUserRoleById. Permission - Admin.
-        /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet]
-        [Route("{userId}")]
-        public async Task<IActionResult> GetUserRoleById(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User wasn't find");
-            }
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles == null)
-            {
-                return NotFound("Role wasn't find");
-            }
 
-            return Ok(roles);
-        }
         /// <summary>
-        /// GetAllUsersWithRoles. Permission - Admin.
+        /// Retrieves a list of all users with their roles.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet]
+        /// <returns>An action result containing the list of users with roles, or a 404 status if no users are found.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all-with-roles")]
         public async Task<IActionResult> GetAllUsersWithRoles()
         {
-            var users = await _userManager.Users.ToListAsync();
-            var usersDto = users.Select(async u => new UserDTO
-            {
-                Id = u.Id,
-                Username = u.UserName,
-                Email = u.Email,
-                Roles = await _userManager.GetRolesAsync(u)
-            });
-
-            if (usersDto == null)
+            var usersDto = await _userService.GetAllUsersWithRolesAsync();
+            if (usersDto == null || !usersDto.Any())
             {
                 return NotFound("Users with roles weren't found");
             }
 
             return Ok(usersDto);
         }
+
         /// <summary>
-        /// GetUserRoleByEmail. Permission - Admin.
+        /// Retrieves the roles of a user by their ID.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet]
-        [Route("{userEmail}")]
+        /// <param name="userId">The ID of the user whose roles are to be retrieved.</param>
+        /// <returns>An action result containing the roles of the user, or a 404 status if the user is not found.</returns>
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("roles/{userId}")]
+        public async Task<IActionResult> GetUserRoleById(string userId)
+        {
+            var userDto = await _userService.GetUserByIdAsync(userId);
+            if (userDto == null)
+            {
+                return NotFound("User wasn't found");
+            }
+
+            return Ok(userDto.Roles);
+        }
+
+        /// <summary>
+        /// Retrieves the roles of a user by their email address.
+        /// </summary>
+        /// <param name="userEmail">The email address of the user whose roles are to be retrieved.</param>
+        /// <returns>An action result containing the roles of the user, or a 404 status if the user is not found.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("roles/email/{userEmail}")]
         public async Task<IActionResult> GetUserRoleByEmail(string userEmail)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
+            var userDto = await _userService.GetUserByEmailAsync(userEmail);
+            if (userDto == null)
             {
                 return NotFound("User wasn't found");
             }
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles == null)
-            {
-                return NotFound("Role wasn't found");
-            }
 
-            return Ok(roles);
+            return Ok(userDto.Roles);
         }
+
         /// <summary>
-        /// GetUserById. Permission - Admin.
+        /// Retrieves a user by their ID.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet]
-        [Route("{userId}")]
+        /// <param name="userId">The ID of the user to retrieve.</param>
+        /// <returns>An action result containing the user details, or a 404 status if the user is not found.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetUserById(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            var userDto = await _userService.GetUserByIdAsync(userId);
+            if (userDto == null)
             {
                 return NotFound("User wasn't found");
             }
 
-            return Ok(user);
+            return Ok(userDto);
         }
+
         /// <summary>
-        /// GetUserByEmail. Permission - Admin.
+        /// Retrieves a user by their email address.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet("{userEmail}")]
+        /// <param name="userEmail">The email address of the user to retrieve.</param>
+        /// <returns>An action result containing the user details, or a 404 status if the user is not found.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("user/email/{userEmail}")]
         public async Task<IActionResult> GetUserByEmail(string userEmail)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
+            var userDto = await _userService.GetUserByEmailAsync(userEmail);
+            if (userDto == null)
             {
                 return NotFound("User wasn't found");
             }
 
-            return Ok(user);
+            return Ok(userDto);
         }
+
         /// <summary>
-        /// GetUserByName. Permission - Admin.
+        /// Retrieves a user by their username.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpGet("{userName}")]
+        /// <param name="userName">The username of the user to retrieve.</param>
+        /// <returns>An action result containing the user details, or a 404 status if the user is not found.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("user/name/{userName}")]
         public async Task<IActionResult> GetUserByName(string userName)
         {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (user == null)
+            var userDto = await _userService.GetUserByNameAsync(userName);
+            if (userDto == null)
             {
                 return NotFound("User wasn't found");
             }
 
-            return Ok(user);
+            return Ok(userDto);
         }
+
         /// <summary>
-        /// CreateUser. Permission - Admin.
+        /// Creates a new user.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        /// <param name="model">The model containing user creation data.</param>
+        /// <returns>An action result indicating whether the user was created successfully or not.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
         {
-            var user = new IdentityUser
-            {
-                UserName = model.Username,
-                Email = model.Email
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userService.CreateUserAsync(model);
             if (result.Succeeded)
             {
                 return Ok("User created successfully");
             }
             return BadRequest(result.Errors);
-
         }
+
         /// <summary>
-        /// UpdateUserById. Permission - Admin.
+        /// Updates a user by their ID.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+        /// <param name="userId">The ID of the user to update.</param>
+        /// <param name="model">The model containing updated user data.</param>
+        /// <returns>An action result indicating whether the user was updated successfully or not.</returns>
+        [Authorize(Roles = "Admin")]
         [HttpPut("{userId}")]
         public async Task<IActionResult> UpdateUserById(string userId, [FromBody] UpdateUserModel model)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                user.Email = model.Email;
-            }
-            if (!string.IsNullOrEmpty(model.Username))
-            {
-                user.UserName = model.Username;
-            }
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("Old password is empty");
-            }
-
-            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("New password is empty");
-            }
-
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
-                if (comparePasswords != PasswordVerificationResult.Success)
-                {
-                    return BadRequest("Old password is wrong");
-                }
-
-                if (model.NewPassword == model.OldPassword)
-                {
-                    return BadRequest("Old password is the same with new password");
-                }
-
-                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
-                user.PasswordHash = hashedNewPassword;
-            }
-
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.UpdateUserByIdAsync(userId, model);
             if (result.Succeeded)
             {
                 return Ok("User updated successfully");
             }
             return BadRequest(result.Errors);
         }
+
         /// <summary>
-        /// UpdateUserByEmail. Permission - Admin.
+        /// Deletes a user by their ID.
         /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpPut("{userEmail}")]
-        public async Task<IActionResult> UpdateUserByEmail(string userEmail, [FromBody] UpdateUserModel model)
+        /// <param name="userId">The ID of the user to delete.</param>
+        /// <returns>An action result indicating whether the user was deleted successfully or not.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserById(string userId)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                user.Email = model.Email;
-            }
-            if (!string.IsNullOrEmpty(model.Username))
-            {
-                user.UserName = model.Username;
-            }
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("Old password is empty");
-            }
-
-            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("New password is empty");
-            }
-
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
-                if (comparePasswords != PasswordVerificationResult.Success)
-                {
-                    return BadRequest("Old password is wrong");
-                }
-
-                if (model.NewPassword == model.OldPassword)
-                {
-                    return BadRequest("Old password is the same with new password");
-                }
-
-                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
-                user.PasswordHash = hashedNewPassword;
-            }
-
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userService.DeleteUserByIdAsync(userId);
             if (result.Succeeded)
             {
-                return Ok("User updated successfully");
+                return Ok("User deleted successfully");
             }
             return BadRequest(result.Errors);
         }
 
         /// <summary>
-        /// UpdateLoggedUser.Permission - Admin, User.
+        /// Assigns an employee to a user.
         /// </summary>
+        /// <param name="userId">The ID of the user to assign the employee to.</param>
+        /// <param name="employeeId">The ID of the employee to assign.</param>
+        /// <returns>An action result indicating whether the assignment was successful or not.</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{userId}/assign/{employeeId}")]
+        public async Task<IActionResult> AssignEmployee(string userId, int employeeId)
+        {
+            var result = await _userService.AssignEmployeeAsync(userId, employeeId);
+            if (result.Succeeded)
+            {
+                return Ok("User assigned to employee successfully");
+            }
+            return BadRequest(result.Errors);
+        }
+
+        /// <summary>
+        /// Updates the details of the currently logged-in user.
+        /// </summary>
+        /// <param name="model">The model containing updated user data.</param>
+        /// <returns>An action result indicating whether the update was successful or not.</returns>
+        [HttpPut("update-logged")]
         [Authorize(Roles = "Admin, User")]
-        [HttpPut]
         public async Task<IActionResult> UpdateLoggedUser([FromBody] UpdateUserModel model)
         {
-            var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                user.Email = model.Email;
-            }
-            if (!string.IsNullOrEmpty(model.Username))
-            {
-                user.UserName = model.Username;
-            }
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("Old password is empty");
-            }
-
-            if (string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                return BadRequest("New password is empty");
-            }
-
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-            {
-                var comparePasswords = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.OldPassword);
-                if (comparePasswords != PasswordVerificationResult.Success)
-                {
-                    return BadRequest("Old password is wrong");
-                }
-
-                if (model.NewPassword == model.OldPassword)
-                {
-                    return BadRequest("Old password is the same with new password");
-                }
-
-                var hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, model.NewPassword);
-                user.PasswordHash = hashedNewPassword;
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok("User updated successfully");
-            }
-            return BadRequest(result.Errors);
-        }
-        /// <summary>
-        /// GetLoggedUserWithRole. Permission - Admin, User.
-        /// </summary>
-        [Authorize(Roles = "Admin, User")]
-        [HttpGet]
-        public async Task<IActionResult> GetLoggedUserWithRole()
-        {
-            var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-
-            var usersDto = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                Email = user.Email,
-                Roles = await _userManager.GetRolesAsync(user)
-            };
-
-            if (usersDto == null)
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
+            if (userId == null)
             {
                 return NotFound("User with roles wasn't found");
             }
 
-            return Ok(usersDto);
+            var result = await _userService.UpdateUserByIdAsync(userId, model);
+            if (result.Succeeded)
+            {
+                return Ok("User updated successfully");
+            }
+            return BadRequest(result.Errors);
         }
 
         /// <summary>
-        /// GetLoggedUserWithRoleEmployee. Permission - Admin, User.
+        /// Retrieves details of the currently logged-in user with their roles.
         /// </summary>
+        /// <returns>An action result containing the details of the logged-in user, or a 404 status if the user is not found.</returns>
+        [HttpGet("logged-with-role")]
+        [Authorize(Roles = "Admin, User")]
+        public async Task<IActionResult> GetLoggedUserWithRole()
+        {
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
+            if (userId == null)
+            {
+                return NotFound("User with roles wasn't found");
+            }
+
+            var userDto = await _userService.GetLoggedUserWithRoleAsync(userId);
+            if (userDto == null)
+            {
+                return NotFound("User with roles wasn't found");
+            }
+
+            return Ok(userDto);
+        }
+
+        /// <summary>
+        /// Retrieves details of the currently logged-in user with their roles and associated employee details.
+        /// </summary>
+        /// <returns>An action result containing the details of the logged-in user with their roles and employee information, or a 404 status if the information is not found.</returns>
         [Authorize(Roles = "Admin, User")]
         [HttpGet("get-tuple")]
         public async Task<IActionResult> GetLoggedUserWithRoleEmployee()
         {
-            var userId = _userManager.GetUserId(User);
-            var user = await _userManager.FindByIdAsync(userId);
-            var usersDto = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.UserName,
-
-                Email = user.Email,
-                Roles = await _userManager.GetRolesAsync(user)
-            };
-
-            if (usersDto == null)
+            var userId = HttpContext.User.FindFirstValue("Id");
+            //var userId = _userService.GetUserId(User);
+            if (userId == null)
             {
                 return NotFound("User with roles wasn't found");
             }
 
-            var employeeDto = await _context.Employees.Where(e => e.IdentityUserId == user.Id).Select(e => new EmployeeDTO
-            (
-                e.Id,
-                e.FirstName,
-                e.LastName,
-                e.DateOfBirth,
-                e.Gender,
-                e.Email,
-                e.PhoneNumber,
-                e.Address,
-                e.HireDate,
-                _context.Positions.Where(p => p.Id == e.PositionId).Select(p => p.Title).FirstOrDefault().ToString(),
-                e.AvatarUrl
-            )).FirstOrDefaultAsync();
+            var result = await _userService.GetLoggedUserWithRoleEmployeeAsync(userId);
 
-            if (employeeDto == null)
+            if (result == null)
             {
-                return NotFound("Employee wasn't found");
+                return NotFound("User or employee information wasn't found");
             }
 
-            return Ok(new { usersDto, employeeDto });
-
-            //return Ok((usersDto, employeeDto));
-        }
-
-        /// <summary>
-        /// DeleteUserById. Permission - Admin.
-        /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUserById(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok("User deleted successfully");
-            }
-            return BadRequest(result.Errors);
-        }
-        /// <summary>
-        /// DeleteUserByEmail. Permission - Admin.
-        /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpDelete("{userEmail}")]
-        public async Task<IActionResult> DeleteUserByEmail(string userEmail)
-        {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok("User deleted successfully");
-            }
-            return BadRequest(result.Errors);
-        }
-
-        /// <summary>
-        /// AssignEmployee. Permission - Admin.
-        /// </summary>
-        [Authorize(Roles = "Admin")] // Requires "Admin" role for access
-        [HttpPost("{userId}/assign/{employeeId}")]
-        public async Task<IActionResult> AssignEmployee(string userId, int employeeId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User wasn't found");
-            }
-            var employee = await _context.Employees.Where(e => e.Id == employeeId).FirstOrDefaultAsync();
-            if (employee == null)
-            {
-                return NotFound("Employee wasn't found");
-            }
-
-            employee.IdentityUserId = user.Id;
-
-            await _context.SaveChangesAsync();
-
-            return Ok($"User '{user.UserName}' assigned to emplyee '{employee.FirstName} {employee.LastName}' successfully");
-
+            return Ok(result);
         }
     }
 }

@@ -1,16 +1,26 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// Controller for managing application status history.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class ApplicationStatusHistoryController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApplicationStatusHistoryController"/> class.
+        /// </summary>
+        /// <param name="context">The application database context.</param>
         public ApplicationStatusHistoryController(ApplicationDbContext context)
         {
             _context = context;
@@ -23,7 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistories()
         {
             return await _context.ApplicationStatusHistories
-                .Include(a => a.Application)
                 .ToListAsync();
         }
 
@@ -34,7 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<ApplicationStatusHistory>> GetApplicationStatusHistory(int id)
         {
             var applicationStatusHistory = await _context.ApplicationStatusHistories
-                                                    .Include(a => a.Application)
                                                     .FirstOrDefaultAsync(a => a.Id == id);
 
             if (applicationStatusHistory == null)

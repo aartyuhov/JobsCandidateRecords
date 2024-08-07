@@ -1,17 +1,27 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
 using JobsCandidateRecords.Models.DTO;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobsCandidateRecords.Controllers
 {
+    /// <summary>
+    /// API controller for managing companies.
+    /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class CompaniesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompaniesController"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public CompaniesController(ApplicationDbContext context)
         {
             _context = context;
