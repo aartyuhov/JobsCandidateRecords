@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import './Layout.css'
 import { Avatar } from '@mui/material'
 import DashboardIcon from '../SVGIcons/DashboardIcon'
-import { SidebarLeftIcon, SidebarRightIcon } from '../SVGIcons/SidebarIcons'
 import MainIcon from '../SVGIcons/MainIcon'
 import LogoutIcon_1 from '../SVGIcons/LogoutIcon'
 import LogoutIcon_2 from '../SVGIcons/LogoutIconAfter'
@@ -70,6 +69,16 @@ const Layout = ({
 								className='nav-item text-white no-underline'
 							>
 								<EmployeeListIcon/> <span className='px-3'>Candidate list</span>
+							</Link>
+						</li>
+						<hr/>
+						<h5 className="mb-1 mx-2">Head of Department</h5>
+						<li className='mb-1 d-flex align-items-center cursor-pointer'>
+							<Link
+								to='/requestsmanager'
+								className='nav-item text-white no-underline'
+							>
+								<FormatListBulleted className="text-dark"/> <span className='px-3'>Requests</span>
 							</Link>
 						</li>
 						<hr/>
