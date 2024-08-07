@@ -38,7 +38,7 @@
         /// <summary>
         /// Position name.
         /// </summary>
-        public string PositionName { get; init; }
+        public string? PositionName { get; init; }
 
         /// <summary>
         /// Requested employee identifier.
@@ -48,12 +48,12 @@
         /// <summary>
         /// Full name of the requested employee.
         /// </summary>
-        public string RequestedEmployeeFullName { get; init; }
+        public string? RequestedEmployeeFullName { get; init; }
 
         /// <summary>
         /// List of applications.
         /// </summary>
-        public List<ApplicationDTO> Applications { get; init; }
+        public List<ApplicationDTO>? Applications { get; init; }
 
         /// <summary>
         /// Constructor for RequestForEmployeeDTO.
@@ -75,10 +75,10 @@
             int numberEmployessRequired,
             string description,
             int? positionId,
-            string positionName,
+            string? positionName,
             int requestedEmployeeId,
-            string requestedEmployeeFullName,
-            List<ApplicationDTO> applications)
+            string? requestedEmployeeFullName,
+            List<ApplicationDTO>? applications)
         {
             Id = id;
             Name = name;

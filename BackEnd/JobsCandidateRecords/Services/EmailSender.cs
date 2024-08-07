@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 
-namespace JobsCandidateRecords.Data
+namespace JobsCandidateRecords.Services
 {
     /// <summary>
     /// Implementation of <see cref="IEmailSender"/> for sending emails using SMTP.
