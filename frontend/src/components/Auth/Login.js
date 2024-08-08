@@ -1,10 +1,8 @@
 import React, {useState} from 'react'
-import axios from 'axios'
-import { useCookies } from 'react-cookie'
 import styles from './Login.module.css'
+import api from "../../services/api";
 
 const Login = () => {
-	const [, setCookie] = useCookies(['user']);
 	const [error, setError] = useState(null);
 
 	const handleSubmit = async event => {
@@ -12,18 +10,21 @@ const Login = () => {
 		const email = event.target.email.value;
 		const password = event.target.password.value;
 		try {
-			const result = await axios.post('/api/Auth/login',
+			const result = await api.post('/api/Auth/login',
 				{
 					"email": email,
 					"password": password,
 					"rememberMe": true
 				});
 			if (result.status === 200) {
-				setCookie('user', JSON.stringify({
-					"lastName" : "test",
-					"firstName" : "user"
-				}));
-				window.location.replace(window.location.origin);
+				localStorage.setItem('auth_token', result.data.token);
+				localStorage.setItem('refresh_token', result.data.refreshToken);
+				const user = await api.get('/api/Users/logged-with-role');
+				if(user.status === 200)
+				{
+					localStorage.setItem('username', user.data.username);
+					window.location.replace(window.location.origin);
+				}
 			}
 		} catch (e) {
 			if(e.response && e.response.status === 401)
@@ -33,11 +34,6 @@ const Login = () => {
 			else
 			{
 				console.log(e.message);
-				setCookie('user', JSON.stringify({
-				   "lastName" : "test",
-				   "firstName" : "user"
-				}));
-				window.location.replace(window.location.origin);
 			}
 		}
 	}

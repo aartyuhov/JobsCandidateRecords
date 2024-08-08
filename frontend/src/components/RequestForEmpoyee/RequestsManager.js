@@ -72,7 +72,7 @@ const RequestsManager = () => {
     return (
         <Card sx={{ width: '85%', marginTop: 4, marginX: "auto" }}>
             <Paper className="p-3">
-                <Typography variant="h4" className="mb-3">Job Requests</Typography>
+                <Typography variant="h4" className="mb-3">Job Requests (yours)</Typography>
                 <Button variant="contained" color="primary" onClick={() => handleShowModal()}>New</Button>
                 <List className="mt-3">
                     {requests.map((request) => (

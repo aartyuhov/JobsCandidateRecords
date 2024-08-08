@@ -6,7 +6,7 @@ import {
     Select
 } from '@mui/material';
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import api from "../../services/api";
 
 const PositionList = ({selectedPositionId, handlePositionChange}) => {
     const [data, setData] = useState([]);
@@ -16,7 +16,7 @@ const PositionList = ({selectedPositionId, handlePositionChange}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Position`);
+                const response = await api.get(`/api/Position`);
                 if (response.status !== 200) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }

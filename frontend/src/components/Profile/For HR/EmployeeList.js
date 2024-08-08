@@ -15,8 +15,8 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Edit} from "@mui/icons-material";
 import {Link} from "react-router-dom";
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import api from "../../../services/api";
 
 const EmployeeList = () => {
     const [employees, setEmployees] = useState([]);
@@ -27,7 +27,7 @@ const EmployeeList = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/EmployeeDTO`);
+                const response = await api.get(`/api/EmployeeDTO`);
                 setEmployees(response.data);
                 setLoading(false);
             } catch (error) {

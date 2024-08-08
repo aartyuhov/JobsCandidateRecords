@@ -10,7 +10,7 @@ import EmployeeListIcon from '../SVGIcons/EmployeeListIcon'
 import {FormatListBulleted} from "@mui/icons-material";
 
 const Layout = ({
-	user,
+	username,
 	children,
 	logoutHandler = () => console.log('logout'),
 }) => {
@@ -101,9 +101,9 @@ const Layout = ({
 							to='/account'
 							className='nav-item fw-bold no-underline cursor-pointer'
 						>
-							{user ? (
+							{username ? (
 								<span className='me-3'>
-									{user.lastName + ' ' + user.firstName}
+									{username}
 								</span>
 							) : (
 								''
