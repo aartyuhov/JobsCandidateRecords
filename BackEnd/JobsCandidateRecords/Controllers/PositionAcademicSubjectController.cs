@@ -1,5 +1,7 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ namespace JobsCandidateRecords.Controllers
     /// Controller for managing PositionAcademicSubject entities.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class PositionAcademicSubjectController : ControllerBase
     {
@@ -30,8 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<PositionAcademicSubject>>> GetPositionAcademicSubjects()
         {
             return await _context.PositionAcademicSubjects
-                            .Include(p => p.Position)
-                            .Include(p => p.AcademicSubject)
                             .ToListAsync();
         }
 
@@ -42,8 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<PositionAcademicSubject>> GetPositionAcademicSubject(int id)
         {
             var positionAcademicSubject = await _context.PositionAcademicSubjects
-                                                    .Include(p => p.Position)
-                                                    .Include(p => p.AcademicSubject)
                                                     .FirstOrDefaultAsync(p => p.Id == id);
 
             if (positionAcademicSubject == null)

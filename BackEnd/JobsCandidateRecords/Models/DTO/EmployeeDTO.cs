@@ -51,6 +51,10 @@
         public DateTime HireDate { get; init; }
 
         /// <summary>
+        /// Gets the id of the position held by the employee.
+        /// </summary>
+        public int PositionId { get; init; }
+        /// <summary>
         /// Gets the name of the position held by the employee.
         /// </summary>
         public string? PositionName { get; init; }
@@ -73,6 +77,7 @@
             string phoneNumber,
             string address,
             DateTime hireDate,
+            int positionId,
             string? positionName,
             string? avatarUrl)
         {
@@ -85,6 +90,7 @@
             PhoneNumber = phoneNumber;
             Address = address;
             HireDate = hireDate;
+            PositionId = positionId;
             PositionName = positionName;
             AvatarUrl = avatarUrl;
         }

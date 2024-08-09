@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobsCandidateRecords.Controllers
@@ -6,6 +8,7 @@ namespace JobsCandidateRecords.Controllers
     /// Controller for managing home-related actions.
     /// </summary>
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class HomeController : ControllerBase
     {

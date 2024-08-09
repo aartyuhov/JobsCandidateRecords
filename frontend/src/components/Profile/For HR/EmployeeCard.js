@@ -16,7 +16,7 @@ import {ArrowBack} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import BasicDatePicker from "../../small-components/BasicDatePicker";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
+import api from "../../../services/api";
 
 const PositionList = () => {
   const [data, setData] = useState([]);
@@ -25,11 +25,11 @@ const PositionList = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Position`);
+                const response = await api.get(`/api/Position`);
                 if (response.status !== 200) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
-                setData(response.data["$values"]);
+                setData(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -72,7 +72,7 @@ const EmployeeCard = () => {
         event.preventDefault();
         try
         {
-            const responce = await axios.post('/api/Employees', {
+            const responce = await api.post('/api/Employees', {
                 "id": 0,
                 "firstName": event.target.firstName.value,
                 "lastName": event.target.lastName.value,

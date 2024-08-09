@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import ListPositions from './ListPositions';
 import CreatePosition from './CreatePosition';
-import axios from "axios";
 import {CircularProgress} from "@mui/material";
+import api from "../../services/api";
 const PositionsManagement = () => {
     const [positions, setPositions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -11,8 +11,8 @@ const PositionsManagement = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Position`);
-                setPositions(response.data["$values"]);
+                const response = await api.get(`/api/Position`);
+                setPositions(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -28,7 +28,7 @@ const PositionsManagement = () => {
         const fetchData = async (newPosition) => {
             try {
                 setLoading(true);
-                await axios.post(`/api/Position`, newPosition);
+                await api.post(`/api/Position`, newPosition);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

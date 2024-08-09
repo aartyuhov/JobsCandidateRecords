@@ -1,4 +1,5 @@
 ﻿using JobsCandidateRecords.Models.Input;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace JobsCandidateRecords.Controllers
     /// Controller for managing roles and user roles.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Authorize(Roles = "Admin")] // Requires "Admin" role for access
     [ApiController]
     public class RolesController : ControllerBase

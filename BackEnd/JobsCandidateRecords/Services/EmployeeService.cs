@@ -122,6 +122,7 @@ namespace JobsCandidateRecords.Services
                 employee.PhoneNumber,
                 employee.Address,
                 employee.HireDate,
+                employee.PositionId,
                 employee.Position?.Title,
                 employee.AvatarUrl
             );

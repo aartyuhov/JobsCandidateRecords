@@ -83,5 +83,10 @@ namespace JobsCandidateRecords.Data
         /// Gets or sets the requests for employees.
         /// </summary>
         public DbSet<RequestForEmployee> RequestsForEmployees { get; set; }
+        /// <summary>
+        /// Gets or sets the requests for refresh tokens.
+        /// </summary>
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     }
 }

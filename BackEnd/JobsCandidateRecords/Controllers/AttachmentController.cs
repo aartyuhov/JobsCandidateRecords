@@ -1,4 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +10,7 @@ namespace JobsCandidateRecords.Controllers
     /// Controller for managing attachments.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class AttachmentController : ControllerBase
     {
@@ -29,7 +32,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Models.Attachment>>> GetAttachments()
         {
             return await _context.Attachments
-                            .Include(a => a.Application)
                             .ToListAsync();
         }
 
@@ -40,7 +42,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Models.Attachment>> GetAttacment(int id)
         {
             var attachment = await _context.Attachments
-                                        .Include(a => a.Application)
                                         .FirstOrDefaultAsync(a => a.Id == id);
 
             if (attachment == null)

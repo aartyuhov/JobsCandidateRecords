@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from 'axios';
 import {Avatar, Chip, CircularProgress, TextField} from '@mui/material';
 import {AccountCircle, SecurityOutlined} from "@mui/icons-material";
 import {Link} from "react-router-dom";
+import api from "../../../services/api";
 
 const AccountSidebar = () => (
   <aside className="w-25 bg-white p-4 border-end">
@@ -128,8 +128,8 @@ const Account = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/EmployeeDTO`);
-        setData(response.data["$values"][0]);
+        const response = await api.get(`/api/Users/get-tuple`);
+        setData(response.data.employeeDto);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);

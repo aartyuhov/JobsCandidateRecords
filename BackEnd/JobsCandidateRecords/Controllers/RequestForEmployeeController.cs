@@ -1,5 +1,7 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +12,7 @@ namespace JobsCandidateRecords.Controllers
     /// </summary>
     /// <param name="context">The database context.</param>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class RequestForEmployeeController(ApplicationDbContext context) : ControllerBase
     {
@@ -22,9 +25,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<RequestForEmployee>>> GetRequestForEmployees()
         {
             return await _context.RequestsForEmployees
-                            .Include(r => r.Position)
-                            .Include(r => r.RequestedEmployee)
-                            .Include(r => r.ApplicationsForRequests)
                             .ToListAsync();
         }
 
@@ -35,9 +35,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<RequestForEmployee>> GetRequestForEmployee(int id)
         {
             var requestForEmployee = await _context.RequestsForEmployees
-                                                .Include(r => r.Position)
-                                                .Include(r => r.RequestedEmployee)
-                                                .Include(r => r.ApplicationsForRequests)
                                                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (requestForEmployee == null)

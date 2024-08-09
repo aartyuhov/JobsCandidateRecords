@@ -1,5 +1,7 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,7 @@ namespace JobsCandidateRecords.Controllers
     /// API controller for managing notes.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     public class NotesController : ControllerBase
     {
@@ -30,8 +33,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
             return await _context.Notes
-                            .Include(n => n.Application)
-                            .Include(n => n.Employee)
                             .ToListAsync();
         }
 
@@ -42,8 +43,6 @@ namespace JobsCandidateRecords.Controllers
         public async Task<ActionResult<Note>> GetNotes(int id)
         {
             var notes = await _context.Notes
-                                .Include(n => n.Application)
-                                .Include(n => n.Employee)
                                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (notes == null)
