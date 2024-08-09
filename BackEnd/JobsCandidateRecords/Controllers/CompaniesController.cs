@@ -11,21 +11,16 @@ namespace JobsCandidateRecords.Controllers
     /// <summary>
     /// API controller for managing companies.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="CompaniesController"/> class.
+    /// </remarks>
+    /// <param name="context">The database context.</param>
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class CompaniesController : ControllerBase
+    public class CompaniesController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompaniesController"/> class.
-        /// </summary>
-        /// <param name="context">The database context.</param>
-        public CompaniesController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetCompanies.
@@ -88,7 +83,7 @@ namespace JobsCandidateRecords.Controllers
             }
 
             company.Name = updateCompanyDTO.Name;
-            company.Description = updateCompanyDTO.Description;
+            company.Description = updateCompanyDTO.Description ?? string.Empty;
 
             _context.Entry(company).State = EntityState.Modified;
 
@@ -121,7 +116,7 @@ namespace JobsCandidateRecords.Controllers
             var company = new Company
             {
                 Name = createCompanyDTO.Name,
-                Description = createCompanyDTO.Description
+                Description = createCompanyDTO.Description ?? string.Empty
             };
 
             _context.Companies.Add(company);

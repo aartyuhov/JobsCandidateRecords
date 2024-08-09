@@ -23,31 +23,32 @@ namespace JobsCandidateRecords.Controllers
     /// Initializes a new instance of the <see cref="AuthController"/> class.
     /// </remarks>
     /// <param name="userManager">The user manager service for managing user accounts.</param>
-    /// <param name="signInManager">The sign-in manager service for user authentication.</param>
-    /// <param name="configuration">The configuration service for retrieving app settings.</param>
     /// <param name="logger">The logger service for logging information and errors.</param>
     /// <param name="emailSender">The email sender service for sending email messages.</param>
     /// <param name="jwtService">The jwt service for managing tokins.</param>
-    /// <param name="userService">The user service for managing users.</param>
     /// <param name="context">The context service for communicate with DB.</param>
+
+    /*/// <param name="signInManager">The sign-in manager service for user authentication.</param>*/
+    /*/// <param name="configuration">The configuration service for retrieving app settings.</param>*/
+    /*/// <param name="userService">The user service for managing users.</param>*/
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(UserManager<IdentityUser> userManager,
-                          SignInManager<IdentityUser> signInManager,
-                          IConfiguration configuration,
+                          /*SignInManager<IdentityUser> signInManager,*/
+                          /*IConfiguration configuration,*/
                           ILogger<AuthController> logger,
                           IEmailSender emailSender,
                           IJwtService jwtService,
-                          IUserService userService,
+                          /*IUserService userService,*/
                           ApplicationDbContext context) : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager = userManager;
-        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
-        private readonly IConfiguration _configuration = configuration;
+        //private readonly SignInManager<IdentityUser> _signInManager = signInManager;
+        //private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<AuthController> _logger = logger;
         private readonly IEmailSender _emailSender = emailSender;
         private readonly IJwtService _jwtService = jwtService;
-        private readonly IUserService _userService = userService;
+        //private readonly IUserService _userService = userService;
         private readonly ApplicationDbContext _context = context;
 
 
@@ -167,7 +168,7 @@ namespace JobsCandidateRecords.Controllers
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var resetLink = Url.Action("ResetPassword", "Auth", new { token = token, email = model.Email }, Request.Scheme);
+            var resetLink = Url.Action("ResetPassword", "Auth", new { token, email = model.Email }, Request.Scheme);
 
 
             // Check if resetLink is null before encoding
@@ -251,7 +252,8 @@ namespace JobsCandidateRecords.Controllers
                     });
                 }
 
-                var tokenUser = await _userManager.FindByIdAsync(verified.IdentityUserId);
+                var tokenUser = await _userManager.FindByIdAsync(verified.IdentityUserId)
+                    ?? throw new InvalidOperationException("IdentityUserId is not configured."); ;
                 AuthResult authResult = await _jwtService.GenerateToken(tokenUser);
                 //return a token
                 return Ok(authResult);
@@ -261,7 +263,7 @@ namespace JobsCandidateRecords.Controllers
 
             return BadRequest(new AuthResult()
             {
-                Errors = new List<string> { "invalid Payload" },
+                Errors = ["invalid Payload"],
                 Success = false
             });
 

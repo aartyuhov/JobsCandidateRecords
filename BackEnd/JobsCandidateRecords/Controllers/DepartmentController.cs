@@ -5,28 +5,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using JobsCandidateRecords.Models.DTO;
 
 namespace JobsCandidateRecords.Controllers
 {
     /// <summary>
     /// Controller for managing departments.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="DepartmentController"/> class.
+    /// </remarks>
+    /// <param name="context">The database context to be used.</param>
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class DepartmentController : ControllerBase
+    public class DepartmentController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DepartmentController"/> class.
-        /// </summary>
-        /// <param name="context">The database context to be used.</param>
-        public DepartmentController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetDepartments.
@@ -93,7 +87,7 @@ namespace JobsCandidateRecords.Controllers
             }
 
             department.Name = departmentDTO.Name;
-            department.Description = departmentDTO.Description;
+            department.Description = departmentDTO.Description ?? string.Empty;
             department.CompanyId = departmentDTO.CompanyId;
 
             _context.Entry(department).State = EntityState.Modified;
@@ -131,7 +125,7 @@ namespace JobsCandidateRecords.Controllers
             var department = new Department
             {
                 Name = createDepartmentDTO.Name,
-                Description = createDepartmentDTO.Description,
+                Description = createDepartmentDTO.Description ?? string.Empty,
                 CompanyId = createDepartmentDTO.CompanyId
             };
 
