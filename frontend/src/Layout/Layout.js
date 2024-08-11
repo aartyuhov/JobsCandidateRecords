@@ -111,8 +111,7 @@ const Layout = ({
 						</Link>
 						<Avatar
 							alt='User Avatar'
-							src='https://get.wallhere.com/photo/face-field-Person-man-skarf-adventurer-johannes-strate-776717.jpg'
-						/>
+						>{username[0].toUpperCase()}</Avatar>
 						<i
 							className='nav-item cursor-pointer'
 							onClick={logoutHandler}
