@@ -47,13 +47,13 @@ namespace JobsCandidateRecords.Services
                 c.AboutInfo,
                 c.Applications?.Select(a => new ApplicationStatusDTO(
                     a.Id,
-                    a.ApplicationsForRequests?.Any() == true
+                    a.ApplicationsForRequests?.Count > 0
                         ? a.ApplicationsForRequests.First().RequestForEmployee?.Name ?? string.Empty
                         : string.Empty,
-                    a.ApplicationStatusHistories?.Any() == true
+                    a.ApplicationStatusHistories?.Count > 0
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
-                            .FirstOrDefault()?.ApplicationStatus.ToString()
+                            .FirstOrDefault()?.ApplicationStatus.ToString() ?? string.Empty
                         : string.Empty
                 ))?.ToList() ?? []
             ));
