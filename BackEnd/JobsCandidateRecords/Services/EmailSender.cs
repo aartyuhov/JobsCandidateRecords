@@ -7,18 +7,13 @@ namespace JobsCandidateRecords.Services
     /// <summary>
     /// Implementation of <see cref="IEmailSender"/> for sending emails using SMTP.
     /// </summary>
-    public class EmailSender : IEmailSender
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EmailSender"/> class.
+    /// </remarks>
+    /// <param name="configuration">The configuration used to retrieve SMTP settings.</param>
+    public class EmailSender(IConfiguration configuration) : IEmailSender
     {
-        private readonly IConfiguration _configuration;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EmailSender"/> class.
-        /// </summary>
-        /// <param name="configuration">The configuration used to retrieve SMTP settings.</param>
-        public EmailSender(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         /// <summary>
         /// Sends an email asynchronously.

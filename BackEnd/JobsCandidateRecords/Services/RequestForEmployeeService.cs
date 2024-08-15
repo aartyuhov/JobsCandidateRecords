@@ -56,7 +56,8 @@ namespace JobsCandidateRecords.Services
                                 candidate.Email,
                                 candidate.Phone,
                                 candidate.Address,
-                                candidate.AboutInfo
+                                candidate.AboutInfo,
+                                []
                             ),
                             application.EmployeeWhoCreatedId,
                             application.CreationDate,
@@ -118,7 +119,8 @@ namespace JobsCandidateRecords.Services
                                 candidate.Email,
                                 candidate.Phone,
                                 candidate.Address,
-                                candidate.AboutInfo
+                                candidate.AboutInfo,
+                                []
                             ),
                             application.EmployeeWhoCreatedId,
                             application.CreationDate,
@@ -271,7 +273,8 @@ namespace JobsCandidateRecords.Services
                                 candidate.Email,
                                 candidate.Phone,
                                 candidate.Address,
-                                candidate.AboutInfo
+                                candidate.AboutInfo,
+                                []
                             ),
                             application.EmployeeWhoCreatedId,
                             application.CreationDate,

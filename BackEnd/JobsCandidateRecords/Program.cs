@@ -45,8 +45,11 @@ builder.Services
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 // Validation params
-Byte[]? key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
-TokenValidationParameters? tokenValidationParams = new TokenValidationParameters
+string? secret = builder.Configuration["JwtConfig:Secret"] ?? throw new InvalidOperationException("JWT secret is not configured.");
+
+Byte[] key = Encoding.ASCII.GetBytes(secret);
+
+TokenValidationParameters? tokenValidationParams = new()
 {
     ValidateIssuerSigningKey = true,
     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -83,7 +86,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IRequestForEmployeeService, RequestForEmployeeService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
 
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
@@ -99,9 +102,9 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "REST APIs "
     });
-    // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
     //Add JWT Bearer Authentication support to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -122,7 +125,7 @@ builder.Services.AddSwaggerGen(c =>
          Id = "Bearer"
        }
       },
-      new string[] { }
+      Array.Empty<string>()
     }
   });
 });

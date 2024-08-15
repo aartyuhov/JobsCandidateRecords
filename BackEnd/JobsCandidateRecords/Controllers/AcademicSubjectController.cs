@@ -10,21 +10,16 @@ namespace JobsCandidateRecords.Controllers
     /// <summary>
     /// Controller for managing academic subjects.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="AcademicSubjectController"/> class.
+    /// </remarks>
+    /// <param name="context">The database context to be used.</param>
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class AcademicSubjectController : ControllerBase
+    public class AcademicSubjectController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AcademicSubjectController"/> class.
-        /// </summary>
-        /// <param name="context">The database context to be used.</param>
-        public AcademicSubjectController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         /// <summary>
         /// GetAcademicSubjects.
