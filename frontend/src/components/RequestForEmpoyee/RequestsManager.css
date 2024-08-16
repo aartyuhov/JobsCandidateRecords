@@ -1,0 +1,469 @@
+.requests-manager-container {
+  background-color: rgba(255, 255, 255, 0.5);
+  min-height: 100vh;
+  padding: 20px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 0.5s ease-out forwards;
+}
+
+.requests-card {
+  background: 
+    linear-gradient(to bottom, 
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.8) 70%,
+      rgba(255, 255, 255, 1) 100%
+    ),
+    url('../../assets/images/RequestManager.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  border: 1px solid #9b9b9b;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.requests-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #000;
+  opacity: 0;
+  transform: scale(0.8);
+  animation: enlarge 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+.new-requests-btn {
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: -.8px;
+  line-height: 24px;
+  min-width: 140px;
+  outline: 0;
+  padding: 0 17px;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.new-requests-btn:focus {
+  color: #171e29;
+}
+
+.new-requests-btn:hover {
+  border-color: #06f;
+  color: #06f;
+  fill: #06f;
+}
+
+.new-requests-btn:active {
+  border-color: #06f;
+  color: #06f;
+  fill: #06f;
+}
+
+@media (min-width: 768px) {
+  .new-requests-btn {
+    min-width: 170px;
+  }
+}
+
+.requests-list {
+  margin-top: 20px;
+  list-style-type: none;
+  padding: 0;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.requests-list.mounted .request-list-item {
+  animation: slideInAlternate 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.request-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid #9b9b9b;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+   opacity: 0;
+  transform: translateY(-20px);
+  animation: slideInAlternate 0.5s ease-out forwards;
+}
+
+.request-list-item:hover {
+  background-color: rgba(134, 134, 134, 0.1);
+  border-radius: 10px;
+}
+
+@keyframes slideInAlternate {
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.request-list-item.even {
+  transform: translateY(-20px);
+}
+
+.request-list-item.odd {
+  transform: translateY(20px);
+}
+
+.request-details {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.request-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.view-btn svg, .delete-btn svg {
+  transition: transform 0.3s ease-in-out;
+}
+
+.view-btn:hover svg, .delete-btn:hover svg {
+  color: #007bff;
+  transform: rotate(15deg);
+}
+
+.edit-btn, .delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.edit-btn svg, .delete-btn svg {
+  transition: transform 0.3s ease-in-out;
+}
+
+.edit-btn:hover svg, .delete-btn:hover svg {
+  color: #007bff;
+  transform: rotate(15deg);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  transform: scale(0.1);
+  animation: enlarge 0.4s ease-out forwards;
+  margin-left: 80px;
+}
+
+@keyframes enlarge {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-overlay.active {
+  opacity: 1;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  width: 400px;
+  height: 600px;
+  justify-content: space-between;
+  transform: scale(0.8);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 200px rgba(0, 0, 0, 0.4);
+  margin-bottom: 250px;
+}
+
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-form-container {
+  display: flex;
+  width: 800px;
+}
+
+.modal-form {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.modal-form > * {
+  margin-bottom: 20px;
+}
+
+.modal-form > *:last-child {
+  margin-bottom: 0;
+}
+
+.BasicDatePicker-root {
+  margin-bottom: 20px !important;
+}
+
+.PositionList-root {
+  margin-bottom: 20px;
+}
+
+.modal-image {
+  width: 400px;
+  margin-bottom: 250px;
+  margin-right: 200px;
+  box-shadow: 200px 200px 200px rgba(0, 0, 0, 0.4);
+}
+
+.modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.MuiFormLabel-root {
+  display: block !important;
+  margin-bottom: 5px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  resize: none;
+}
+
+.input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-wrapper label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  padding: 0 5px;
+  font-size: 0.9rem;
+  color: #666;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.input-wrapper .input-field:focus,
+.input-wrapper .input-field:not(:placeholder-shown) {
+  border-color: #666;
+}
+
+.input-wrapper .input-field:focus + label,
+.input-wrapper .input-field:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.input-wrapper textarea.input-field + label {
+  transform: none;
+}
+
+.input-wrapper textarea.input-field:focus + label,
+.input-wrapper textarea.input-field:not(:placeholder-shown) + label {
+  top: -10px;
+}
+
+.date-picker-wrapper {
+  margin-bottom: 40px;
+}
+
+.m-3 {
+  margin-right: 50px;
+}
+
+.modal-form h2 {
+  margin-bottom: 200px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.save-btn, .cancel-btn {
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.save-btn {
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter,sans-serif;
+  justify-content: center;
+  letter-spacing: -.8px;
+  height: 40px;
+  width: 70px;
+  outline: 0;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.save-btn:focus {
+  color: #171e29;
+}
+
+.save-btn:hover {
+  background-color: #abffbf28;
+  border-color: #218838;
+  color: #218838;
+  fill: #218838;
+}
+
+.save-btn:active {
+  border-color: #28a745;
+  color: #28a745;
+  fill: #28a745;
+}
+
+.cancel-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background-color: #c82333;
+}
+
+.cancel-btn {
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  fill: #000;
+  font-family: Inter,sans-serif;
+  justify-content: center;
+  letter-spacing: -.8px;
+  height: 40px;
+  width: 70px;
+  outline: 0;
+  text-align: center;
+  text-decoration: none;
+  transition: all .3s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.cancel-btn:focus {
+  color: #171e29;
+}
+
+.cancel-btn:hover {
+  background-color: #ffabab28;
+  border-color: #c82333;
+  color: #c82333;
+  fill: #c82333;
+}
+
+.cancel-btn:active {
+  border-color: #dc3545;
+  color: #dc3545;
+  fill: #dc3545;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.input-wrapper.error .input-field {
+  animation: bounce 0.5s ease-in-out;
+  border-color: #dc3545;
+}
+
+@keyframes enlarge {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
