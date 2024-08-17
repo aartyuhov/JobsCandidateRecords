@@ -1,149 +1,286 @@
-import React, { useState } from 'react';
-import {
-    Paper,
-    Typography,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    IconButton,
-    List,
-    ListItem,
-    ListItemText, Card
-} from '@mui/material';
-import { Edit } from '@mui/icons-material';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import PositionList from "../small-components/PositionList";
-import BasicDatePicker from "../small-components/BasicDatePicker";
+import React, { useState, useEffect } from 'react'
+import { Edit, Delete, Visibility } from '@mui/icons-material'
+import PositionList from '../small-components/PositionList'
+import BasicDatePicker from '../small-components/BasicDatePicker'
+import ProgressiveImage from '../small-components/ProgressiveImage'
+import api from '../../services/api'
+import './RequestsManager.css'
+import RequestsFormImage from '../../assets/images/RequestsForm.jpg'
 
 const RequestsManager = () => {
-    const [requests, setRequests] = useState([
-        {
-            id: 0,
-            name: 'Test',
-            publicationDate: '2024-08-03T12:31:19.209Z',
-            numberEmployessRequired: 1,
-            description: 'test',
-            positionId: 1,
-        },
-    ]);
+	const [requests, setRequests] = useState([])
+	const [showModal, setShowModal] = useState(false)
+	const [currentRequest, setCurrentRequest] = useState(null)
+	const [selectedPositionId, setSelectedPositionId] = useState('')
+	const [currentUser, setCurrentUser] = useState(null)
+	const [isMounted, setIsMounted] = useState(false)
+	const [viewOnly, setViewOnly] = useState(false)
 
-    const [showModal, setShowModal] = useState(false);
-    const [currentRequest, setCurrentRequest] = useState(null);
-    const [selectedPositionId, setSelectedPositionId] = useState('');
+	useEffect(() => {
+		fetchRequests()
+		fetchCurrentUser()
+		setIsMounted(true)
+	}, [])
 
-    const handleShowModal = (request = null) => {
-        setCurrentRequest(request);
-        setShowModal(true);
-    };
+	useEffect(() => {
+		if (currentRequest) {
+			setSelectedPositionId(currentRequest.positionId || '')
+		} else {
+			setSelectedPositionId('')
+		}
+	}, [currentRequest])
 
-    const handleCloseModal = () => {
-        setCurrentRequest(null);
-        setShowModal(false);
-    };
+	useEffect(() => {
+		if (showModal) {
+			document.body.style.overflow = 'hidden'
+		} else {
+			document.body.style.overflow = 'unset'
+		}
 
-    const handlePositionChange = (positionId) => {
-        setSelectedPositionId(positionId);
-    };
+		return () => {
+			document.body.style.overflow = 'unset'
+		}
+	}, [showModal])
 
-    const handleSave = (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        const newRequest = {
-            id: currentRequest ? currentRequest.id : requests.length,
-            name: form.name.value,
-            publicationDate: form.publicationDate.value,
-            numberEmployessRequired: parseInt(form.numberEmployessRequired.value),
-            description: form.description.value,
-            positionId: parseInt(form.positionId.value),
-        };
+	const fetchRequests = async () => {
+		try {
+			const response = await api.get('/api/RequestForEmployee')
+			setRequests(response.data)
+		} catch (error) {
+			console.error('Error fetching requests:', error)
+		}
+	}
 
-        if (currentRequest) {
-            setRequests(requests.map(req => (req.id === currentRequest.id ? newRequest : req)));
-        } else {
-            setRequests([...requests, newRequest]);
-        }
+	const fetchCurrentUser = async () => {
+		try {
+			const response = await api.get('/api/Users/get-tuple')
+			setCurrentUser(response.data.employeeDto)
+		} catch (error) {
+			console.error('Error fetching current user data:', error)
+		}
+	}
 
-        handleCloseModal();
-    };
+	const handleShowModal = (request = null, viewOnly = false) => {
+		setCurrentRequest(request)
+		setViewOnly(viewOnly)
+		setShowModal(true)
 
-    return (
-        <Card sx={{ width: '85%', marginTop: 4, marginX: "auto" }}>
-            <Paper className="p-3">
-                <Typography variant="h4" className="mb-3">Job Requests (yours)</Typography>
-                <Button variant="contained" color="primary" onClick={() => handleShowModal()}>New</Button>
-                <List className="mt-3">
-                    {requests.map((request) => (
-                        <ListItem key={request.id} className="d-flex justify-content-between align-items-center">
-                            <ListItemText
-                                primary={request.name}
-                                secondary={`Published on: ${new Date(request.publicationDate).toLocaleDateString()}`}
-                            />
-                            <div>
-                                <IconButton color="primary" onClick={() => handleShowModal(request)}>
-                                    <Edit />
-                                </IconButton>
-                            </div>
-                        </ListItem>
-                    ))}
-                </List>
-            </Paper>
+		window.scrollTo({
+			top: 0,
+		})
+	}
 
-            <Dialog open={showModal} onClose={handleCloseModal}>
-                <DialogTitle>{currentRequest ? 'Edit Request' : 'Create New Request'}</DialogTitle>
-                <DialogContent>
-                    <form onSubmit={handleSave} id="request-form">
-                        <TextField
-                            className="mt-3"
-                            margin="dense"
-                            name="name"
-                            label="Name"
-                            type="text"
-                            fullWidth
-                            defaultValue={currentRequest ? currentRequest.name : ''}
-                            required
-                        />
-                        <BasicDatePicker label="Publication date" name="publicationDate" defaultValue={currentRequest ? currentRequest.publicationDate : ''} value={currentRequest ? currentRequest.publicationDate : ''} className="w-100 mt-3" required />
-                        <TextField
-                            className="mt-3"
-                            margin="dense"
-                            name="numberEmployessRequired"
-                            label="Number of Employees Required"
-                            type="number"
-                            fullWidth
-                            defaultValue={currentRequest ? currentRequest.numberEmployessRequired : ''}
-                            required
-                        />
-                        <TextField
-                            className="mt-3"
-                            margin="dense"
-                            name="description"
-                            label="Description"
-                            type="text"
-                            fullWidth
-                            multiline
-                            rows={3}
-                            defaultValue={currentRequest ? currentRequest.description : ''}
-                            required
-                        />
-                        <div className="mt-3">
-                            <PositionList selectedPositionId={currentRequest ? currentRequest.positionId : ''} handlePositionChange={handlePositionChange} />
-                        </div>
-                    </form>
-                </DialogContent>
-                <DialogActions>
-                    <Button form="request-form" type="submit" color="primary">
-                        Save
-                    </Button>
-                    <Button onClick={handleCloseModal} color="secondary">
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Card>
-    );
-};
+	const handleCloseModal = () => {
+		setCurrentRequest(null)
+		setShowModal(false)
+	}
 
-export default RequestsManager;
+	const handlePositionChange = positionId => {
+		setSelectedPositionId(positionId)
+	}
+
+	const handleSave = async event => {
+		event.preventDefault()
+		const form = event.currentTarget
+		const newRequest = {
+			id: currentRequest ? currentRequest.id : 0,
+			name: form.name.value.trim(),
+			publicationDate: form.publicationDate.value
+				? new Date(form.publicationDate.value).toISOString()
+				: null,
+			numberEmployessRequired:
+				parseInt(form.numberEmployessRequired.value) || 0,
+			description: form.description.value.trim(),
+			positionId: selectedPositionId ? parseInt(selectedPositionId) : null,
+			requestedEmployeeId: currentUser ? currentUser.id : null,
+		}
+
+		try {
+			if (currentRequest) {
+				await api.put('/api/RequestForEmployeeDTO', newRequest)
+			} else {
+				await api.post('/api/RequestForEmployeeDTO', newRequest)
+			}
+			fetchRequests()
+			handleCloseModal()
+		} catch (error) {
+			console.error('Error saving request:', error)
+			if (error.response) {
+				console.error('Response data:', error.response.data)
+				if (error.response.data.errors) {
+					console.error('Validation errors:', error.response.data.errors)
+				}
+			}
+		}
+	}
+
+	const handleDelete = async requestId => {
+		try {
+			await api.delete(`/api/RequestForEmployee/${requestId}`)
+			setRequests(requests.filter(request => request.id !== requestId))
+		} catch (error) {
+			console.error('Error deleting request:', error)
+		}
+	}
+
+	return (
+		<div className='requests-manager-container'>
+			<div className='requests-card'>
+				<h1 className='requests-title'>Job Requests</h1>
+				<button className='new-requests-btn' onClick={() => handleShowModal()}>
+					Add Request
+				</button>
+				<ul className={`requests-list ${isMounted ? 'mounted' : ''}`}>
+					{requests.map((request, index) => (
+						<li
+							key={request.id}
+							className={`request-list-item ${
+								index % 2 === 0 ? 'even' : 'odd'
+							}`}
+							style={{ animationDelay: `${index * 0.1}s` }}
+						>
+							<div className='request-details'>
+								<strong>{request.name}</strong>
+								<strong> </strong>
+								<small>
+									(From {new Date(request.publicationDate).toLocaleDateString()}
+									)
+								</small>
+							</div>
+							<div className='request-actions'>
+								<button
+									className='view-btn'
+									onClick={() => handleShowModal(request, true)}
+								>
+									<Visibility />
+								</button>
+								{currentUser &&
+									request.requestedEmployeeId === currentUser.id && (
+										<>
+											<button
+												className='edit-btn'
+												onClick={() => handleShowModal(request)}
+											>
+												<Edit />
+											</button>
+											<button
+												className='delete-btn'
+												onClick={() => handleDelete(request.id)}
+											>
+												<Delete />
+											</button>
+										</>
+									)}
+							</div>
+						</li>
+					))}
+				</ul>
+			</div>
+
+			{showModal && (
+				<div className={`modal-overlay ${showModal ? 'active' : ''}`}>
+					<div className='modal-content'>
+						<h2>
+							{viewOnly
+								? 'View Request'
+								: currentRequest
+								? 'Edit Request'
+								: 'Create New Request'}
+						</h2>
+						<form onSubmit={handleSave} id='request-form'>
+							<div className='input-wrapper'>
+								<input
+									id='name'
+									className='input-field'
+									name='name'
+									type='text'
+									defaultValue={currentRequest ? currentRequest.name : ''}
+									required
+									placeholder=' '
+									disabled={viewOnly}
+								/>
+								<label htmlFor='name'>Name</label>
+							</div>
+
+							<div className='date-picker-wrapper'>
+								<BasicDatePicker
+									label='Publication date'
+									name='publicationDate'
+									defaultValue={
+										currentRequest ? currentRequest.publicationDate : ''
+									}
+									value={currentRequest ? currentRequest.publicationDate : ''}
+									required
+									disabled={viewOnly}
+								/>
+							</div>
+
+							<div className='input-wrapper'>
+								<input
+									id='numberEmployessRequired'
+									className='input-field'
+									name='numberEmployessRequired'
+									type='number'
+									defaultValue={
+										currentRequest ? currentRequest.numberEmployessRequired : ''
+									}
+									required
+									placeholder=' '
+									disabled={viewOnly}
+								/>
+								<label htmlFor='numberEmployessRequired'>
+									Number of Employees Required
+								</label>
+							</div>
+
+							<div className='input-wrapper'>
+								<textarea
+									id='description'
+									className='input-field'
+									name='description'
+									defaultValue={
+										currentRequest ? currentRequest.description : ''
+									}
+									required
+									placeholder=' '
+									disabled={viewOnly}
+								></textarea>
+								<label htmlFor='description'>Description</label>
+							</div>
+
+							<div style={{ marginright: '50px', marginBottom: '20px' }}>
+								<PositionList
+									selectedPositionId={
+										currentRequest ? currentRequest.positionId : ''
+									}
+									handlePositionChange={handlePositionChange}
+									disabled={viewOnly}
+								/>
+							</div>
+
+							<div className='modal-actions'>
+								{!viewOnly && (
+									<button type='submit' className='save-btn'>
+										Save
+									</button>
+								)}
+								<button onClick={handleCloseModal} className='cancel-btn'>
+									Cancel
+								</button>
+							</div>
+						</form>
+					</div>
+					<div className='modal-image'>
+						<ProgressiveImage
+							src={RequestsFormImage}
+							alt='Requests Form'
+							className='request-form-image'
+						/>
+					</div>
+				</div>
+			)}
+		</div>
+	)
+}
+
+export default RequestsManager

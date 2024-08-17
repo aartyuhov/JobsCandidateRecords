@@ -68,7 +68,7 @@ namespace JobsCandidateRecords.Controllers.DTO
             if (candidateDTO == null) return BadRequest();
             var result = await _candidateService.UpdateCandidateAsync(candidateDTO);
             if (!result) return NotFound();
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace JobsCandidateRecords.Controllers.DTO
         {
             var result = await _candidateService.DeleteCandidateAsync(id);
             if (!result) return NotFound();
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return BadRequest();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>

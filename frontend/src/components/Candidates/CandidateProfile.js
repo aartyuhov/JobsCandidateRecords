@@ -1,106 +1,128 @@
-import React, { useState } from "react";
-import { TextField, Button, Paper, Box, Typography, IconButton, InputLabel, Select, MenuItem, FormControl } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import dayjs from "dayjs";
+import React, { useState, useEffect } from "react";
+import {
+    TextField,
+    Button,
+    Paper,
+    Box,
+    Typography,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormControl,
+    CircularProgress
+} from "@mui/material";
 import BasicDatePicker from "../small-components/BasicDatePicker";
+import { ArrowBack } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
+import api from "../../services/api";
 
 function CandidateProfile() {
-    // Состояние для данных кандидата
+    const navigate = useNavigate();
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [candidate, setCandidate] = useState({
-        id: 1,
-        firstName: "John",
-        lastName: "Doe",
-        dateOfBirth: "1990-01-01",
-        gender: "Male",
-        email: "john.doe@example.com",
-        phone: "+1234567890",
-        address: "123 Main St, Springfield",
-        aboutInfo: "Experienced developer with a passion for creating web applications.",
+        id: 0,
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        gender: "",
+        email: "",
+        phone: "",
+        address: "",
+        aboutInfo: "",
+        applicationStatusDTOs: null
     });
 
-    // Состояние для обновленных данных
-    const [updatedCandidate, setUpdatedCandidate] = useState({ ...candidate });
+    useEffect(() => {
+        if (isEditMode) {
+            const fetchData = async (id) => {
+                try {
+                    const fetchedCandidate = await api.get(`/api/CandidatesDTO/${id}`);
+                    setCandidate(fetchedCandidate.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    setError('An error occurred while fetching the data. Please try again later.');
+                    setLoading(false);
+                }
+            };
+            fetchData(id).catch(error => console.error(error));
+        }
+        else
+        {
+            setLoading(false);
+        }
+    }, [id, isEditMode]);
 
-    // Состояние для комментариев
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState("");
-    const [editCommentId, setEditCommentId] = useState(null);
-
-    // Функция для обновления данных кандидата в форме
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setUpdatedCandidate({ ...updatedCandidate, [name]: value });
+        setCandidate({ ...candidate, [name]: value });
     };
 
-    // Функция для добавления или редактирования комментария
-    const handleAddOrEditComment = () => {
-        if (newComment.trim()) {
-            if (editCommentId) {
-                // Редактирование существующего комментария
-                setComments(
-                    comments.map((comment) =>
-                        comment.id === editCommentId ? { ...comment, text: newComment } : comment
-                    )
-                );
-                setEditCommentId(null); // Сброс режима редактирования
-            } else {
-                // Добавление нового комментария
-                const newCommentObj = {
-                    id: comments.length + 1,
-                    text: newComment,
-                    createdDate: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-                    author: "Current User", // Здесь можно заменить на имя реального пользователя
-                };
-                setComments([...comments, newCommentObj]);
+    const handleSave = async (event) => {
+        event.preventDefault();
+        if (isEditMode) {
+            try {
+                candidate.dateOfBirth = new Date(event.target.dateOfBirth.value).toJSON().split('T')[0];
+                candidate.gender = event.target.gender.value;
+                const response = await api.put(`/api/CandidatesDTO`, candidate);
+                if(response.status === 200)
+                    navigate(-1);
+                console.log("Updating candidate:", candidate);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError('Error to put candidate!');
             }
-            setNewComment(""); // Очистка поля ввода
+            console.log("Updating candidate:", candidate);
+        } else {
+            try {
+                candidate.dateOfBirth = new Date(event.target.dateOfBirth.value).toJSON().split('T')[0];
+                candidate.male = event.target.gender.value;
+                const response = await api.post(`/api/CandidatesDTO`, candidate);
+                if(response.status === 201)
+                    navigate(-1);
+                console.log("Creating candidate:", candidate);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError('Error to post candidate!');
+            }
         }
     };
 
-    // Функция для редактирования комментария
-    const handleEditComment = (id, text) => {
-        setEditCommentId(id);
-        setNewComment(text);
-    };
-
-    // Функция для удаления комментария
-    const handleDeleteComment = (id) => {
-        setComments(comments.filter((comment) => comment.id !== id));
-    };
-
-    // Функция для обновления профиля кандидата
-    const handleUpdateProfile = () => {
-        setCandidate(updatedCandidate);
-        // Здесь можно добавить логику для отправки обновленных данных на сервер
-        console.log("Profile updated:", updatedCandidate);
-    };
-
     return (
-        <Paper className="mt-4 w-75" sx={{ backgroundColor: "#f0f0f0" }}>
-            <div className="d-flex gap-4 align-content-sm-center">
-                {/* Левая колонка - Карточка кандидата */}
-                <div className="col-md-12 w-75">
-                    <Paper
-                        sx={{
-                            padding: "20px",
-                            backgroundColor: "#f0f0f0",
-                        }}
-                    >
+        <>
+            <div className="float-start">
+                <Button variant="outlined" onClick={() => navigate(-1)}><ArrowBack />Back</Button>
+            </div>
+            { loading ? (
+                <div className={"d-flex align-content-center"}>
+                    <CircularProgress color="inherit" />
+                </div>
+            ) : error ? (
+                <h4 className={"text-center"}>{error}</h4>
+            ) : (<Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center"
+                    }}
+                >
+                    <Paper className="w-75" sx={{ padding: "20px", backgroundColor: "#ffffff" }}>
                         <Typography variant="h4" sx={{ marginBottom: "15px" }}>
-                            Edit Candidate Profile
+                            {isEditMode ? "Edit Candidate Profile" : "Create Candidate Profile"}
                         </Typography>
-                        <Box
-                            component="form"
-                            sx={{
-                                "& .MuiTextField-root": { marginBottom: "15px" },
-                            }}
-                        >
+                        <Box component="form"
+                             onSubmit={handleSave}
+                             sx={{
+                                 "& .MuiTextField-root": { marginBottom: "15px" },
+                             }}>
                             <TextField
                                 label="First Name"
                                 fullWidth
                                 name="firstName"
-                                value={updatedCandidate.firstName}
+                                value={candidate.firstName}
                                 onChange={handleChange}
                                 variant="outlined"
                                 required
@@ -109,7 +131,7 @@ function CandidateProfile() {
                                 label="Last Name"
                                 fullWidth
                                 name="lastName"
-                                value={updatedCandidate.lastName}
+                                value={candidate.lastName}
                                 onChange={handleChange}
                                 variant="outlined"
                                 required
@@ -117,28 +139,22 @@ function CandidateProfile() {
                             <BasicDatePicker
                                 label="Date of Birth"
                                 name="dateOfBirth"
-                                defaultValue={updatedCandidate.dateOfBirth}
-                                value={updatedCandidate.dateOfBirth}
+                                value={candidate.dateOfBirth}
                                 className="col-md-12"
                                 required
                             />
                             <FormControl variant="outlined" fullWidth required sx={{ marginBottom: "1em" }}>
                                 <InputLabel>Gender</InputLabel>
-                                <Select
-                                    label="Gender"
-                                    name="gender"
-                                    onChange={handleChange}
-                                    defaultValue={updatedCandidate.gender}
-                                >
-                                    <MenuItem value="Male">Male</MenuItem>
-                                    <MenuItem value="Female">Female</MenuItem>
+                                <Select label="Gender" name="gender" defaultValue={candidate.gender}>
+                                    <MenuItem key="Male" value="Male">Male</MenuItem>
+                                    <MenuItem key="Female" value="Female">Female</MenuItem>
                                 </Select>
                             </FormControl>
                             <TextField
                                 label="Email"
                                 fullWidth
                                 name="email"
-                                value={updatedCandidate.email}
+                                value={candidate.email}
                                 onChange={handleChange}
                                 variant="outlined"
                             />
@@ -146,7 +162,7 @@ function CandidateProfile() {
                                 label="Phone"
                                 fullWidth
                                 name="phone"
-                                value={updatedCandidate.phone}
+                                value={candidate.phone}
                                 onChange={handleChange}
                                 variant="outlined"
                             />
@@ -154,7 +170,7 @@ function CandidateProfile() {
                                 label="Address"
                                 fullWidth
                                 name="address"
-                                value={updatedCandidate.address}
+                                value={candidate.address}
                                 onChange={handleChange}
                                 variant="outlined"
                             />
@@ -164,123 +180,21 @@ function CandidateProfile() {
                                 name="aboutInfo"
                                 multiline
                                 rows={4}
-                                value={updatedCandidate.aboutInfo}
+                                value={candidate.aboutInfo}
                                 onChange={handleChange}
                                 variant="outlined"
                             />
-
-                            {/* Кнопка Update */}
                             <Button
                                 variant="contained"
                                 color="primary"
-                                sx={{ marginTop: "10px" }}
-                                onClick={handleUpdateProfile}
-                            >
-                                Update
+                                type="submit"
+                                sx={{ marginTop: "10px" }}>
+                                {isEditMode ? "Update" : "Create"}
                             </Button>
                         </Box>
                     </Paper>
-                </div>
-
-                {/* Правая колонка - Чат с комментариями */}
-                <div className="col-md-6 w-50">
-                    <Paper
-                        sx={{
-                            padding: "20px",
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            backgroundColor: "#fafafa",
-                        }}
-                    >
-                        <Typography variant="h6" sx={{ marginBottom: "15px" }}>
-                            Comments
-                        </Typography>
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                overflowY: "auto",
-                                marginBottom: "15px",
-                                padding: "10px",
-                                backgroundColor: "#e0e0e0",
-                                borderRadius: "4px",
-                            }}
-                        >
-                            {comments.map((comment) => (
-                                <Box
-                                    key={comment.id}
-                                    sx={{
-                                        backgroundColor: "#ffffff",
-                                        borderRadius: "10px",
-                                        padding: "10px",
-                                        marginBottom: "10px",
-                                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-                                        wordWrap: "break-word",
-                                        wordBreak: "break-word",
-                                        position: "relative",
-                                    }}
-                                >
-                                    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                                        {comment.author}
-                                    </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            marginBottom: "5px",
-                                            whiteSpace: "pre-wrap",
-                                        }}
-                                    >
-                                        {comment.text}
-                                    </Typography>
-                                    <Typography variant="caption" color="textSecondary">
-                                        {comment.createdDate}
-                                    </Typography>
-                                    <Box
-                                        sx={{
-                                            position: "absolute",
-                                            bottom: "5px",
-                                            right: "5px",
-                                            display: "flex",
-                                            gap: "5px",
-                                        }}
-                                    >
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => handleEditComment(comment.id, comment.text)}
-                                        >
-                                            <EditIcon fontSize="small" />
-                                        </IconButton>
-                                        <IconButton
-                                            size="small"
-                                            onClick={() => handleDeleteComment(comment.id)}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </Box>
-                                </Box>
-                            ))}
-                        </Box>
-                        <TextField
-                            label={editCommentId ? "Edit comment" : "Add a comment"}
-                            fullWidth
-                            multiline
-                            rows={2}
-                            variant="outlined"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{ marginTop: "10px", alignSelf: "flex-end" }}
-                            onClick={handleAddOrEditComment}
-                        >
-                            {editCommentId ? "Update Comment" : "Add Comment"}
-                        </Button>
-                    </Paper>
-                </div>
-            </div>
-        </Paper>
+                </Box>)}
+        </>
     );
 }
 

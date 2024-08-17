@@ -4,13 +4,14 @@ import './Layout.css'
 import { Avatar } from '@mui/material'
 import DashboardIcon from '../SVGIcons/DashboardIcon'
 import MainIcon from '../SVGIcons/MainIcon'
-import LogoutIcon_1 from '../SVGIcons/LogoutIcon'
-import LogoutIcon_2 from '../SVGIcons/LogoutIconAfter'
+import LogoutIcon1 from '../SVGIcons/LogoutIcon'
+import LogoutIcon2 from '../SVGIcons/LogoutIconAfter'
 import EmployeeListIcon from '../SVGIcons/EmployeeListIcon'
-import {FormatListBulleted} from "@mui/icons-material";
+import RequestsManagerIcon from '../SVGIcons/RequestsManagerIcon'
+import { FormatListBulleted } from '@mui/icons-material'
 
 const Layout = ({
-	username,
+	username = '',
 	children,
 	logoutHandler = () => console.log('logout'),
 }) => {
@@ -50,17 +51,26 @@ const Layout = ({
 					<ul className='list-unstyled'>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link to='/' className='nav-item text-white no-underline'>
-								<DashboardIcon/> <span className='px-3'>Dashboard</span>
+								<DashboardIcon /> <span className='px-3'>Dashboard</span>
 							</Link>
 						</li>
-						<hr/>
-						<h5 className="mb-1 mx-2">HR</h5>
+						<li className='mb-1 d-flex align-items-center cursor-pointer'>
+							<Link
+								to='/requestsmanager'
+								className='nav-item text-white no-underline'
+							>
+								<RequestsManagerIcon />{' '}
+								<span className='px-3'>Your Requests</span>
+							</Link>
+						</li>
+						<hr />
+						<h5 className='mb-1 mx-2'>HR</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/employees'
 								className='nav-item text-white no-underline'
 							>
-								<EmployeeListIcon/> <span className='px-3'>Employee list</span>
+								<EmployeeListIcon /> <span className='px-3'>Employee list</span>
 							</Link>
 						</li>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
@@ -68,27 +78,30 @@ const Layout = ({
 								to='/candidates'
 								className='nav-item text-white no-underline'
 							>
-								<EmployeeListIcon/> <span className='px-3'>Candidate list</span>
+								<EmployeeListIcon />{' '}
+								<span className='px-3'>Candidate list</span>
 							</Link>
 						</li>
-						<hr/>
-						<h5 className="mb-1 mx-2">Head of Department</h5>
+						<hr />
+						<h5 className='mb-1 mx-2'>Head of Department</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/requestsmanager'
 								className='nav-item text-white no-underline'
 							>
-								<FormatListBulleted className="text-dark"/> <span className='px-3'>Requests</span>
+								<FormatListBulleted className='text-dark' />{' '}
+								<span className='px-3'>Requests</span>
 							</Link>
 						</li>
-						<hr/>
-						<h5 className="mb-1 mx-2">Admin</h5>
+						<hr />
+						<h5 className='mb-1 mx-2'>Admin</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/positions'
 								className='nav-item text-white no-underline'
 							>
-								<FormatListBulleted className="text-dark"/> <span className='px-3'>Positions</span>
+								<FormatListBulleted className='text-dark' />{' '}
+								<span className='px-3'>Positions</span>
 							</Link>
 						</li>
 					</ul>
@@ -101,24 +114,18 @@ const Layout = ({
 							to='/account'
 							className='nav-item fw-bold no-underline cursor-pointer'
 						>
-							{username ? (
-								<span className='me-3'>
-									{username}
-								</span>
-							) : (
-								''
-							)}
+							{username ? <span className='me-3'>{username}</span> : ''}
 						</Link>
-						<Avatar
-							alt='User Avatar'
-						>{username[0].toUpperCase()}</Avatar>
+						<Avatar alt='User Avatar'>
+							{username && username[0] ? username[0].toUpperCase() : ''}
+						</Avatar>
 						<i
 							className='nav-item cursor-pointer'
 							onClick={logoutHandler}
 							onMouseEnter={handleMouseEnter}
 							onMouseLeave={handleMouseLeave}
 						>
-							{isHoveringLogout ? <LogoutIcon_2 /> : <LogoutIcon_1 />}
+							{isHoveringLogout ? <LogoutIcon2 /> : <LogoutIcon1 />}
 						</i>
 					</div>
 				</div>

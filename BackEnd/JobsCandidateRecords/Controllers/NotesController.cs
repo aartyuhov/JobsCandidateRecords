@@ -54,6 +54,22 @@ namespace JobsCandidateRecords.Controllers
         }
 
         /// <summary>
+        /// GetNotesByApplicationId
+        /// </summary>
+        [HttpGet("{applicationId}")]
+        public async Task<ActionResult<IEnumerable<Note>>> GetNotesByApplicationId(int applicationId)
+        {
+            var notes = await _context.Notes.Where(note => note.ApplicationId == applicationId).ToListAsync();
+
+            if (notes == null)
+            {
+                return NotFound();
+            }
+
+            return notes;
+        }
+
+        /// <summary>
         /// PutNotes.
         /// </summary>
         [HttpPut("{id}")]
