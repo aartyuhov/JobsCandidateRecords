@@ -183,28 +183,31 @@ namespace JobsCandidateRecords.Services
         }
 
         /// <summary>
-        /// Asynchronously updates the status of a candidate's application.
+        /// Asynchronously updates the status of multiple applications.
         /// </summary>
-        /// <param name="candidateId">The unique identifier of the candidate whose application status is being updated.</param>
-        /// <param name="applicationId">The unique identifier of the application to update.</param>
-        /// <param name="newStatus">The new status to set for the application.</param>
+        /// <param name="updateStatusDto">The DTO containing application IDs and the new status.</param>
         /// <returns>A task that represents the asynchronous operation, containing a boolean value indicating whether the update was successful.</returns>
-        public async Task<bool> UpdateApplicationStatusAsync(int candidateId, int applicationId, ApplicationStatusEnum newStatus)
+        public async Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDto)
         {
-            var application = await _context.Applications
+            var applications = await _context.Applications
+                .Where(a => updateStatusDto.ApplicationIds.Contains(a.Id))
                 .Include(a => a.ApplicationStatusHistories)
-                .FirstOrDefaultAsync(a => a.CandidateId == candidateId && a.Id == applicationId);
+                .ToListAsync();
 
-            if (application == null) return false;
+            if (applications == null || applications.Count == 0) return false;
 
-            var statusHistory = new ApplicationStatusHistory
+            foreach (var application in applications)
             {
-                ApplicationId = application.Id,
-                ApplicationStatus = newStatus,
-                DecisionDate = DateTime.Now
-            };
+                var statusHistory = new ApplicationStatusHistory
+                {
+                    ApplicationId = application.Id,
+                    ApplicationStatus = updateStatusDto.NewStatus,
+                    DecisionDate = DateTime.Now
+                };
 
-            _context.ApplicationStatusHistories.Add(statusHistory);
+                _context.ApplicationStatusHistories.Add(statusHistory);
+            }
+
             await _context.SaveChangesAsync();
             return true;
         }

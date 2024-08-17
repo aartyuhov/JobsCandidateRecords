@@ -329,10 +329,7 @@ namespace JobsCandidateRecords.Services
                 .Where(a => updateStatusDTO.ApplicationIds.Contains(a.Id))
                 .ToListAsync();
 
-            if (applications.Count == 0)
-            {
-                return false;
-            }
+            if (applications == null || applications.Count == 0) return false;
 
             foreach (var application in applications)
             {

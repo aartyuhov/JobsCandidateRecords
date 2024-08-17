@@ -43,13 +43,11 @@ namespace JobsCandidateRecords.Services
         Task<bool> DeleteCandidateAsync(int id);
 
         /// <summary>
-        /// Asynchronously updates the application status of a candidate.
+        /// Asynchronously updates the status of multiple applications.
         /// </summary>
-        /// <param name="candidateId">The unique identifier of the candidate.</param>
-        /// <param name="applicationId">The unique identifier of the application.</param>
-        /// <param name="newStatus">The new status to be set for the application.</param>
+        /// <param name="updateStatusDto">The DTO containing application IDs and the new status.</param>
         /// <returns>A task that represents the asynchronous operation, containing a boolean value indicating whether the update was successful.</returns>
-        Task<bool> UpdateApplicationStatusAsync(int candidateId, int applicationId, ApplicationStatusEnum newStatus);
+        Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDto);
 
         /// <summary>
         /// Asynchronously retrieves candidates by their position ID.
