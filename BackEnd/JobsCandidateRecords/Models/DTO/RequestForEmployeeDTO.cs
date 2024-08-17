@@ -1,4 +1,6 @@
-﻿namespace JobsCandidateRecords.Models.DTO
+﻿using JobsCandidateRecords.Enums;
+
+namespace JobsCandidateRecords.Models.DTO
 {
     /// <summary>
     /// DTO for employee request.
@@ -21,9 +23,9 @@
         public DateTime? PublicationDate { get; init; }
 
         /// <summary>
-        /// Number of employees required.
+        /// Status of the request for an employee.
         /// </summary>
-        public int NumberEmployessRequired { get; init; }
+        public RequestForEmployeeStatusEnum RequestStatus { get; set; }
 
         /// <summary>
         /// Request description.
@@ -61,7 +63,7 @@
         /// <param name="id">Request identifier.</param>
         /// <param name="name">Request name.</param>
         /// <param name="publicationDate">Date of publication of the request.</param>
-        /// <param name="numberEmployessRequired">Number of employees required.</param>
+        /// <param name="requestStatus">Request status.</param>
         /// <param name="description">Request description.</param>
         /// <param name="positionId">Position identifier.</param>
         /// <param name="positionName">Position name.</param>
@@ -72,7 +74,7 @@
             int id,
             string name,
             DateTime? publicationDate,
-            int numberEmployessRequired,
+            RequestForEmployeeStatusEnum requestStatus,
             string description,
             int? positionId,
             string? positionName,
@@ -83,7 +85,7 @@
             Id = id;
             Name = name;
             PublicationDate = publicationDate;
-            NumberEmployessRequired = numberEmployessRequired;
+            RequestStatus = requestStatus;
             Description = description;
             PositionId = positionId;
             PositionName = positionName;
