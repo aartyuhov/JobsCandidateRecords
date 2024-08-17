@@ -83,6 +83,7 @@ builder.Services.AddSingleton(tokenValidationParams);
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<RequestForEmployeeService>();
 builder.Services.AddScoped<EmployeeService>();
 
