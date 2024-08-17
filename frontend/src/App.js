@@ -15,6 +15,7 @@ import CandidateList from "./components/Candidates/CandidateList";
 import EmployeeEdit from "./components/Profile/For HR/EmployeeEdit";
 import RequestsManager from "./components/RequestForEmpoyee/RequestsManager";
 import CandidateProfile from "./components/Candidates/CandidateProfile";
+import ApplicationPage from "./components/Candidates/ApplicationPage";
 
 const App = () => {
 
@@ -49,9 +50,12 @@ const App = () => {
             <Route path="/employeeedit/:id" element={<EmployeeEdit />} />
 
             <Route path="candidates" element={<CandidateList />} />
-            <Route path="candidateprofile" element={<CandidateProfile />} />
+            <Route path="/candidates/new" element={<CandidateProfile />} />
+            <Route path="/candidates/:id" element={<CandidateProfile />} />
+            <Route path="/application/:id" element={<ApplicationPage />} />
 
             <Route path="requestsmanager" element={<RequestsManager />} />
+
             {/*=======!For authorized users=========*/}
             
             

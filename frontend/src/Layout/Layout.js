@@ -4,8 +4,8 @@ import './Layout.css'
 import { Avatar } from '@mui/material'
 import DashboardIcon from '../SVGIcons/DashboardIcon'
 import MainIcon from '../SVGIcons/MainIcon'
-import LogoutIcon_1 from '../SVGIcons/LogoutIcon'
-import LogoutIcon_2 from '../SVGIcons/LogoutIconAfter'
+import LogoutIcon1 from '../SVGIcons/LogoutIcon'
+import LogoutIcon2 from '../SVGIcons/LogoutIconAfter'
 import EmployeeListIcon from '../SVGIcons/EmployeeListIcon'
 import RequestsManagerIcon from '../SVGIcons/RequestsManagerIcon'
 import { FormatListBulleted } from '@mui/icons-material'
@@ -125,7 +125,7 @@ const Layout = ({
 							onMouseEnter={handleMouseEnter}
 							onMouseLeave={handleMouseLeave}
 						>
-							{isHoveringLogout ? <LogoutIcon_2 /> : <LogoutIcon_1 />}
+							{isHoveringLogout ? <LogoutIcon2 /> : <LogoutIcon1 />}
 						</i>
 					</div>
 				</div>

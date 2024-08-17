@@ -96,11 +96,10 @@ const RequestsManager = () => {
 		}
 
 		try {
-			let response
 			if (currentRequest) {
-				response = await api.put('/api/RequestForEmployeeDTO', newRequest)
+				await api.put('/api/RequestForEmployeeDTO', newRequest)
 			} else {
-				response = await api.post('/api/RequestForEmployeeDTO', newRequest)
+				await api.post('/api/RequestForEmployeeDTO', newRequest)
 			}
 			fetchRequests()
 			handleCloseModal()
