@@ -187,7 +187,7 @@ namespace JobsCandidateRecords.Services
         /// </summary>
         /// <param name="updateStatusDto">The DTO containing application IDs and the new status.</param>
         /// <returns>A task that represents the asynchronous operation, containing a boolean value indicating whether the update was successful.</returns>
-        public async Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDto)
+        public async Task<bool> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO updateStatusDto)
         {
             var applications = await _context.Applications
                 .Where(a => updateStatusDto.ApplicationIds.Contains(a.Id))

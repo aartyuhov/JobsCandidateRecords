@@ -90,7 +90,7 @@ namespace JobsCandidateRecords.Controllers.DTO
         /// <param name="updateStatusDTO">The DTO containing the application IDs and the new status.</param>
         /// <returns>A no-content result if the update was successful.</returns>
         [HttpPut("updateStatus")]
-        public async Task<IActionResult> UpdateApplicationStatus(UpdateStatusDTO updateStatusDTO)
+        public async Task<IActionResult> UpdateApplicationStatus(UpdateApplicationStatusDTO updateStatusDTO)
         {
             var result = await _candidateService.UpdateApplicationStatusAsync(updateStatusDTO);
 

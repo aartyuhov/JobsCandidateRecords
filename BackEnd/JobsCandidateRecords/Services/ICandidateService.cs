@@ -47,7 +47,7 @@ namespace JobsCandidateRecords.Services
         /// </summary>
         /// <param name="updateStatusDto">The DTO containing application IDs and the new status.</param>
         /// <returns>A task that represents the asynchronous operation, containing a boolean value indicating whether the update was successful.</returns>
-        Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDto);
+        Task<bool> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO updateStatusDto);
 
         /// <summary>
         /// Asynchronously retrieves candidates by their position ID.

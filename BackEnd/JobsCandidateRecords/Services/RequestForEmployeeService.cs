@@ -30,7 +30,7 @@ namespace JobsCandidateRecords.Services
                 r.Id,
                 r.Name,
                 r.PublicationDate,
-                r.NumberEmployessRequired,
+                r.RequestStatus,
                 r.Description,
                 r.PositionId,
                 r.Position?.Title ?? string.Empty,
@@ -93,7 +93,7 @@ namespace JobsCandidateRecords.Services
                 r.Id,
                 r.Name,
                 r.PublicationDate,
-                r.NumberEmployessRequired,
+                r.RequestStatus,
                 r.Description,
                 r.PositionId,
                 r.Position?.Title ?? string.Empty,
@@ -143,7 +143,7 @@ namespace JobsCandidateRecords.Services
             {
                 Name = dto.Name,
                 PublicationDate = dto.PublicationDate,
-                NumberEmployessRequired = dto.NumberEmployessRequired,
+                RequestStatus = dto.RequestStatus,
                 Description = dto.Description,
                 PositionId = dto.PositionId,
                 RequestedEmployeeId = dto.RequestedEmployeeId
@@ -156,7 +156,7 @@ namespace JobsCandidateRecords.Services
                 entity.Id,
                 entity.Name,
                 entity.PublicationDate,
-                entity.NumberEmployessRequired,
+                entity.RequestStatus,
                 entity.Description,
                 entity.PositionId,
                 entity.Position != null ? entity.Position.Title : string.Empty,
@@ -181,7 +181,7 @@ namespace JobsCandidateRecords.Services
 
             entity.Name = dto.Name;
             entity.PublicationDate = dto.PublicationDate;
-            entity.NumberEmployessRequired = dto.NumberEmployessRequired;
+            entity.RequestStatus = dto.RequestStatus;
             entity.Description = dto.Description;
             entity.PositionId = dto.PositionId;
             entity.RequestedEmployeeId = dto.RequestedEmployeeId;
@@ -247,7 +247,7 @@ namespace JobsCandidateRecords.Services
                 r.Id,
                 r.Name,
                 r.PublicationDate,
-                r.NumberEmployessRequired,
+                r.RequestStatus,
                 r.Description,
                 r.PositionId,
                 r.Position?.Title ?? string.Empty,
@@ -323,7 +323,7 @@ namespace JobsCandidateRecords.Services
         /// </summary>
         /// <param name="updateStatusDTO">The DTO containing application IDs and the new status.</param>
         /// <returns>True if the applications were found and updated, false otherwise.</returns>
-        public async Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDTO)
+        public async Task<bool> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO updateStatusDTO)
         {
             var applications = await _context.Applications
                 .Where(a => updateStatusDTO.ApplicationIds.Contains(a.Id))
@@ -341,6 +341,34 @@ namespace JobsCandidateRecords.Services
                 };
 
                 _context.ApplicationStatusHistories.Add(statusHistory);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Asynchronously updates the status of a request for an employee.
+        /// </summary>
+        /// <param name="updateRequestStatusDTO">An object containing the details necessary to update the request status, 
+        /// including the request ID and the new status to be applied.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains a boolean indicating whether the update 
+        /// was successful (true) or not (false).
+        /// </returns>
+        public async Task<bool> UpdateRequestStatusAsync(UpdateRequestStatusDTO updateRequestStatusDTO)
+        {
+            var requests = await _context.RequestsForEmployees
+                .Where(a => updateRequestStatusDTO.RequestsIds.Contains(a.Id))
+                .ToListAsync();
+
+            if (requests == null || requests.Count == 0) return false;
+
+            foreach (var request in requests)
+            {
+                request.RequestStatus = updateRequestStatusDTO.NewStatus;
+
+                _context.RequestsForEmployees.Update(request);
             }
 
             await _context.SaveChangesAsync();

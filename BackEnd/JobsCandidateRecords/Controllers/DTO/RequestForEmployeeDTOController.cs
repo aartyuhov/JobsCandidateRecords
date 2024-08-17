@@ -128,10 +128,28 @@ namespace JobsCandidateRecords.Controllers.DTO
         /// </summary>
         /// <param name="updateStatusDTO">The DTO containing the application IDs and the new status.</param>
         /// <returns>A no-content result if the update was successful.</returns>
-        [HttpPut("updateStatus")]
-        public async Task<IActionResult> UpdateApplicationStatus(UpdateStatusDTO updateStatusDTO)
+        [HttpPut("updateapplicationStatus")]
+        public async Task<IActionResult> UpdateApplicationStatus(UpdateApplicationStatusDTO updateStatusDTO)
         {
             var result = await _service.UpdateApplicationStatusAsync(updateStatusDTO);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Updates the status of multiple applications.
+        /// </summary>
+        /// <param name="updateStatusDTO">The DTO containing the application IDs and the new status.</param>
+        /// <returns>A no-content result if the update was successful.</returns>
+        [HttpPut("updateRequestStatus")]
+        public async Task<IActionResult> UpdateRequestStatus(UpdateRequestStatusDTO updateStatusDTO)
+        {
+            var result = await _service.UpdateRequestStatusAsync(updateStatusDTO);
 
             if (!result)
             {
