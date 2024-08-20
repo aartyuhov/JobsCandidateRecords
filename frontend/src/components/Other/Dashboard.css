@@ -48,17 +48,19 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 10px;
-  padding: 20px;
-  margin-top: 20px;
+  padding: 30px;
+  margin-top: 30px;
   opacity: 0;
   transform: scale(0.8);
   animation: enlarge 0.5s ease-out forwards;
   animation-delay: 0.4s;
 }
 
+
 .card-title {
-  font-size: 2rem;
-  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
   opacity: 0;
   transform: scale(0.8);
   animation: enlarge 0.5s ease-out forwards;
@@ -75,7 +77,7 @@ h1, h2, h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 15px 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   opacity: 0;
@@ -92,29 +94,34 @@ h1, h2, h3 {
 .employee-info {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
 
 .employee-avatar {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  margin-left: 20px;
 }
 
 .employee-name {
-  font-weight: 500;
-  font-size: 1.25rem;
+  font-weight: 600;
+  font-size: 1.5rem;
   color: #000000;
-  margin-left: 20px;
 }
 
 .view-profile-btn {
   background-color: #007bff;
   border: none;
   color: #000000;
-  padding: 10px 20px;
+  padding: 15px 30px;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.view-profile-btn:hover {
+  background-color: #0056b3;
 }
 
 .button-view-profile {
@@ -165,11 +172,15 @@ h1, h2, h3 {
 }
 
 .leave-request-card {
-  background-color: rgba(230, 230, 230, 0.8);
-  border: 1px solid #9b9b9b;
-  color: #000000;
-  padding: 20px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 10px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #000000;
+  border: 1px solid #9b9b9b;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
 }
@@ -178,13 +189,43 @@ h1, h2, h3 {
   transform: scale(1.02);
 }
 
-.leave-request-title {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: #000000;
+.leave-request-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(10px);
+  opacity: 0.5;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
 }
 
+.leave-request-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(to left, 
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.8) 70%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  opacity: 0.8;
+  z-index: 1;
+  border-radius: 10px;
+}
+
+.leave-request-title,
 .leave-request-content {
+  position: relative;
+  z-index: 2;
   color: #000000;
 }
 
