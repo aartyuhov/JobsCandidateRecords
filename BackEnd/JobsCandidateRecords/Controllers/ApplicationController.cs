@@ -1,5 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -80,18 +81,71 @@ namespace JobsCandidateRecords.Controllers
         /// PostApplication.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Application>> PostApplication(Application application)
+        public async Task<ActionResult<ApplicationDTO>> PostApplication(CreateApplicationDTO createApplicationDto, int requestForEmployeeId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            var candidate = await _context.Candidates.FindAsync(createApplicationDto.CandidateId);
+            if (candidate == null)
+            {
+                return NotFound("Candidate not found.");
+            }
+
+            var application = new Application
+            {
+                CandidateId = createApplicationDto.CandidateId,
+                Candidate = candidate, 
+                EmployeeWhoCreatedId = createApplicationDto.EmployeeWhoCreatedId,
+                CreationDate = createApplicationDto.CreationDate,
+                Details = createApplicationDto.Details,
+            };
+
             _context.Applications.Add(application);
             await _context.SaveChangesAsync();
 
+            var applicationsForRequests = new ApplicationsForRequests
+            {
+                ApplicationId = application.Id,
+                RequestForEmployeeId = requestForEmployeeId
+            };
+            _context.ApplicationsForRequests.Add(applicationsForRequests);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, application);
+
+            var applicationStatusHistory = new ApplicationStatusHistory
+            {
+                ApplicationId = application.Id,
+                ApplicationStatus = Enums.ApplicationStatusEnum.New,
+                DecisionDate = DateTime.UtcNow
+            };
+            _context.ApplicationStatusHistories.Add(applicationStatusHistory);
+            await _context.SaveChangesAsync();
+
+            var candidateDto = new CandidateDTO(
+                candidate.Id,
+                candidate.FirstName,
+                candidate.LastName,
+                candidate.DateOfBirth,
+                candidate.Gender,
+                candidate.Email,
+                candidate.Phone,
+                candidate.Address,
+                candidate.AboutInfo
+            );
+
+            var applicationDto = new ApplicationDTO(
+                application.Id,
+                candidateDto,
+                application.EmployeeWhoCreatedId,
+                application.CreationDate,
+                application.Details,
+                Enums.ApplicationStatusEnum.New.ToString() 
+            );
+
+            return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, applicationDto);
         }
 
         /// <summary>

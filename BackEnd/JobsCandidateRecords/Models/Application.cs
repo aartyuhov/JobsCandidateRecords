@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
+﻿using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -52,6 +53,7 @@ namespace JobsCandidateRecords.Models
         /// Gets or sets the collection of application requests associated with the application.
         /// </summary>
         [SwaggerIgnore]
+
         public virtual ICollection<ApplicationsForRequests>? ApplicationsForRequests { get; set; }
 
         /// <summary>

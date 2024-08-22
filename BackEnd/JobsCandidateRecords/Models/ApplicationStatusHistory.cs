@@ -1,7 +1,9 @@
 ﻿using JobsCandidateRecords.Enums;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace JobsCandidateRecords.Models
 {
