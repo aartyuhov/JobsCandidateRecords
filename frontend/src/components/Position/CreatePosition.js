@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
-import axios from "axios";
+import api from "../../services/api";
 
 const CreatePosition = ({ onCreate }) => {
     const [newPosition, setNewPosition] = useState({ title: '', responsibilities: '', departmentId: 0 });
@@ -53,7 +53,7 @@ const DepartmentList = ({onChange, departmentId}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Department`);
+                const response = await api.get(`/api/Department`);
                 setData(response.data);
                 setLoading(false);
             } catch (error) {

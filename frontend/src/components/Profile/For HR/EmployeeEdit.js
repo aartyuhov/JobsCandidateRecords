@@ -16,8 +16,8 @@ import {ArrowBack} from "@mui/icons-material";
 import {useNavigate, useParams} from "react-router-dom";
 import BasicDatePicker from "../../small-components/BasicDatePicker";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import PositionList from "../../small-components/PositionList";
+import api from "../../../services/api";
 
 const EmployeeEdit = () => {
     const { id } = useParams();
@@ -30,7 +30,7 @@ const EmployeeEdit = () => {
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
-                const response = await axios.get(`/api/EmployeeDTO/${id}`);
+                const response = await api.get(`/api/EmployeeDTO/${id}`);
                 setEmployee(response.data);
                 setLoading(false);
             } catch (error) {
@@ -46,7 +46,7 @@ const EmployeeEdit = () => {
     const SubmitHandler = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.put(`/api/EmployeeDTO`, {
+            const response = await api.put(`/api/EmployeeDTO`, {
                 "id": id,
                 "firstName": event.target.firstName.value,
                 "lastName": event.target.lastName.value,

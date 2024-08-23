@@ -5,7 +5,7 @@ namespace JobsCandidateRecords.Models.DTO
     /// <summary>
     /// Data Transfer Object for updating the status of multiple applications.
     /// </summary>
-    public class UpdateStatusDTO
+    public class UpdateApplicationStatusDTO
     {
         /// <summary>
         /// Gets or sets the list of application IDs to update.
@@ -17,5 +17,4 @@ namespace JobsCandidateRecords.Models.DTO
         /// </summary>
         public ApplicationStatusEnum NewStatus { get; set; }
     }
-
 }

@@ -21,11 +21,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddCors();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policyBuilder =>
+        {
+            policyBuilder.WithOrigins("http://localhost:3000")
+                         .AllowAnyHeader()
+                         .AllowAnyMethod()
+                         .AllowCredentials();
+        });
+});
 
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -41,12 +47,14 @@ builder.Services
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
-//JWT Config
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
-// Validation params
-Byte[]? key = Encoding.ASCII.GetBytes(builder.Configuration["JwtConfig:Secret"]);
-TokenValidationParameters? tokenValidationParams = new TokenValidationParameters
+string? secret = builder.Configuration["JwtConfig:Secret"]
+    ?? throw new InvalidOperationException("JWT secret is not configured.");
+
+Byte[] key = Encoding.ASCII.GetBytes(secret);
+
+TokenValidationParameters tokenValidationParams = new TokenValidationParameters
 {
     ValidateIssuerSigningKey = true,
     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -69,40 +77,41 @@ builder.Services.AddAuthentication(options =>
     jwt.TokenValidationParameters = tokenValidationParams;
 });
 
+builder.Services.AddAuthorization();
+
 builder.Services.AddSingleton(tokenValidationParams);
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<RequestForEmployeeService>();
 builder.Services.AddScoped<EmployeeService>();
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IRequestForEmployeeService, RequestForEmployeeService>();
-builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<ICandidateService, CandidateService>();
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
-    options.TokenLifespan = TimeSpan.FromHours(1); // Set token lifespan
+    options.TokenLifespan = TimeSpan.FromHours(1);
 });
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "My API",
         Version = "v1",
-        Description = "REST APIs "
+        Description = "REST APIs"
     });
-    // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    //Add JWT Bearer Authentication support to Swagger
+
+    // Add JWT Bearer Authentication support to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -113,24 +122,23 @@ builder.Services.AddSwaggerGen(c =>
         BearerFormat = "JWT"
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-   {
-     new OpenApiSecurityScheme
-     {
-       Reference = new OpenApiReference
-       {
-         Type = ReferenceType.SecurityScheme,
-         Id = "Bearer"
-       }
-      },
-      new string[] { }
-    }
-  });
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        Array.Empty<string>()
+        }
+    });
 });
 
 builder.Services.AddSession();
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -138,13 +146,26 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseHttpsRedirection();
+
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
+                                .AllowCredentials()
+                                .AllowAnyHeader()
+                                .AllowAnyMethod());
 
 app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseSession();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = string.Empty;
+});
 
 app.MapControllers();
 
@@ -164,19 +185,5 @@ app.MapControllers();
 //        logger.LogError(ex, "an error occurred seeding the db.");
 //    }
 //}
-
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-    c.RoutePrefix = string.Empty;
-});
-
-app.UseCors(builder => builder.WithOrigins("http://localhost:3000")
-                                .AllowCredentials()
-                                .AllowAnyHeader()
-                                .AllowAnyMethod());
-
-app.UseSession();
 
 app.Run();

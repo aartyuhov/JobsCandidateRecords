@@ -51,6 +51,14 @@
         public string AboutInfo { get; init; }
 
         /// <summary>
+        /// Gets a list of <see cref="ApplicationStatusDTO"/> objects representing the status of multiple applications.
+        /// </summary>
+        /// <value>
+        /// A read-only list of <see cref="ApplicationStatusDTO"/> instances.
+        /// </value>
+        public List<ApplicationStatusDTO>? ApplicationStatusDTOs { get; init; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CandidateDTO"/> record.
         /// </summary>
         /// <param name="id">Candidate identifier.</param>
@@ -62,6 +70,7 @@
         /// <param name="phone">Candidate's phone number.</param>
         /// <param name="address">Candidate's address.</param>
         /// <param name="aboutInfo">Additional information about the candidate.</param>
+        /// <param name="applicationStatusDTOs">Applications statuses of the candidate.</param>
         public CandidateDTO(
             int id,
             string firstName,
@@ -71,7 +80,8 @@
             string email,
             string phone,
             string address,
-            string aboutInfo)
+            string aboutInfo,
+            List<ApplicationStatusDTO> applicationStatusDTOs)
         {
             Id = id;
             FirstName = firstName;
@@ -82,6 +92,7 @@
             Phone = phone;
             Address = address;
             AboutInfo = aboutInfo;
+            ApplicationStatusDTOs = applicationStatusDTOs;
         }
     }
 }

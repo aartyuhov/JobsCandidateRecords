@@ -45,6 +45,9 @@ namespace JobsCandidateRecords.Models
         /// </summary>
         public DateTime ExpiredAt { get; set; }
 
+        /// <summary>
+        /// Represents the foreign key relationship to the <see cref="IdentityUser"/> entity.
+        /// </summary>
         [ForeignKey(nameof(IdentityUserId))]
         [SwaggerIgnore]
         public IdentityUser? IdentityUser { get; set; }
