@@ -3,31 +3,60 @@ import { Paper, Box, Typography, IconButton, TextField, Button } from "@mui/mate
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
+import api from "../../services/api";
 
-function CommentsSection({ comments, setComments }) {
+function CommentsSection({ comments, setComments, applicationId, employeeId }) {
     // Состояние для нового комментария и редактирования
     const [newComment, setNewComment] = useState("");
     const [editCommentId, setEditCommentId] = useState(null);
 
     // Функция для добавления или редактирования комментария
-    const handleAddOrEditComment = () => {
+    const handleAddOrEditComment = async () => {
         if (newComment.trim()) {
             if (editCommentId) {
                 // Редактирование существующего комментария
-                setComments(
-                    comments.map((comment) =>
-                        comment.id === editCommentId ? { ...comment, text: newComment } : comment
-                    )
-                );
-                setEditCommentId(null); // Сброс режима редактирования
+                const updatedComment = {
+                    id: editCommentId,
+                    applicationId: applicationId,
+                    employeeId: employeeId,
+                    text: newComment,
+                    creationDate: dayjs().toISOString(), // Обновляем дату редактирования
+                    authorName: comments.find(comment => comment.id === editCommentId)?.authorName || "Unknown",
+                };
+
+                try {
+                    await api.put(`/api/NotesDTO`, updatedComment);
+                    setComments(
+                        comments.map((comment) =>
+                            comment.id === editCommentId ? updatedComment : comment
+                        )
+                    );
+                    setEditCommentId(null); // Сброс режима редактирования
+                    setNewComment(""); // Очистка поля ввода
+                } catch (error) {
+                    console.error('Error updating comment:', error);
+                }
             } else {
                 // Добавление нового комментария
                 const newCommentObj = {
-                    id: comments.length + 1,
+                    id: 0,
+                    applicationId: applicationId,
+                    employeeId: employeeId,
                     text: newComment,
-                    createdDate: dayjs().format("YYYY-MM-DD HH:mm:ss"),
-                    author: "Current User", // Здесь можно заменить на имя реального пользователя
+                    creationDate: dayjs().toISOString(),
+                    authorName: ""
                 };
+
+                const postComment = async (data) => {
+                    try {
+                        await api.post(`/api/NotesDTO`,data);
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
+                }
+                postComment(newCommentObj).catch(error => console.error(error));
+                newCommentObj.id = comments.length + 1;
+                newCommentObj.authorName = "Current User";
                 setComments([...comments, newCommentObj]);
             }
             setNewComment(""); // Очистка поля ввода
@@ -41,8 +70,13 @@ function CommentsSection({ comments, setComments }) {
     };
 
     // Функция для удаления комментария
-    const handleDeleteComment = (id) => {
-        setComments(comments.filter((comment) => comment.id !== id));
+    const handleDeleteComment = async (id) => {
+        try {
+            await api.delete(`/api/NotesDTO/${id}`);
+            setComments(comments.filter((comment) => comment.id !== id));
+        } catch (error) {
+            console.error('Error updating comment:', error);
+        }
     };
 
     return (
@@ -83,7 +117,7 @@ function CommentsSection({ comments, setComments }) {
                         }}
                     >
                         <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                            {comment.author}
+                            {comment.authorName}
                         </Typography>
                         <Typography
                             variant="body2"
@@ -95,7 +129,7 @@ function CommentsSection({ comments, setComments }) {
                             {comment.text}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                            {comment.createdDate}
+                            {dayjs(comment.creationDate).format('YYYY-MM-DD HH:mm:ss')}
                         </Typography>
                         <Box
                             sx={{

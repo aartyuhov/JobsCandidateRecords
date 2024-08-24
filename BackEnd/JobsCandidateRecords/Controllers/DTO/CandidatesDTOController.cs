@@ -111,7 +111,6 @@ namespace JobsCandidateRecords.Controllers.DTO
         public async Task<ActionResult<IEnumerable<CandidateDTO>>> GetCandidatesByPosition(int positionId)
         {
             var candidates = await _candidateService.GetCandidatesByPositionAsync(positionId);
-            if (!candidates.Any()) return NotFound();
             return Ok(candidates);
         }
     }

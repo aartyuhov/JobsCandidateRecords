@@ -70,7 +70,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return BadRequest();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return BadRequest();
             }
 
-            return NoContent();
+            return Ok();
         }
     }
 }

@@ -133,7 +133,8 @@ namespace JobsCandidateRecords.Controllers
                 candidate.Email,
                 candidate.Phone,
                 candidate.Address,
-                candidate.AboutInfo
+                candidate.AboutInfo,
+                new List<ApplicationStatusDTO>()
             );
 
             var applicationDto = new ApplicationDTO(

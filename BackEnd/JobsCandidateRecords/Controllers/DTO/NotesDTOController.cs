@@ -60,7 +60,6 @@ namespace JobsCandidateRecords.Controllers.DTO
         public async Task<ActionResult<IEnumerable<NoteDTO>>> GetNotesByApplicationId(int applicationId)
         {
             var notes = await _noteService.GetNotesByApplicationIdAsync(applicationId);
-            if (!notes.Any()) return NotFound();
             return Ok(notes);
         }
 

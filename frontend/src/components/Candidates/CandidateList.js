@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Tabs,
     Tab,
@@ -12,19 +12,31 @@ import {
     TableRow,
     TableSortLabel,
     IconButton,
-    Card, Stack, Divider, CircularProgress, Modal, Box, Typography, TextField, Button
+    Card,
+    Stack,
+    Divider,
+    CircularProgress,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Button,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchBar from "../small-components/SearchBar";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
-import {AddCircle, ListAlt} from "@mui/icons-material";
+import { AddCircle, ListAlt } from "@mui/icons-material";
 
 const CandidateList = () => {
     const navigate = useNavigate();
-    const [employeeId, setEmployeeId] = useState([]);
+    const [employeeId, setEmployeeId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [candidates, setCandidates] = useState([]);
@@ -35,6 +47,12 @@ const CandidateList = () => {
 
     const [open, setOpen] = useState(false); // Состояние для модального окна
     const [details, setDetails] = useState(''); // Состояние для хранения введенных данных
+    const [positions, setPositions] = useState([]); // Состояние для хранения позиций
+    const [vacancies, setVacancies] = useState([]); // Состояние для хранения вакансий
+    const [selectedPosition, setSelectedPosition] = useState(''); // Состояние для выбранной позиции
+    const [selectedPositionModal, setSelectedPositionModal] = useState(''); // Состояние для выбранной позиции
+    const [selectedVacancy, setSelectedVacancy] = useState(''); // Состояние для выбранной вакансии
+    const [selectedCandidate, setSelectedCandidate] = useState(null); // Состояние для выбранного кандидата
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,7 +70,36 @@ const CandidateList = () => {
         };
 
         fetchData();
-    },[]);
+
+        const fetchPositions = async () => {
+            try {
+                const positionsResponse = await api.get('/api/Position');
+                setPositions(positionsResponse.data);
+            } catch (error) {
+                console.error('Error fetching positions:', error);
+            }
+        };
+
+        fetchPositions();
+    }, []);
+
+    const fetchVacancies = async (positionId) => {
+        try {
+            const vacanciesResponse = await api.get(`/api/RequestForEmployeeDTO/search?positionId=${positionId}`);
+            setVacancies(vacanciesResponse.data);
+        } catch (error) {
+            console.error('Error fetching vacancies:', error);
+        }
+    };
+
+    const fetchCandidates = async (positionId) => {
+        try {
+            const candidatesResponse = await api.get(`/api/CandidatesDTO/position/${positionId}`);
+            setCandidates(candidatesResponse.data);
+        } catch (error) {
+            console.error('Error fetching candidates:', error);
+        }
+    };
 
     const handleSearchChange = (event) => {
         setSearch(event.target.value);
@@ -68,12 +115,57 @@ const CandidateList = () => {
         setSortBy(property);
     };
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = (candidateId) => {
+        setSelectedCandidate(candidateId);
+        setOpen(true);
+    };
+
     const handleClose = () => setOpen(false);
 
-    const handleApply = () => {
-        console.log('Details:', details);
-        handleClose(); // Закрыть модальное окно после нажатия на "Apply"
+    const handleApply = async () => {
+        console.log("Selected Candidate:", selectedCandidate);
+        console.log("Employee ID:", employeeId);
+        console.log("Selected Vacancy:", selectedVacancy);
+
+        if (!selectedCandidate || !employeeId || !selectedVacancy) {
+            console.error('Required fields are missing');
+            return;
+        }
+
+        const applicationData = {
+            candidateId: selectedCandidate,
+            employeeWhoCreatedId: employeeId,
+            creationDate: new Date().toISOString(),
+            details
+        };
+
+        try {
+            await api.post(`/api/Application?requestForEmployeeId=${selectedVacancy}`, applicationData);
+            handleClose();
+        } catch (error) {
+            console.error('Error submitting application:', error);
+            setError('An error occurred while submitting the application. Please try again later.');
+        }
+    };
+
+    const handlePositionChange = (event) => {
+        const positionId = event.target.value;
+        setSelectedPosition(positionId);
+        fetchCandidates(positionId); // Подгружаем вакансии при изменении позиции
+    };
+
+    const handlePositionInModalChange = (event) => {
+        const positionId = event.target.value;
+        setSelectedPositionModal(positionId);
+        fetchVacancies(positionId); // Подгружаем вакансии при изменении позиции
+    };
+
+    const handleVacancyChange = (event) => {
+        setSelectedVacancy(event.target.value);
+    };
+
+    const handleDetailsChange = (event) => {
+        setDetails(event.target.value);
     };
 
     const filteredCandidates = candidates
@@ -104,6 +196,22 @@ const CandidateList = () => {
                     <Tab label="Males" />
                     <Tab label="Females" />
                 </Tabs>
+                {/* Список позиций */}
+                <FormControl sx={{ mb: 2, width: "25%" }}>
+                    <InputLabel id="positions-select-label">Position</InputLabel>
+                    <Select
+                        labelId="positions-select-label"
+                        value={selectedPosition}
+                        onChange={handlePositionChange}
+                        label="Position">
+                        {positions.map(position => (
+                            <MenuItem key={position.id} value={position.id}>
+                                {position.title}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <SearchBar handleSearchChange={handleSearchChange} search={search} />
                 <IconButton color="primary" onClick={() => navigate(`/candidates/new`)}>
                     <AddIcon />
@@ -180,7 +288,7 @@ const CandidateList = () => {
                                             divider={<Divider orientation="vertical" flexItem />}
                                             spacing={2}
                                         >
-                                            <IconButton color="primary" onClick={handleOpen}>
+                                            <IconButton color="primary" onClick={() => handleOpen(candidate.id)}>
                                                 <AddCircle />
                                             </IconButton>
                                             <IconButton color="primary" onClick={() => navigate(`/candidates/${candidate.id}`)}>
@@ -215,12 +323,47 @@ const CandidateList = () => {
                         bgcolor: 'background.paper',
                         boxShadow: 24,
                         p: 4,
-                        height: 400, // Увеличенная высота окна
+                        height: 550, // Увеличенная высота окна
                     }}
                 >
                     <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
                         Add new application
                     </Typography>
+
+                    {/* Список позиций */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="positions-select-label">Position</InputLabel>
+                        <Select
+                            labelId="positions-select-label"
+                            value={selectedPositionModal}
+                            onChange={handlePositionInModalChange}
+                            label="Position"
+                        >
+                            {positions.map(position => (
+                                <MenuItem key={position.id} value={position.id}>
+                                    {position.title}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    {/* Список вакансий */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="vacancies-select-label">Vacancy</InputLabel>
+                        <Select
+                            labelId="vacancies-select-label"
+                            value={selectedVacancy}
+                            onChange={handleVacancyChange}
+                            label="Vacancy"
+                        >
+                            {vacancies.map(vacancy => (
+                                <MenuItem key={vacancy.id} value={vacancy.id}>
+                                    {vacancy.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
                     <TextField
                         label="Description"
                         fullWidth
@@ -228,7 +371,7 @@ const CandidateList = () => {
                         rows={8} // Количество строк для текстового поля
                         variant="outlined"
                         value={details}
-                        onChange={(e) => setDetails(e.target.value)}
+                        onChange={handleDetailsChange} // Обработчик изменений
                         sx={{ mb: 2 }}
                     />
                     <Button variant="contained" color="primary" onClick={handleApply}>
