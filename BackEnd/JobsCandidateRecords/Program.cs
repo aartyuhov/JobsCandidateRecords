@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -169,7 +168,7 @@ app.UseSwaggerUI(c =>
 
 app.MapControllers();
 
-//Create roles and admin - run DBSeeder
+////Create roles and admin - run DBSeeder
 //using (var scope = app.Services.CreateScope())
 //{
 //    var services = scope.ServiceProvider;
