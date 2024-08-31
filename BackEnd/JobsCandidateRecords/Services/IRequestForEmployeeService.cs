@@ -58,10 +58,21 @@ namespace JobsCandidateRecords.Services
         Task<bool> SendNotificationsAsync(int requestId);
 
         /// <summary>
+        /// Asynchronously updates the status of a request for an employee.
+        /// </summary>
+        /// <param name="updateRequestStatusDTO">An object containing the details necessary to update the request status, 
+        /// including the request ID and the new status to be applied.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains a boolean indicating whether the update 
+        /// was successful (true) or not (false).
+        /// </returns>
+        Task<bool> UpdateRequestStatusAsync(UpdateRequestStatusDTO updateRequestStatusDTO);
+
+        /// <summary>
         /// Updates the status of multiple applications.
         /// </summary>
         /// <param name="updateStatusDTO">The DTO containing application IDs and the new status.</param>
         /// <returns>True if the applications were found and updated, false otherwise.</returns>
-        Task<bool> UpdateApplicationStatusAsync(UpdateStatusDTO updateStatusDTO);
+        Task<bool> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO updateStatusDTO);
     }
 }

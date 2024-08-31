@@ -1,9 +1,5 @@
-// src/CandidateList.js
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Container,
-    TextField,
     Tabs,
     Tab,
     Paper,
@@ -15,156 +11,95 @@ import {
     TableHead,
     TableRow,
     TableSortLabel,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Button,
     IconButton,
-    FormControl,
-    InputLabel,
-    Select,
+    Card,
+    Stack,
+    Divider,
+    CircularProgress,
+    Modal,
+    Box,
+    Typography,
+    TextField,
+    Button,
     MenuItem,
-    Card, Chip
+    Select,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchBar from "../small-components/SearchBar";
-
-const initialCandidates = [
-    {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        dateOfBirth: '1985-01-01',
-        gender: 'Male',
-        email: 'john.doe@example.com',
-        phone: '123-456-7890',
-        address: '123 Main St',
-        aboutInfo: 'Experienced software engineer.'
-    },
-    {
-        id: 2,
-        firstName: 'Jane',
-        lastName: 'Smith',
-        dateOfBirth: '1990-02-14',
-        gender: 'Female',
-        email: 'jane.smith@example.com',
-        phone: '234-567-8901',
-        address: '456 Elm St',
-        aboutInfo: 'Marketing specialist with 5 years of experience.'
-    },
-    {
-        id: 3,
-        firstName: 'Alice',
-        lastName: 'Johnson',
-        dateOfBirth: '1978-03-22',
-        gender: 'Female',
-        email: 'alice.johnson@example.com',
-        phone: '345-678-9012',
-        address: '789 Oak St',
-        aboutInfo: 'HR manager focused on employee relations.'
-    },
-    {
-        id: 4,
-        firstName: 'Bob',
-        lastName: 'Brown',
-        dateOfBirth: '1982-04-10',
-        gender: 'Male',
-        email: 'bob.brown@example.com',
-        phone: '456-789-0123',
-        address: '101 Pine St',
-        aboutInfo: 'Financial analyst with expertise in budgeting.'
-    },
-    {
-        id: 5,
-        firstName: 'Charlie',
-        lastName: 'Davis',
-        dateOfBirth: '1995-05-30',
-        gender: 'Male',
-        email: 'charlie.davis@example.com',
-        phone: '567-890-1234',
-        address: '202 Maple St',
-        aboutInfo: 'Junior web developer with a passion for coding.'
-    },
-    {
-        id: 6,
-        firstName: 'Diana',
-        lastName: 'Wilson',
-        dateOfBirth: '1987-06-18',
-        gender: 'Female',
-        email: 'diana.wilson@example.com',
-        phone: '678-901-2345',
-        address: '303 Birch St',
-        aboutInfo: 'Project manager experienced in agile methodologies.'
-    },
-    {
-        id: 7,
-        firstName: 'Edward',
-        lastName: 'Martinez',
-        dateOfBirth: '1992-07-24',
-        gender: 'Male',
-        email: 'edward.martinez@example.com',
-        phone: '789-012-3456',
-        address: '404 Cedar St',
-        aboutInfo: 'Creative graphic designer with a keen eye for detail.'
-    },
-    {
-        id: 8,
-        firstName: 'Fiona',
-        lastName: 'Garcia',
-        dateOfBirth: '1989-08-15',
-        gender: 'Female',
-        email: 'fiona.garcia@example.com',
-        phone: '890-123-4567',
-        address: '505 Walnut St',
-        aboutInfo: 'Experienced data scientist with a background in statistics.'
-    },
-    {
-        id: 9,
-        firstName: 'George',
-        lastName: 'Lee',
-        dateOfBirth: '1983-09-05',
-        gender: 'Male',
-        email: 'george.lee@example.com',
-        phone: '901-234-5678',
-        address: '606 Cherry St',
-        aboutInfo: 'Business analyst with a focus on process improvement.'
-    },
-    {
-        id: 10,
-        firstName: 'Helen',
-        lastName: 'Taylor',
-        dateOfBirth: '1991-10-29',
-        gender: 'Female',
-        email: 'helen.taylor@example.com',
-        phone: '012-345-6789',
-        address: '707 Aspen St',
-        aboutInfo: 'UX/UI designer with a passion for user-centered design.'
-    }
-
-];
+import { useNavigate } from "react-router-dom";
+import api from "../../services/api";
+import { AddCircle, ListAlt } from "@mui/icons-material";
 
 const CandidateList = () => {
-    const [candidates, setCandidates] = useState(initialCandidates);
+    const navigate = useNavigate();
+    const [employeeId, setEmployeeId] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [candidates, setCandidates] = useState([]);
     const [search, setSearch] = useState('');
     const [sortBy, setSortBy] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
     const [tab, setTab] = useState(0);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [newCandidate, setNewCandidate] = useState({
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
-        gender: '',
-        email: '',
-        phone: '',
-        address: '',
-        aboutInfo: ''
-    });
-    const [editingCandidate, setEditingCandidate] = useState(null);
+
+    const [open, setOpen] = useState(false); // Состояние для модального окна
+    const [details, setDetails] = useState(''); // Состояние для хранения введенных данных
+    const [positions, setPositions] = useState([]); // Состояние для хранения позиций
+    const [vacancies, setVacancies] = useState([]); // Состояние для хранения вакансий
+    const [selectedPosition, setSelectedPosition] = useState(''); // Состояние для выбранной позиции
+    const [selectedPositionModal, setSelectedPositionModal] = useState(''); // Состояние для выбранной позиции
+    const [selectedVacancy, setSelectedVacancy] = useState(''); // Состояние для выбранной вакансии
+    const [selectedCandidate, setSelectedCandidate] = useState(null); // Состояние для выбранного кандидата
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get(`/api/CandidatesDTO`);
+                setCandidates(response.data);
+                const fetchedEmployee = await api.get('/api/Users/get-tuple');
+                setEmployeeId(fetchedEmployee.data.employeeDto.id);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setError('An error occurred while fetching the data. Please try again later.');
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+
+        const fetchPositions = async () => {
+            try {
+                const positionsResponse = await api.get('/api/Position');
+                setPositions(positionsResponse.data);
+            } catch (error) {
+                console.error('Error fetching positions:', error);
+            }
+        };
+
+        fetchPositions();
+    }, []);
+
+    const fetchVacancies = async (positionId) => {
+        try {
+            const vacanciesResponse = await api.get(`/api/RequestForEmployeeDTO/search?positionId=${positionId}`);
+            setVacancies(vacanciesResponse.data);
+        } catch (error) {
+            console.error('Error fetching vacancies:', error);
+        }
+    };
+
+    const fetchCandidates = async (positionId) => {
+        try {
+            const candidatesResponse = await api.get(`/api/CandidatesDTO/position/${positionId}`);
+            setCandidates(candidatesResponse.data);
+        } catch (error) {
+            console.error('Error fetching candidates:', error);
+        }
+    };
 
     const handleSearchChange = (event) => {
         setSearch(event.target.value);
@@ -180,73 +115,57 @@ const CandidateList = () => {
         setSortBy(property);
     };
 
-    const handleOpenDialog = () => {
-        setDialogOpen(true);
+    const handleOpen = (candidateId) => {
+        setSelectedCandidate(candidateId);
+        setOpen(true);
     };
 
-    const handleCloseDialog = () => {
-        setDialogOpen(false);
+    const handleClose = () => setOpen(false);
+
+    const handleApply = async () => {
+        console.log("Selected Candidate:", selectedCandidate);
+        console.log("Employee ID:", employeeId);
+        console.log("Selected Vacancy:", selectedVacancy);
+
+        if (!selectedCandidate || !employeeId || !selectedVacancy) {
+            console.error('Required fields are missing');
+            return;
+        }
+
+        const applicationData = {
+            candidateId: selectedCandidate,
+            employeeWhoCreatedId: employeeId,
+            creationDate: new Date().toISOString(),
+            details
+        };
+
+        try {
+            await api.post(`/api/Application?requestForEmployeeId=${selectedVacancy}`, applicationData);
+            handleClose();
+        } catch (error) {
+            console.error('Error submitting application:', error);
+            setError('An error occurred while submitting the application. Please try again later.');
+        }
     };
 
-    const handleOpenEditDialog = (candidate) => {
-        setEditingCandidate(candidate);
-        setNewCandidate(candidate);
-        setEditDialogOpen(true);
+    const handlePositionChange = (event) => {
+        const positionId = event.target.value;
+        setSelectedPosition(positionId);
+        fetchCandidates(positionId); // Подгружаем вакансии при изменении позиции
     };
 
-    const handleCloseEditDialog = () => {
-        setEditDialogOpen(false);
+    const handlePositionInModalChange = (event) => {
+        const positionId = event.target.value;
+        setSelectedPositionModal(positionId);
+        fetchVacancies(positionId); // Подгружаем вакансии при изменении позиции
     };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setNewCandidate(prev => ({
-            ...prev,
-            [name]: value
-        }));
+    const handleVacancyChange = (event) => {
+        setSelectedVacancy(event.target.value);
     };
 
-    const handleGenderChange = (event) => {
-        setNewCandidate(prev => ({
-            ...prev,
-            gender: event.target.value
-        }));
-    };
-
-    const handleAddCandidate = () => {
-        setCandidates(prev => [
-            ...prev,
-            { id: prev.length + 1, ...newCandidate }
-        ]);
-        setNewCandidate({
-            firstName: '',
-            lastName: '',
-            dateOfBirth: '',
-            gender: '',
-            email: '',
-            phone: '',
-            address: '',
-            aboutInfo: ''
-        });
-        handleCloseDialog();
-    };
-
-    const handleUpdateCandidate = () => {
-        setCandidates(prev => prev.map(candidate =>
-            candidate.id === editingCandidate.id ? newCandidate : candidate
-        ));
-        setEditingCandidate(null);
-        setNewCandidate({
-            firstName: '',
-            lastName: '',
-            dateOfBirth: '',
-            gender: '',
-            email: '',
-            phone: '',
-            address: '',
-            aboutInfo: ''
-        });
-        handleCloseEditDialog();
+    const handleDetailsChange = (event) => {
+        setDetails(event.target.value);
     };
 
     const filteredCandidates = candidates
@@ -277,263 +196,189 @@ const CandidateList = () => {
                     <Tab label="Males" />
                     <Tab label="Females" />
                 </Tabs>
+                {/* Список позиций */}
+                <FormControl sx={{ mb: 2, width: "25%" }}>
+                    <InputLabel id="positions-select-label">Position</InputLabel>
+                    <Select
+                        labelId="positions-select-label"
+                        value={selectedPosition}
+                        onChange={handlePositionChange}
+                        label="Position">
+                        {positions.map(position => (
+                            <MenuItem key={position.id} value={position.id}>
+                                {position.title}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <SearchBar handleSearchChange={handleSearchChange} search={search} />
-                <IconButton color="primary" onClick={handleOpenDialog}>
+                <IconButton color="primary" onClick={() => navigate(`/candidates/new`)}>
                     <AddIcon />
                 </IconButton>
             </Paper>
 
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={sortBy === 'firstName'}
-                                    direction={sortOrder}
-                                    onClick={() => handleSort('firstName')}
-                                >
-                                    Name
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={sortBy === 'email'}
-                                    direction={sortOrder}
-                                    onClick={() => handleSort('email')}
-                                >
-                                    Email
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={sortBy === 'phone'}
-                                    direction={sortOrder}
-                                    onClick={() => handleSort('phone')}
-                                >
-                                    Phone
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={sortBy === 'dateOfBirth'}
-                                    direction={sortOrder}
-                                    onClick={() => handleSort('dateOfBirth')}
-                                >
-                                    Date of Birth
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {filteredCandidates.map(candidate => (
-                            <TableRow key={candidate.id}>
+            {loading ? (
+                <div className={"d-flex align-content-center"}>
+                    <CircularProgress color="inherit" />
+                </div>
+            ) : error ? (
+                <h4 className={"text-center"}>{error}</h4>
+            ) : (
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
                                 <TableCell>
-                                    <Avatar>{candidate.firstName[0]}</Avatar>
+                                    <TableSortLabel
+                                        active={sortBy === 'firstName'}
+                                        direction={sortOrder}
+                                        onClick={() => handleSort('firstName')}
+                                    >
+                                        Name
+                                    </TableSortLabel>
                                 </TableCell>
                                 <TableCell>
-                                    <div>{candidate.firstName} {candidate.lastName}</div>
-                                    <div>{candidate.email}</div>
+                                    <TableSortLabel
+                                        active={sortBy === 'email'}
+                                        direction={sortOrder}
+                                        onClick={() => handleSort('email')}
+                                    >
+                                        Email
+                                    </TableSortLabel>
                                 </TableCell>
-                                <TableCell>{candidate.email}</TableCell>
-                                <TableCell>{candidate.phone}</TableCell>
-                                <TableCell>{candidate.dateOfBirth}</TableCell>
                                 <TableCell>
-                                    <Chip label="Active" variant="outlined"/>
+                                    <TableSortLabel
+                                        active={sortBy === 'phone'}
+                                        direction={sortOrder}
+                                        onClick={() => handleSort('phone')}
+                                    >
+                                        Phone
+                                    </TableSortLabel>
                                 </TableCell>
                                 <TableCell>
-                                    <IconButton color="primary" onClick={() => handleOpenEditDialog(candidate)}>
-                                        <EditIcon />
-                                    </IconButton>
+                                    <TableSortLabel
+                                        active={sortBy === 'dateOfBirth'}
+                                        direction={sortOrder}
+                                        onClick={() => handleSort('dateOfBirth')}
+                                    >
+                                        Date of Birth
+                                    </TableSortLabel>
                                 </TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {filteredCandidates.map(candidate => (
+                                <TableRow key={candidate.id}>
+                                    <TableCell>
+                                        <Avatar>{candidate.firstName[0]}</Avatar>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div>{candidate.firstName} {candidate.lastName}</div>
+                                        <div>{candidate.email}</div>
+                                    </TableCell>
+                                    <TableCell>{candidate.email}</TableCell>
+                                    <TableCell>{candidate.phone}</TableCell>
+                                    <TableCell>{candidate.dateOfBirth}</TableCell>
+                                    <TableCell>
+                                        <Stack
+                                            direction="row"
+                                            divider={<Divider orientation="vertical" flexItem />}
+                                            spacing={2}
+                                        >
+                                            <IconButton color="primary" onClick={() => handleOpen(candidate.id)}>
+                                                <AddCircle />
+                                            </IconButton>
+                                            <IconButton color="primary" onClick={() => navigate(`/candidates/${candidate.id}`)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton color="primary" onClick={() => navigate(`/application/${candidate.id}`)}>
+                                                <ListAlt />
+                                            </IconButton>
+                                        </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
 
-            {/* Диалоговое окно для добавления кандидата */}
-            <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-                <DialogTitle>Add New Candidate</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="dense"
-                        label="First Name"
-                        type="text"
-                        fullWidth
-                        name="firstName"
-                        value={newCandidate.firstName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Last Name"
-                        type="text"
-                        fullWidth
-                        name="lastName"
-                        value={newCandidate.lastName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Date of Birth"
-                        type="date"
-                        fullWidth
-                        name="dateOfBirth"
-                        value={newCandidate.dateOfBirth}
-                        onChange={handleInputChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <FormControl fullWidth margin="dense">
-                        <InputLabel>Gender</InputLabel>
+            {/* Модальное окно */}
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 600, // Увеличенная ширина окна
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        height: 550, // Увеличенная высота окна
+                    }}
+                >
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+                        Add new application
+                    </Typography>
+
+                    {/* Список позиций */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="positions-select-label">Position</InputLabel>
                         <Select
-                            value={newCandidate.gender}
-                            onChange={handleGenderChange}
-                            name="gender"
+                            labelId="positions-select-label"
+                            value={selectedPositionModal}
+                            onChange={handlePositionInModalChange}
+                            label="Position"
                         >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
+                            {positions.map(position => (
+                                <MenuItem key={position.id} value={position.id}>
+                                    {position.title}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
-                    <TextField
-                        margin="dense"
-                        label="Email"
-                        type="email"
-                        fullWidth
-                        name="email"
-                        value={newCandidate.email}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Phone"
-                        type="text"
-                        fullWidth
-                        name="phone"
-                        value={newCandidate.phone}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Address"
-                        type="text"
-                        fullWidth
-                        name="address"
-                        value={newCandidate.address}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="About Info"
-                        type="text"
-                        fullWidth
-                        name="aboutInfo"
-                        value={newCandidate.aboutInfo}
-                        onChange={handleInputChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleAddCandidate} color="primary">
-                        Add
-                    </Button>
-                </DialogActions>
-            </Dialog>
 
-            {/* Диалоговое окно для редактирования кандидата */}
-            <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
-                <DialogTitle>Edit Candidate</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="dense"
-                        label="First Name"
-                        type="text"
-                        fullWidth
-                        name="firstName"
-                        value={newCandidate.firstName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Last Name"
-                        type="text"
-                        fullWidth
-                        name="lastName"
-                        value={newCandidate.lastName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Date of Birth"
-                        type="date"
-                        fullWidth
-                        name="dateOfBirth"
-                        value={newCandidate.dateOfBirth}
-                        onChange={handleInputChange}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <FormControl fullWidth margin="dense">
-                        <InputLabel>Gender</InputLabel>
+                    {/* Список вакансий */}
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                        <InputLabel id="vacancies-select-label">Vacancy</InputLabel>
                         <Select
-                            value={newCandidate.gender}
-                            onChange={handleGenderChange}
-                            name="gender"
+                            labelId="vacancies-select-label"
+                            value={selectedVacancy}
+                            onChange={handleVacancyChange}
+                            label="Vacancy"
                         >
-                            <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
+                            {vacancies.map(vacancy => (
+                                <MenuItem key={vacancy.id} value={vacancy.id}>
+                                    {vacancy.name}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
+
                     <TextField
-                        margin="dense"
-                        label="Email"
-                        type="email"
+                        label="Description"
                         fullWidth
-                        name="email"
-                        value={newCandidate.email}
-                        onChange={handleInputChange}
+                        multiline
+                        rows={8} // Количество строк для текстового поля
+                        variant="outlined"
+                        value={details}
+                        onChange={handleDetailsChange} // Обработчик изменений
+                        sx={{ mb: 2 }}
                     />
-                    <TextField
-                        margin="dense"
-                        label="Phone"
-                        type="text"
-                        fullWidth
-                        name="phone"
-                        value={newCandidate.phone}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Address"
-                        type="text"
-                        fullWidth
-                        name="address"
-                        value={newCandidate.address}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="About Info"
-                        type="text"
-                        fullWidth
-                        name="aboutInfo"
-                        value={newCandidate.aboutInfo}
-                        onChange={handleInputChange}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseEditDialog} color="primary">
-                        Cancel
+                    <Button variant="contained" color="primary" onClick={handleApply}>
+                        Apply
                     </Button>
-                    <Button onClick={handleUpdateCandidate} color="primary">
-                        Update
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                </Box>
+            </Modal>
         </Card>
     );
 };

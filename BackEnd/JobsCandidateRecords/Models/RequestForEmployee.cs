@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JobsCandidateRecords.Enums;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -27,9 +28,9 @@ namespace JobsCandidateRecords.Models
         public DateTime? PublicationDate { get; set; } = null;
 
         /// <summary>
-        /// Number of employees required.
+        /// Gets or sets the status of the request for an employee.
         /// </summary>
-        public int NumberEmployessRequired { get; set; } = 0;
+        public RequestForEmployeeStatusEnum RequestStatus { get; set; }
 
         /// <summary>
         /// Request description.

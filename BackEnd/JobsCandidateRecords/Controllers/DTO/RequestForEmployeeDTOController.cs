@@ -26,6 +26,28 @@ namespace JobsCandidateRecords.Controllers.DTO
         }
 
         /// <summary>
+        /// Gets all employee requests with no closed.
+        /// </summary>
+        /// <returns>A list of employee requests.</returns>
+        [HttpGet("noClosed")]
+        public async Task<ActionResult<IEnumerable<RequestForEmployeeDTO>>> GetRequestsWithNoClosed()
+        {
+            var requests = await _service.GetAllAsync();
+            return Ok(requests.Where(request => request.RequestStatus != Enums.RequestForEmployeeStatusEnum.Closed));
+        }
+
+        /// <summary>
+        /// Gets all employee requests by employeeId.
+        /// </summary>
+        /// <returns>A list of employee requests.</returns>
+        [HttpGet("getByEmployeeCreatedId")]
+        public async Task<ActionResult<IEnumerable<RequestForEmployeeDTO>>> GetRequestsByEmployeeCreatedId(int requestedEmployeeId)
+        {
+            var requests = await _service.GetAllAsync();
+            return Ok(requests.Where(request => request.RequestedEmployeeId == requestedEmployeeId));
+        }
+
+        /// <summary>
         /// Gets an employee request by id.
         /// </summary>
         /// <param name="id">The id of the employee request.</param>
@@ -70,7 +92,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -88,7 +110,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -120,7 +142,7 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -128,8 +150,8 @@ namespace JobsCandidateRecords.Controllers.DTO
         /// </summary>
         /// <param name="updateStatusDTO">The DTO containing the application IDs and the new status.</param>
         /// <returns>A no-content result if the update was successful.</returns>
-        [HttpPut("updateStatus")]
-        public async Task<IActionResult> UpdateApplicationStatus(UpdateStatusDTO updateStatusDTO)
+        [HttpPut("updateapplicationStatus")]
+        public async Task<IActionResult> UpdateApplicationStatus(UpdateApplicationStatusDTO updateStatusDTO)
         {
             var result = await _service.UpdateApplicationStatusAsync(updateStatusDTO);
 
@@ -138,7 +160,25 @@ namespace JobsCandidateRecords.Controllers.DTO
                 return BadRequest();
             }
 
-            return NoContent();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Updates the status of multiple applications.
+        /// </summary>
+        /// <param name="updateStatusDTO">The DTO containing the application IDs and the new status.</param>
+        /// <returns>A no-content result if the update was successful.</returns>
+        [HttpPut("updateRequestStatus")]
+        public async Task<IActionResult> UpdateRequestStatus(UpdateRequestStatusDTO updateStatusDTO)
+        {
+            var result = await _service.UpdateRequestStatusAsync(updateStatusDTO);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }

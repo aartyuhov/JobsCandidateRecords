@@ -14,6 +14,8 @@ import PositionsManagement from "./components/Position/PositionsManagment";
 import CandidateList from "./components/Candidates/CandidateList";
 import EmployeeEdit from "./components/Profile/For HR/EmployeeEdit";
 import RequestsManager from "./components/RequestForEmpoyee/RequestsManager";
+import CandidateProfile from "./components/Candidates/CandidateProfile";
+import ApplicationPage from "./components/Candidates/ApplicationPage";
 
 const App = () => {
 
@@ -24,6 +26,7 @@ const App = () => {
     setUsername(null);
     localStorage.removeItem('username');
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
     navigate('/login');
   }
 
@@ -47,8 +50,13 @@ const App = () => {
             <Route path="/employeeedit/:id" element={<EmployeeEdit />} />
 
             <Route path="candidates" element={<CandidateList />} />
+            <Route path="/candidates/new" element={<CandidateProfile />} />
+            <Route path="/candidates/:id" element={<CandidateProfile />} />
+            <Route path="/application/:id" element={<ApplicationPage />} />
 
-            <Route path="requestsmanager" element={<RequestsManager />} />
+            <Route path="myrequests" element={<RequestsManager viewType="my" />} />
+            <Route path="allrequests" element={<RequestsManager viewType="all" />} />
+
             {/*=======!For authorized users=========*/}
             
             
