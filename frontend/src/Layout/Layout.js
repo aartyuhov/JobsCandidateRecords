@@ -56,7 +56,7 @@ const Layout = ({
 						</li>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
-								to='/requestsmanager'
+								to='/myrequests'
 								className='nav-item text-white no-underline'
 							>
 								<RequestsManagerIcon />{' '}
@@ -86,7 +86,7 @@ const Layout = ({
 						<h5 className='mb-1 mx-2'>Head of Department</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
-								to='/requestsmanager'
+								to='/allrequests'
 								className='nav-item text-white no-underline'
 							>
 								<FormatListBulleted className='text-dark' />{' '}

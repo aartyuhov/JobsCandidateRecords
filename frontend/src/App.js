@@ -54,7 +54,8 @@ const App = () => {
             <Route path="/candidates/:id" element={<CandidateProfile />} />
             <Route path="/application/:id" element={<ApplicationPage />} />
 
-            <Route path="requestsmanager" element={<RequestsManager />} />
+            <Route path="myrequests" element={<RequestsManager viewType="my" />} />
+            <Route path="allrequests" element={<RequestsManager viewType="all" />} />
 
             {/*=======!For authorized users=========*/}
             

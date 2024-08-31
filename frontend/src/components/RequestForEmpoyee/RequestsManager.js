@@ -1,87 +1,93 @@
-import React, { useState, useEffect } from 'react'
-import { Edit, Delete, Visibility } from '@mui/icons-material'
-import PositionList from '../small-components/PositionList'
-import BasicDatePicker from '../small-components/BasicDatePicker'
-import ProgressiveImage from '../small-components/ProgressiveImage'
-import api from '../../services/api'
-import './RequestsManager.css'
-import RequestsFormImage from '../../assets/images/RequestsForm.jpg'
+import React, { useState, useEffect } from 'react';
+import { Edit, Delete, Visibility } from '@mui/icons-material';
+import Chip from '@mui/material/Chip';
+import PositionList from '../small-components/PositionList';
+import BasicDatePicker from '../small-components/BasicDatePicker';
+import ProgressiveImage from '../small-components/ProgressiveImage';
+import api from '../../services/api';
+import './RequestsManager.css';
+import RequestsFormImage from '../../assets/images/RequestsForm.jpg';
+import { RequestForEmployeeStatus } from "../../constants/requeststatus";
 
-const RequestsManager = () => {
-	const [requests, setRequests] = useState([])
-	const [showModal, setShowModal] = useState(false)
-	const [currentRequest, setCurrentRequest] = useState(null)
-	const [selectedPositionId, setSelectedPositionId] = useState('')
-	const [currentUser, setCurrentUser] = useState(null)
-	const [isMounted, setIsMounted] = useState(false)
-	const [viewOnly, setViewOnly] = useState(false)
+const RequestsManager = ({ viewType }) => {
+	const [requests, setRequests] = useState([]);
+	const [showModal, setShowModal] = useState(false);
+	const [currentRequest, setCurrentRequest] = useState(null);
+	const [selectedPositionId, setSelectedPositionId] = useState('');
+	const [currentUser, setCurrentUser] = useState(null);
+	const [isMounted, setIsMounted] = useState(false);
+	const [viewOnly, setViewOnly] = useState(false);
 
 	useEffect(() => {
-		fetchRequests()
-		fetchCurrentUser()
-		setIsMounted(true)
-	}, [])
+		fetchRequests();
+		setIsMounted(true);
+	}, [currentUser, viewType]);
 
 	useEffect(() => {
 		if (currentRequest) {
-			setSelectedPositionId(currentRequest.positionId || '')
+			setSelectedPositionId(currentRequest.positionId || '');
 		} else {
-			setSelectedPositionId('')
+			setSelectedPositionId('');
 		}
-	}, [currentRequest])
+	}, [currentRequest]);
 
 	useEffect(() => {
 		if (showModal) {
-			document.body.style.overflow = 'hidden'
+			document.body.style.overflow = 'hidden';
 		} else {
-			document.body.style.overflow = 'unset'
+			document.body.style.overflow = 'unset';
 		}
 
 		return () => {
-			document.body.style.overflow = 'unset'
-		}
-	}, [showModal])
+			document.body.style.overflow = 'unset';
+		};
+	}, [showModal]);
 
 	const fetchRequests = async () => {
-		try {
-			const response = await api.get('/api/RequestForEmployee')
-			setRequests(response.data)
-		} catch (error) {
-			console.error('Error fetching requests:', error)
+		await fetchCurrentUser();
+		if(currentUser)
+		{
+			const url = viewType === 'my' ? `/api/RequestForEmployeeDTO/getByEmployeeCreatedId?requestedEmployeeId=${currentUser.id}` : '/api/RequestForEmployeeDTO/noClosed';
+			try {
+				const response = await api.get(url);
+				setRequests(response.data);
+			} catch (error) {
+				console.error('Error fetching requests:', error);
+			}
 		}
-	}
+	};
 
 	const fetchCurrentUser = async () => {
 		try {
-			const response = await api.get('/api/Users/get-tuple')
-			setCurrentUser(response.data.employeeDto)
+			const response = await api.get('/api/Users/get-tuple');
+			setCurrentUser(response.data.employeeDto);
 		} catch (error) {
-			console.error('Error fetching current user data:', error)
+			console.error('Error fetching current user data:', error);
 		}
-	}
+	};
 
 	const handleShowModal = (request = null, viewOnly = false) => {
-		setCurrentRequest(request)
-		setViewOnly(viewOnly)
-		setShowModal(true)
+		setCurrentRequest(request);
+		setViewOnly(viewOnly);
+		setShowModal(true);
 
 		window.scrollTo({
 			top: 0,
-		})
-	}
+		});
+	};
 
 	const handleCloseModal = () => {
-		setCurrentRequest(null)
-		setShowModal(false)
-	}
+		setCurrentRequest(null);
+		setShowModal(false);
+	};
 
-	const handlePositionChange = positionId => {
-		setSelectedPositionId(positionId)
-	}
+	const handlePositionChange = (positionId) => {
+		setSelectedPositionId(positionId);
+	};
 
-	const handleSave = async event => {
-		event.preventDefault()
-		const form = event.currentTarget
+	const handleSave = async (event) => {
+		event.preventDefault();
+		const form = event.currentTarget;
 		const newRequest = {
 			id: currentRequest ? currentRequest.id : 0,
 			name: form.name.value.trim(),
@@ -93,43 +99,52 @@ const RequestsManager = () => {
 			description: form.description.value.trim(),
 			positionId: selectedPositionId ? parseInt(selectedPositionId) : null,
 			requestedEmployeeId: currentUser ? currentUser.id : null,
-		}
+		};
 
 		try {
 			if (currentRequest) {
-				await api.put('/api/RequestForEmployeeDTO', newRequest)
+				await api.put('/api/RequestForEmployeeDTO', newRequest);
 			} else {
-				await api.post('/api/RequestForEmployeeDTO', newRequest)
+				await api.post('/api/RequestForEmployeeDTO', newRequest);
 			}
-			fetchRequests()
-			handleCloseModal()
+			fetchRequests();
+			handleCloseModal();
 		} catch (error) {
-			console.error('Error saving request:', error)
+			console.error('Error saving request:', error);
 			if (error.response) {
-				console.error('Response data:', error.response.data)
+				console.error('Response data:', error.response.data);
 				if (error.response.data.errors) {
-					console.error('Validation errors:', error.response.data.errors)
+					console.error('Validation errors:', error.response.data.errors);
 				}
 			}
 		}
-	}
+	};
 
-	const handleDelete = async requestId => {
+	const handleDelete = async (requestId) => {
 		try {
-			await api.delete(`/api/RequestForEmployee/${requestId}`)
-			setRequests(requests.filter(request => request.id !== requestId))
+			await api.delete(`/api/RequestForEmployee/${requestId}`);
+			setRequests(requests.filter((request) => request.id !== requestId));
 		} catch (error) {
-			console.error('Error deleting request:', error)
+			console.error('Error deleting request:', error);
 		}
-	}
+	};
+
+	const getStatusLabel = (statusValue) => {
+		const status = Object.values(RequestForEmployeeStatus).find(
+			(s) => s.value === statusValue
+		);
+		return status ? status.label : 'Unknown';
+	};
 
 	return (
 		<div className='requests-manager-container'>
 			<div className='requests-card'>
-				<h1 className='requests-title'>Job Requests</h1>
-				<button className='new-requests-btn' onClick={() => handleShowModal()}>
-					Add Request
-				</button>
+				<h1 className='requests-title'>{viewType === 'my' ? 'Your Requests' : 'Job Requests'}</h1>
+				{viewType !== 'my' && (
+					<button className='new-requests-btn' onClick={() => handleShowModal()}>
+						Add Request
+					</button>
+				)}
 				<ul className={`requests-list ${isMounted ? 'mounted' : ''}`}>
 					{requests.map((request, index) => (
 						<li
@@ -143,9 +158,24 @@ const RequestsManager = () => {
 								<strong>{request.name}</strong>
 								<strong> </strong>
 								<small>
-									(From {new Date(request.publicationDate).toLocaleDateString()}
-									)
+									(From {new Date(request.publicationDate).toLocaleDateString()})
 								</small>
+								<Chip
+									label={request.positionName}
+									variant="outlined"
+									sx={{
+										marginLeft: '10px',
+										color: 'white',
+										borderColor: '#800000',
+									}}
+								/>
+								<Chip
+									label={getStatusLabel(request.requestStatus)}
+									variant="outlined"
+									color="primary"
+									className="request-status-chip"
+									style={{ marginLeft: '10px' }} // Добавляем отступ слева
+								/>
 							</div>
 							<div className='request-actions'>
 								<button
@@ -184,8 +214,8 @@ const RequestsManager = () => {
 							{viewOnly
 								? 'View Request'
 								: currentRequest
-								? 'Edit Request'
-								: 'Create New Request'}
+									? 'Edit Request'
+									: 'Create New Request'}
 						</h2>
 						<form onSubmit={handleSave} id='request-form'>
 							<div className='input-wrapper'>
@@ -234,7 +264,7 @@ const RequestsManager = () => {
 							</div>
 
 							<div className='input-wrapper'>
-								<textarea
+                                <textarea
 									id='description'
 									className='input-field'
 									name='description'
@@ -259,7 +289,7 @@ const RequestsManager = () => {
 							</div>
 
 							<div className='modal-actions'>
-								{!viewOnly && (
+								{(!viewOnly) && (
 									<button type='submit' className='save-btn'>
 										Save
 									</button>
@@ -280,7 +310,7 @@ const RequestsManager = () => {
 				</div>
 			)}
 		</div>
-	)
-}
+	);
+};
 
-export default RequestsManager
+export default RequestsManager;

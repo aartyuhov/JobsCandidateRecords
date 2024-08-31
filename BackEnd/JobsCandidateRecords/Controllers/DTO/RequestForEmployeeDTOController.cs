@@ -26,6 +26,28 @@ namespace JobsCandidateRecords.Controllers.DTO
         }
 
         /// <summary>
+        /// Gets all employee requests with no closed.
+        /// </summary>
+        /// <returns>A list of employee requests.</returns>
+        [HttpGet("noClosed")]
+        public async Task<ActionResult<IEnumerable<RequestForEmployeeDTO>>> GetRequestsWithNoClosed()
+        {
+            var requests = await _service.GetAllAsync();
+            return Ok(requests.Where(request => request.RequestStatus != Enums.RequestForEmployeeStatusEnum.Closed));
+        }
+
+        /// <summary>
+        /// Gets all employee requests by employeeId.
+        /// </summary>
+        /// <returns>A list of employee requests.</returns>
+        [HttpGet("getByEmployeeCreatedId")]
+        public async Task<ActionResult<IEnumerable<RequestForEmployeeDTO>>> GetRequestsByEmployeeCreatedId(int requestedEmployeeId)
+        {
+            var requests = await _service.GetAllAsync();
+            return Ok(requests.Where(request => request.RequestedEmployeeId == requestedEmployeeId));
+        }
+
+        /// <summary>
         /// Gets an employee request by id.
         /// </summary>
         /// <param name="id">The id of the employee request.</param>

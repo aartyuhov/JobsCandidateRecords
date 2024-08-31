@@ -11,7 +11,9 @@ import {
     CircularProgress,
     TextField,
     Typography,
-    Chip,
+    Select,
+    MenuItem,
+    FormControl,
     Button
 } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,6 +21,7 @@ import CommentsSection from "../small-components/CommentsSection";
 import { SpeakerNotes } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import api from "../../services/api";
+import { ApplicationStatus, UserFriendlyStatusLabels } from "../../constants/applicationstatus";
 
 const ApplicationPage = () => {
     const { id } = useParams();
@@ -35,15 +38,29 @@ const ApplicationPage = () => {
     });
     const [employeeId, setEmployeeId] = useState([]);
     const [selectedDescription, setSelectedDescription] = useState('');
+    const [statusMap, setStatusMap] = useState({});
 
     useEffect(() => {
         const fetchData = async (id) => {
             try {
                 const fetchedCandidate = await api.get(`/api/CandidatesDTO/${id}`);
                 setCandidate(fetchedCandidate.data);
-                setApplications(fetchedCandidate.data.applicationStatusDTOs);
+                const applications = fetchedCandidate.data.applicationStatusDTOs;
+
                 const fetchedEmployee = await api.get('/api/Users/get-tuple');
                 setEmployeeId(fetchedEmployee.data.employeeDto.id);
+
+                // Инициализация статуса для каждого приложения, перевод из label в value
+                const initialStatusMap = {};
+                applications.forEach(app => {
+                    const status = Object.values(ApplicationStatus).find(s => s.label === app.applicationStatus);
+                    if (status) {
+                        initialStatusMap[app.applicationId] = status.value;
+                    }
+                });
+                setStatusMap(initialStatusMap);
+                setApplications(applications);
+
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -70,30 +87,24 @@ const ApplicationPage = () => {
         }
     };
 
-    const handleProgressClick = async (applicationId) => {
-        try {
-            const data = {
-                applicationIds: [applicationId],
-                newStatus: 1 // Assuming 1 represents 'In Process'
-            };
-            await api.put(`/api/RequestForEmployeeDTO/updateapplicationStatus`, data);
-            setApplications(applications.map(app =>
-                app.applicationId === applicationId ? { ...app, applicationStatus: 'InProcess' } : app
-            ));
-        } catch (error) {
-            console.error('Error updating application status:', error);
-        }
+    const handleStatusChange = (applicationId, newStatusValue) => {
+        setStatusMap(prevStatusMap => ({
+            ...prevStatusMap,
+            [applicationId]: newStatusValue
+        }));
     };
 
-    const handleCloseClick = async (applicationId) => {
+    const handleStatusSubmit = async (applicationId) => {
+        const newStatusValue = statusMap[applicationId];
         try {
             const data = {
                 applicationIds: [applicationId],
-                newStatus: 2 // Assuming 2 represents 'Closed'
+                newStatus: newStatusValue
             };
-            await api.put(`/api/RequestForEmployeeDTO/updateapplicationStatus`, data);
+            await api.put(`/api/CandidatesDTO/updateStatus`, data);
+
             setApplications(applications.map(app =>
-                app.applicationId === applicationId ? { ...app, applicationStatus: 'Closed' } : app
+                app.applicationId === applicationId ? { ...app, applicationStatus: Object.keys(UserFriendlyStatusLabels).find(key => ApplicationStatus[key].value === newStatusValue) } : app
             ));
         } catch (error) {
             console.error('Error updating application status:', error);
@@ -117,33 +128,33 @@ const ApplicationPage = () => {
                                 {applications.map((app) => (
                                     <React.Fragment key={app.applicationId}>
                                         <ListItem className="d-flex justify-content-between align-items-center">
-                                            <ListItemText
-                                                primary={app.requestName}
-                                                secondary={`Status: ${app.applicationStatus}`}
-                                            />
+                                            <ListItemText primary={app.requestName} />
                                             <Box display="flex" alignItems="center" gap={1}>
-                                                {app.applicationStatus === 'New' && (
-                                                    <Chip
-                                                        label="To progress"
-                                                        variant="outlined"
-                                                        onClick={() => handleProgressClick(app.applicationId)}
-                                                        sx={{
-                                                            color: 'yellow',
-                                                            borderColor: 'yellow',
-                                                            cursor: 'pointer'
-                                                        }}
-                                                    />
-                                                )}
-                                                {app.applicationStatus === 'InProcess' && (
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="error"
-                                                        onClick={() => handleCloseClick(app.applicationId)}
-                                                        sx={{ color: 'red', borderColor: 'red' }}
+                                                <Box mr={2}>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        Status:
+                                                    </Typography>
+                                                </Box>
+                                                <FormControl variant="outlined" size="small">
+                                                    <Select
+                                                        value={statusMap[app.applicationId]}
+                                                        onChange={(e) => handleStatusChange(app.applicationId, e.target.value)}
+                                                        displayEmpty
                                                     >
-                                                        Closed
-                                                    </Button>
-                                                )}
+                                                        {Object.values(ApplicationStatus).map((status) => (
+                                                            <MenuItem key={status.value} value={status.value}>
+                                                                {UserFriendlyStatusLabels[Object.keys(ApplicationStatus).find(key => ApplicationStatus[key].value === status.value)]}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
+                                                </FormControl>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => handleStatusSubmit(app.applicationId)}
+                                                >
+                                                    Update Status
+                                                </Button>
                                                 <IconButton color="info" onClick={() => handleIconClick(app.applicationId, app.requestName)}>
                                                     <SpeakerNotes />
                                                 </IconButton>
