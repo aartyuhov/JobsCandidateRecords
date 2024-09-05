@@ -22,6 +22,7 @@ import { SpeakerNotes } from "@mui/icons-material";
 import { useParams } from "react-router-dom";
 import api from "../../services/api";
 import { ApplicationStatus, UserFriendlyStatusLabels } from "../../constants/applicationstatus";
+import StatusSection from "../small-components/StatusSection";
 
 const ApplicationPage = () => {
     const { id } = useParams();
@@ -122,49 +123,54 @@ const ApplicationPage = () => {
                     ) : error ? (
                         <h4 className={"text-center"}>{error}</h4>
                     ) : (
-                        <Paper elevation={3} className="p-3">
-                            <h3 className="text-center">Applications for {candidate.lastName + ' ' + candidate.firstName}</h3>
-                            <List>
-                                {applications.map((app) => (
-                                    <React.Fragment key={app.applicationId}>
-                                        <ListItem className="d-flex justify-content-between align-items-center">
-                                            <ListItemText primary={app.requestName} />
-                                            <Box display="flex" alignItems="center" gap={1}>
-                                                <Box mr={2}>
-                                                    <Typography variant="body2" color="textSecondary">
-                                                        Status:
-                                                    </Typography>
-                                                </Box>
-                                                <FormControl variant="outlined" size="small">
-                                                    <Select
-                                                        value={statusMap[app.applicationId]}
-                                                        onChange={(e) => handleStatusChange(app.applicationId, e.target.value)}
-                                                        displayEmpty
+                        <>
+                            <Paper elevation={3} className="p-3 mb-4">
+                                <h3 className="text-center">Applications for {candidate.lastName + ' ' + candidate.firstName}</h3>
+                                <List>
+                                    {applications.map((app) => (
+                                        <React.Fragment key={app.applicationId}>
+                                            <ListItem className="d-flex justify-content-between align-items-center">
+                                                <ListItemText primary={app.requestName} />
+                                                <Box display="flex" alignItems="center" gap={1}>
+                                                    <Box mr={2}>
+                                                        <Typography variant="body2" color="textSecondary">
+                                                            Status:
+                                                        </Typography>
+                                                    </Box>
+                                                    <FormControl variant="outlined" size="small">
+                                                        <Select
+                                                            value={statusMap[app.applicationId]}
+                                                            onChange={(e) => handleStatusChange(app.applicationId, e.target.value)}
+                                                            displayEmpty
+                                                        >
+                                                            {Object.values(ApplicationStatus).map((status) => (
+                                                                <MenuItem key={status.value} value={status.value}>
+                                                                    {UserFriendlyStatusLabels[Object.keys(ApplicationStatus).find(key => ApplicationStatus[key].value === status.value)]}
+                                                                </MenuItem>
+                                                            ))}
+                                                        </Select>
+                                                    </FormControl>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => handleStatusSubmit(app.applicationId)}
                                                     >
-                                                        {Object.values(ApplicationStatus).map((status) => (
-                                                            <MenuItem key={status.value} value={status.value}>
-                                                                {UserFriendlyStatusLabels[Object.keys(ApplicationStatus).find(key => ApplicationStatus[key].value === status.value)]}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    onClick={() => handleStatusSubmit(app.applicationId)}
-                                                >
-                                                    Update Status
-                                                </Button>
-                                                <IconButton color="info" onClick={() => handleIconClick(app.applicationId, app.requestName)}>
-                                                    <SpeakerNotes />
-                                                </IconButton>
-                                            </Box>
-                                        </ListItem>
-                                        <Divider />
-                                    </React.Fragment>
-                                ))}
-                            </List>
-                        </Paper>
+                                                        Update Status
+                                                    </Button>
+                                                    <IconButton color="info" onClick={() => handleIconClick(app.applicationId, app.requestName)}>
+                                                        <SpeakerNotes />
+                                                    </IconButton>
+                                                </Box>
+                                            </ListItem>
+                                            <Divider />
+                                        </React.Fragment>
+                                    ))}
+                                </List>
+                            </Paper>
+                            <Paper elevation={3} className="p-3" style={{ height: '65vh' }}>
+                                <StatusSection/>
+                            </Paper>
+                        </>
                     )}
                 </Grid>
                 <Grid item xs={6}>
