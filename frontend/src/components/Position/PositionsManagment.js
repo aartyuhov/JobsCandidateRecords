@@ -30,7 +30,7 @@ const PositionsManagement = () => {
                 setLoading(true);
                 await api.post(`/api/Position`, newPosition);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error creating data:', error);
             }
             setLoading(false);
         };
@@ -39,10 +39,32 @@ const PositionsManagement = () => {
     };
 
     const handleDelete = (id) => {
+        const fetchData = async (id) => {
+            try {
+                setLoading(true);
+                await api.delete(`/api/Position/${id}`);
+            } catch (error) {
+                console.error('Error deleting data:', error);
+            }
+            setLoading(false);
+        };
+        fetchData(id);
+
         setPositions(positions.filter((position) => position.id !== id));
     };
 
     const handleEdit = (updatedPosition) => {
+        const fetchData = async (newPosition) => {
+            try {
+                setLoading(true);
+                await api.put(`/api/Position/${newPosition.id}`, newPosition);
+            } catch (error) {
+                console.error('Error editing data:', error);
+            }
+            setLoading(false);
+        };
+        fetchData(updatedPosition);
+
         const updatedPositions = positions.map((position) =>
             position.id === updatedPosition.id ? updatedPosition : position
         );

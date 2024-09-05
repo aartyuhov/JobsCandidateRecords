@@ -107,7 +107,7 @@ namespace JobsCandidateRecords.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace JobsCandidateRecords.Controllers
             _context.Positions.Remove(position);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
         private bool PositionExists(int id)
         {

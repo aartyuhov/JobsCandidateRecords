@@ -16,6 +16,8 @@ import EmployeeEdit from "./components/Profile/For HR/EmployeeEdit";
 import RequestsManager from "./components/RequestForEmpoyee/RequestsManager";
 import CandidateProfile from "./components/Candidates/CandidateProfile";
 import ApplicationPage from "./components/Candidates/ApplicationPage";
+import DepartmentsManagement from "./components/Department/DepartmentsManagement";
+import CompaniesManagement from "./components/Company/CompaniesManagement";
 
 const App = () => {
 
@@ -62,6 +64,8 @@ const App = () => {
             
             {/*=======For admin=========*/}
             <Route path="positions" element={<PositionsManagement />} />
+            <Route path="departments" element={<DepartmentsManagement />} />
+            <Route path="companies" element={<CompaniesManagement />} />
             {/*=======!For admin=========*/}
           </Route>
           <Route path="*" element={<NotExistPage />} />

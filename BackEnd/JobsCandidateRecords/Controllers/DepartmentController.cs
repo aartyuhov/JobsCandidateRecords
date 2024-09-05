@@ -108,7 +108,7 @@ namespace JobsCandidateRecords.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace JobsCandidateRecords.Controllers
             _context.Departments.Remove(department);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
         private bool DepartmentExists(int id)
         {
