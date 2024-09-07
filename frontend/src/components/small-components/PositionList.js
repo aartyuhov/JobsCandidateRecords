@@ -46,7 +46,7 @@ const PositionList = ({selectedPositionId, handlePositionChange}) => {
                     <Select
                         label="Position"
                         name="positionId"
-                        defaultValue={selectedPositionId}
+                        value={selectedPositionId}
                         onChange={(e) => handlePositionChange(e.target.value)}
                     >
                         {data.map(item =>

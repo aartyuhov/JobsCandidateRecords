@@ -32,6 +32,7 @@ const EmployeeEdit = () => {
             try {
                 const response = await api.get(`/api/EmployeeDTO/${id}`);
                 setEmployee(response.data);
+                setSelectedPositionId(response.data.positionId);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching employee data:', error);

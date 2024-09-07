@@ -77,7 +77,7 @@ const DepartmentList = ({onChange, departmentId}) => {
                 (
                     <FormControl variant="outlined" fullWidth required margin="normal">
                         <InputLabel>Department</InputLabel>
-                        <Select label="Department" name="departmentId" defaultValue="" onChange={onChange}>
+                        <Select label="Department" name="departmentId" defaultValue={departmentId} onChange={onChange}>
                             {data.map(item =>
                                 <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                             )}
