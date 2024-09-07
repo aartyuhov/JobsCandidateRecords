@@ -39,6 +39,7 @@ const ApplicationPage = () => {
     });
     const [employeeId, setEmployeeId] = useState([]);
     const [selectedDescription, setSelectedDescription] = useState('');
+    const [statuses, setStatuses] = useState([]);
     const [statusMap, setStatusMap] = useState({});
 
     useEffect(() => {
@@ -46,10 +47,11 @@ const ApplicationPage = () => {
             try {
                 const fetchedCandidate = await api.get(`/api/CandidatesDTO/${id}`);
                 setCandidate(fetchedCandidate.data);
-                const applications = fetchedCandidate.data.applicationStatusDTOs;
 
                 const fetchedEmployee = await api.get('/api/Users/get-tuple');
                 setEmployeeId(fetchedEmployee.data.employeeDto.id);
+
+                const applications = fetchedCandidate.data.applicationStatusDTOs;
 
                 // Инициализация статуса для каждого приложения, перевод из label в value
                 const initialStatusMap = {};
@@ -78,8 +80,13 @@ const ApplicationPage = () => {
             setSelectedDescription(fetchedApplication.data.details);
             setSelectedApplicationId(applicationId);
             setSelectedApplicationName(requestName);
+
             const fetchedNotes = await api.get(`/api/NotesDTO/application/${applicationId}`);
             setComments(fetchedNotes.data);
+
+            const fetchedStatuses = await api.get(`/api/ApplicationStatusHistory/applicationId=${applicationId}`);
+            setStatuses(fetchedStatuses.data);
+
             setLoading(false);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -168,7 +175,7 @@ const ApplicationPage = () => {
                                 </List>
                             </Paper>
                             <Paper elevation={3} className="p-3" style={{ height: '65vh' }}>
-                                <StatusSection/>
+                                <StatusSection statuses={statuses}/>
                             </Paper>
                         </>
                     )}

@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import { Paper, Box, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import {UserFriendlyStatusLabels} from "../../constants/applicationstatus";
 
-function StatusSection() {
-    // Тестовые данные для статусов
-    const [statuses] = useState([
-        {
-            id: 1,
-            statusName: "Application Submitted",
-            changeDate: dayjs().subtract(7, 'day').toISOString(),
-        },
-        {
-            id: 2,
-            statusName: "Under Review",
-            changeDate: dayjs().subtract(3, 'day').toISOString(),
-        },
-        {
-            id: 3,
-            statusName: "Approved",
-            changeDate: dayjs().toISOString(),
-        },
-    ]);
+function StatusSection({ statuses }) {
+    const getStatusName = (statusValue) => {
+        switch (statusValue) {
+            case 0:
+                return UserFriendlyStatusLabels.NEW;
+            case 1:
+                return UserFriendlyStatusLabels.IN_PROCESS;
+            case 2:
+                return UserFriendlyStatusLabels.REJECTED_HR;
+            case 3:
+                return UserFriendlyStatusLabels.UNDER_MANAGER_APPROVAL;
+            case 4:
+                return UserFriendlyStatusLabels.REJECTED_MANAGER;
+            case 5:
+                return UserFriendlyStatusLabels.INTERVIEW_PROCESS;
+            case 6:
+                return UserFriendlyStatusLabels.UNDER_APPROVAL_AFTER_INTERVIEW;
+            case 7:
+                return UserFriendlyStatusLabels.REJECTED_AFTER_INTERVIEW;
+            case 8:
+                return UserFriendlyStatusLabels.UNDER_FINAL_APPROVAL;
+            case 9:
+                return UserFriendlyStatusLabels.REJECTED_FINAL;
+            case 10:
+                return UserFriendlyStatusLabels.APPROVED_FINAL;
+            case 11:
+                return UserFriendlyStatusLabels.NOT_SELECTED;
+            default:
+                return "Unknown";
+        }
+    };
 
     return (
         <Paper
@@ -60,10 +73,10 @@ function StatusSection() {
                         }}
                     >
                         <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-                            {status.statusName}
+                            {getStatusName(status.applicationStatus)}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                            {dayjs(status.changeDate).format('YYYY-MM-DD HH:mm:ss')}
+                            {dayjs(status.decisionDate).format('YYYY-MM-DD HH:mm:ss')}
                         </Typography>
                     </Box>
                 ))}
