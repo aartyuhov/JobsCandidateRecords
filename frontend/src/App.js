@@ -18,6 +18,7 @@ import CandidateProfile from "./components/Candidates/CandidateProfile";
 import ApplicationPage from "./components/Candidates/ApplicationPage";
 import DepartmentsManagement from "./components/Department/DepartmentsManagement";
 import CompaniesManagement from "./components/Company/CompaniesManagement";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 
 const App = () => {
 
@@ -37,6 +38,7 @@ const App = () => {
         <Routes>
           <Route element={ <ProtectedRoute isAllowed={!username} redirectPath={"/"}/> }>
             <Route path="login" element={<Login />} />
+            <Route path="forgot-password" element={<ForgotPassword />} />
           </Route>
           <Route element={
             <Layout username={username} logoutHandler={logoutHandler}>

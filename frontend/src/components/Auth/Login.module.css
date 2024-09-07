@@ -88,3 +88,18 @@
     transform: scale(1);
   }
 }
+
+.forgotPasswordContainer {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.forgotPasswordLink {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+}
