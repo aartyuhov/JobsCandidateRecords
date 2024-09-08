@@ -1,4 +1,5 @@
 ﻿using JobsCandidateRecords.Data;
+using JobsCandidateRecords.Enums;
 using JobsCandidateRecords.Models;
 using JobsCandidateRecords.Models.DTO;
 using Microsoft.EntityFrameworkCore;
@@ -45,24 +46,14 @@ namespace JobsCandidateRecords.Services
                 c.AboutInfo,
                 c.Applications?.Select(a => new ApplicationStatusDTO(
                     a.Id,
-                    a.ApplicationStatusHistories?.Count > 0
-                     ? a.ApplicationStatusHistories
-                     .Select(s => s.IdentityUserId)
-                     .FirstOrDefault()?.ToString() ?? string.Empty
-                     : string.Empty,
-                    a.ApplicationStatusHistories?.Count > 0
-                     ? a.ApplicationStatusHistories
-                     .Select(s => s.EmployeeId)
-                     .FirstOrDefault()?.ToString() ?? string.Empty
-                     : string.Empty,
                     a.ApplicationsForRequests?.Count > 0
                         ? a.ApplicationsForRequests.First().RequestForEmployee?.Name ?? string.Empty
                         : string.Empty,
                     a.ApplicationStatusHistories?.Count > 0
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
-                            .FirstOrDefault()?.ApplicationStatus.ToString() ?? string.Empty
-                        : string.Empty
+                            .FirstOrDefault()?.ApplicationStatus ?? ApplicationStatusEnum.NotSelected
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             ));
 
@@ -100,16 +91,6 @@ namespace JobsCandidateRecords.Services
                 candidate.AboutInfo,
                 candidate.Applications?.Select(a => new ApplicationStatusDTO(
                     a.Id,
-                    a.ApplicationStatusHistories != null && a.ApplicationStatusHistories.Count != 0
-                        ? a.ApplicationStatusHistories
-                            .Select(s => s.IdentityUserId)
-                            .FirstOrDefault()?.ToString()
-                        : string.Empty,
-                    a.ApplicationStatusHistories != null && a.ApplicationStatusHistories.Count != 0
-                        ? a.ApplicationStatusHistories
-                            .Select(s => s.EmployeeId)
-                            .FirstOrDefault()?.ToString()
-                        : string.Empty,
                     (a.ApplicationsForRequests?.Count != 0) == true
                         ? a.ApplicationsForRequests?.First().RequestForEmployee?.Name ?? string.Empty
                         : string.Empty,
@@ -117,8 +98,8 @@ namespace JobsCandidateRecords.Services
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
                             .Select(s => s.ApplicationStatus)
-                            .FirstOrDefault().ToString()
-                        : string.Empty
+                            .FirstOrDefault()
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             );
         }
@@ -260,16 +241,6 @@ namespace JobsCandidateRecords.Services
                 c.AboutInfo,
                 c.Applications?.Select(app => new ApplicationStatusDTO(
                     app.Id,
-                    app.ApplicationStatusHistories != null && app.ApplicationStatusHistories.Count != 0
-                        ? app.ApplicationStatusHistories
-                            .Select(s => s.IdentityUserId)
-                            .FirstOrDefault()?.ToString()
-                        : string.Empty,
-                    app.ApplicationStatusHistories != null && app.ApplicationStatusHistories.Count != 0
-                        ? app.ApplicationStatusHistories
-                            .Select(s => s.EmployeeId)
-                            .FirstOrDefault()?.ToString()
-                        : string.Empty,
                     app.ApplicationsForRequests?.Where(r => r.RequestForEmployee != null && r.RequestForEmployee.PositionId == positionId)
                         .Select(r => r.RequestForEmployee?.Name)
                         .FirstOrDefault() ?? "Unknown",
@@ -277,8 +248,8 @@ namespace JobsCandidateRecords.Services
                         ? app.ApplicationStatusHistories
                             .OrderByDescending(ash => ash.DecisionDate)
                             .Select(ash => ash.ApplicationStatus)
-                            .FirstOrDefault().ToString()
-                        : string.Empty
+                            .FirstOrDefault()
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             ));
 

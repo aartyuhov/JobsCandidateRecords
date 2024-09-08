@@ -1,5 +1,6 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -110,7 +111,7 @@ namespace JobsCandidateRecords.Controllers
         /// PostApplicationStatusHistory.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<ApplicationStatusHistory>> PostApplicationStatusHistory(ApplicationStatusHistory applicationStatusHistory)
+        public async Task<ActionResult<ApplicationStatusHistory>> PostApplicationStatusHistory(ApplicationStatusDTO applicationStatusDTO)
         {
 
             if (!ModelState.IsValid)
@@ -131,13 +132,20 @@ namespace JobsCandidateRecords.Controllers
                 return NotFound("User with Employee wasn't found");
             }
 
-            applicationStatusHistory.IdentityUserId = userId;
-
             var employeeId = await _context.Employees
                 .Where(e => e.IdentityUserId == userId)
                 .Select(e => e.Id).FirstOrDefaultAsync();
 
-            applicationStatusHistory.EmployeeId = employeeId.ToString();
+
+            var applicationStatusHistory = new ApplicationStatusHistory
+            {
+                ApplicationId = applicationStatusDTO.ApplicationId,
+                IdentityUserId = userId,
+                EmployeeId = employeeId.ToString(),
+                ApplicationStatus = applicationStatusDTO.ApplicationStatus,
+                DecisionDate = DateTime.Now,
+            };
+
 
             _context.ApplicationStatusHistories.Add(applicationStatusHistory);
             await _context.SaveChangesAsync();

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobsCandidateRecords.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240908185759_addEmployeeIdUserIdApplicationStatusHistory")]
-    partial class addEmployeeIdUserIdApplicationStatusHistory
+    [Migration("20240908192132_AddAPIApplication")]
+    partial class AddAPIApplication
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
