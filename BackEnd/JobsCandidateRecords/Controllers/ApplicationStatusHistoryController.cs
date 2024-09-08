@@ -47,6 +47,17 @@ namespace JobsCandidateRecords.Controllers
         }
 
         /// <summary>
+        /// Get application status history by applicationId
+        /// </summary>
+        [HttpGet("applicationId={applicationId}")]
+        public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistoryByApplicationId(int applicationId)
+        {
+            return await _context.ApplicationStatusHistories
+                                                .Where(status => status.ApplicationId == applicationId)
+                                                .ToListAsync();
+        }
+
+        /// <summary>
         /// GetApplicationStatusHistory.
         /// </summary>
         [HttpGet("{id}")]

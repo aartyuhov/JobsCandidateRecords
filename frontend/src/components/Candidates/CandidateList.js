@@ -60,7 +60,7 @@ const CandidateList = () => {
                 const response = await api.get(`/api/CandidatesDTO`);
                 setCandidates(response.data);
                 const fetchedEmployee = await api.get('/api/Users/get-tuple');
-                setEmployeeId(fetchedEmployee.data.employeeDto.id);
+                setEmployeeId(fetchedEmployee.data.employeeDto.id ?? "");
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);

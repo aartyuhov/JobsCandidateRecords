@@ -103,7 +103,7 @@ namespace JobsCandidateRecords.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok();
         }
 
 
@@ -146,7 +146,7 @@ namespace JobsCandidateRecords.Controllers
             _context.Companies.Remove(company);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool CompanyExists(int id)

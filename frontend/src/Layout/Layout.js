@@ -51,7 +51,7 @@ const Layout = ({
 					<ul className='list-unstyled'>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link to='/' className='nav-item text-white no-underline'>
-								<DashboardIcon /> <span className='px-3'>Dashboard</span>
+								<DashboardIcon/> <span className='px-3'>Dashboard</span>
 							</Link>
 						</li>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
@@ -59,18 +59,18 @@ const Layout = ({
 								to='/myrequests'
 								className='nav-item text-white no-underline'
 							>
-								<RequestsManagerIcon />{' '}
+								<RequestsManagerIcon/>{' '}
 								<span className='px-3'>Your Requests</span>
 							</Link>
 						</li>
-						<hr />
+						<hr/>
 						<h5 className='mb-1 mx-2'>HR</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/employees'
 								className='nav-item text-white no-underline'
 							>
-								<EmployeeListIcon /> <span className='px-3'>Employee list</span>
+								<EmployeeListIcon/> <span className='px-3'>Employee list</span>
 							</Link>
 						</li>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
@@ -78,30 +78,48 @@ const Layout = ({
 								to='/candidates'
 								className='nav-item text-white no-underline'
 							>
-								<EmployeeListIcon />{' '}
+								<EmployeeListIcon/>{' '}
 								<span className='px-3'>Candidate list</span>
 							</Link>
 						</li>
-						<hr />
+						<hr/>
 						<h5 className='mb-1 mx-2'>Head of Department</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/allrequests'
 								className='nav-item text-white no-underline'
 							>
-								<FormatListBulleted className='text-dark' />{' '}
+								<RequestsManagerIcon/>{' '}
 								<span className='px-3'>Requests</span>
 							</Link>
 						</li>
-						<hr />
+						<hr/>
 						<h5 className='mb-1 mx-2'>Admin</h5>
 						<li className='mb-1 d-flex align-items-center cursor-pointer'>
 							<Link
 								to='/positions'
 								className='nav-item text-white no-underline'
 							>
-								<FormatListBulleted className='text-dark' />{' '}
+								<FormatListBulleted className='text-dark'/>{' '}
 								<span className='px-3'>Positions</span>
+							</Link>
+						</li>
+						<li className='mb-1 d-flex align-items-center cursor-pointer'>
+							<Link
+								to='/departments'
+								className='nav-item text-white no-underline'
+							>
+								<FormatListBulleted className='text-dark'/>{' '}
+								<span className='px-3'>Departments</span>
+							</Link>
+						</li>
+						<li className='mb-1 d-flex align-items-center cursor-pointer'>
+							<Link
+								to='/companies'
+								className='nav-item text-white no-underline'
+							>
+								<FormatListBulleted className='text-dark'/>{' '}
+								<span className='px-3'>Companies</span>
 							</Link>
 						</li>
 					</ul>

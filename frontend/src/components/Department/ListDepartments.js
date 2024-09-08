@@ -13,12 +13,12 @@ import {
 } from "@mui/material";
 import {Delete, Edit} from "@mui/icons-material";
 
-const ListPositions = ({ positions, onDelete, onEdit }) => {
+const ListDepartments = ({ departments, onDelete, onEdit }) => {
     const [openEditModal, setOpenEditModal] = useState(false);
-    const [editPosition, setEditPosition] = useState({ id: '', title: '', responsibilities: '', departmentId: 0 });
+    const [editDepartment, setEditDepartment] = useState({ id: '', name: '', description: '', companyId: 0, companyName: '' });
 
-    const handleEditModalOpen = (position) => {
-        setEditPosition(position);
+    const handleEditModalOpen = (department) => {
+        setEditDepartment(department);
         setOpenEditModal(true);
     };
 
@@ -31,13 +31,13 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
     };
 
     const handleEdit = () => {
-        onEdit(editPosition);
+        onEdit(editDepartment);
         setOpenEditModal(false);
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditPosition((prev) => ({
+        setEditDepartment((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -58,29 +58,29 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
     return (
         <>
             <TableContainer component={Paper}>
-                <Table aria-label="positions table">
+                <Table aria-label="departments table">
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Responsibilities</TableCell>
-                            <TableCell>Department ID</TableCell>
-                            <TableCell>Department Name</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>Company ID</TableCell>
+                            <TableCell>Company Name</TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {positions.map((position) => (
-                            <TableRow key={position.id}>
-                                <TableCell>{position.id}</TableCell>
-                                <TableCell>{position.title}</TableCell>
-                                <TableCell>{position.responsibilities}</TableCell>
-                                <TableCell>{position.departmentId}</TableCell>
-                                <TableCell>{position.departmentName}</TableCell>
+                        {departments.map((department) => (
+                            <TableRow key={department.id}>
+                                <TableCell>{department.id}</TableCell>
+                                <TableCell>{department.name}</TableCell>
+                                <TableCell>{department.description}</TableCell>
+                                <TableCell>{department.companyId}</TableCell>
+                                <TableCell>{department.companyName}</TableCell>
                                 <TableCell>
                                     <Button
                                         startIcon={<Edit />}
-                                        onClick={() => handleEditModalOpen(position)}
+                                        onClick={() => handleEditModalOpen(department)}
                                         variant="outlined"
                                         color="primary"
                                     >
@@ -88,7 +88,7 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
                                     </Button>
                                     <Button
                                         startIcon={<Delete />}
-                                        onClick={() => handleDelete(position.id)}
+                                        onClick={() => handleDelete(department.id)}
                                         variant="outlined"
                                         color="secondary"
                                         style={{ marginLeft: '10px' }}
@@ -105,32 +105,32 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
             <Modal
                 open={openEditModal}
                 onClose={handleEditModalClose}
-                aria-labelledby="edit-position-modal"
-                aria-describedby="form-to-edit-position"
+                aria-labelledby="edit-department-modal"
+                aria-describedby="form-to-edit-department"
             >
                 <div style={modalStyle}>
-                    <h2 id="edit-position-modal">Edit Position</h2>
+                    <h2 id="edit-department-modal">Edit Department</h2>
                     <TextField
-                        label="Title"
-                        name="title"
-                        value={editPosition.title}
+                        label="Name"
+                        name="name"
+                        value={editDepartment.name}
                         onChange={handleChange}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Responsibilities"
-                        name="responsibilities"
-                        value={editPosition.responsibilities}
+                        label="Description"
+                        name="description"
+                        value={editDepartment.description}
                         onChange={handleChange}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Department ID"
-                        name="departmentId"
+                        label="Company ID"
+                        name="companyId"
                         type="number"
-                        value={editPosition.departmentId}
+                        value={editDepartment.companyId}
                         onChange={handleChange}
                         fullWidth
                         margin="normal"
@@ -144,4 +144,4 @@ const ListPositions = ({ positions, onDelete, onEdit }) => {
     );
 };
 
-export default ListPositions;
+export default ListDepartments;

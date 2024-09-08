@@ -19,7 +19,7 @@ const RequestsManager = ({ viewType }) => {
 	const [viewOnly, setViewOnly] = useState(false);
 
 	useEffect(() => {
-		fetchRequests();
+		fetchRequests().catch(error => console.log(error));
 		setIsMounted(true);
 	}, [currentUser, viewType]);
 
@@ -44,8 +44,11 @@ const RequestsManager = ({ viewType }) => {
 	}, [showModal]);
 
 	const fetchRequests = async () => {
-		await fetchCurrentUser();
-		if(currentUser)
+		if(!currentUser)
+		{
+			await fetchCurrentUser();
+		}
+		else
 		{
 			const url = viewType === 'my' ? `/api/RequestForEmployeeDTO/getByEmployeeCreatedId?requestedEmployeeId=${currentUser.id}` : '/api/RequestForEmployeeDTO/noClosed';
 			try {

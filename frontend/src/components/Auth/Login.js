@@ -1,12 +1,12 @@
-import React, {useState} from 'react'
-import styles from './Login.module.css'
+import React, { useState } from 'react';
+import styles from './Login.module.css';
 import api from "../../services/api";
 
 const Login = () => {
 	const [error, setError] = useState(null);
 
 	const handleSubmit = async event => {
-		event.preventDefault()
+		event.preventDefault();
 		const email = event.target.email.value;
 		const password = event.target.password.value;
 		try {
@@ -72,6 +72,12 @@ const Login = () => {
 							placeholder='Enter your password'
 						/>
 					</div>
+					{/* Добавляем ссылку "Забыли пароль?" */}
+					<div className={styles.forgotPasswordContainer}>
+						<a href="/forgot-password" className={styles.forgotPasswordLink}>
+							Forgot password?
+						</a>
+					</div>
 					<button type='submit' className={styles.loginButton}>
 						Login
 					</button>
@@ -81,4 +87,4 @@ const Login = () => {
 	)
 }
 
-export default Login
+export default Login;
