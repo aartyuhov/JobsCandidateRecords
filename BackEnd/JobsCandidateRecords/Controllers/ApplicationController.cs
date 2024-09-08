@@ -97,7 +97,7 @@ namespace JobsCandidateRecords.Controllers
             var application = new Application
             {
                 CandidateId = createApplicationDto.CandidateId,
-                Candidate = candidate, 
+                Candidate = candidate,
                 EmployeeWhoCreatedId = createApplicationDto.EmployeeWhoCreatedId,
                 CreationDate = createApplicationDto.CreationDate,
                 Details = createApplicationDto.Details,
@@ -143,7 +143,7 @@ namespace JobsCandidateRecords.Controllers
                 application.EmployeeWhoCreatedId,
                 application.CreationDate,
                 application.Details,
-                Enums.ApplicationStatusEnum.New.ToString() 
+                Enums.ApplicationStatusEnum.New.ToString()
             );
 
             return CreatedAtAction(nameof(GetApplication), new { id = application.Id }, applicationDto);
@@ -165,6 +165,35 @@ namespace JobsCandidateRecords.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// GetPositionbyApplicationId.
+        /// </summary>
+        [HttpGet("positions/{applicationId}")]
+        public async Task<ActionResult<Application>> GetPosition(int applicationId)
+        {
+
+            var query = from positions in _context.Positions
+                        join requestsForEmployees in _context.RequestsForEmployees on positions.Id equals requestsForEmployees.PositionId
+                        join applicationsForRequests in _context.ApplicationsForRequests on requestsForEmployees.Id equals applicationsForRequests.RequestForEmployeeId
+                        join applications in _context.Applications on applicationsForRequests.ApplicationId equals applications.Id
+                        where applications.Id == applicationId
+                        select new
+                        {
+                            PositionId = positions.Id,
+                            PositionTitle = positions.Title
+                        };
+
+            var position = await query.ToListAsync();
+
+
+            if ((position == null) || (position.Count == 0))
+            {
+                return NotFound();
+            }
+
+            return Ok(position);
         }
         private bool ApplicationExists(int id)
         {

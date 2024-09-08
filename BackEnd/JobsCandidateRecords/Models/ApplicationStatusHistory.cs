@@ -25,6 +25,16 @@ namespace JobsCandidateRecords.Models
         public int ApplicationId { get; set; }
 
         /// <summary>
+        /// Gets or sets the ID of the identity user associated with the creating application status hystory.
+        /// </summary>
+        public string? IdentityUserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the ID of the employee associated with the creating application status hystory.
+        /// </summary>
+        public string? EmployeeId { get; set; }
+
+        /// <summary>
         /// Gets or sets the related application.
         /// </summary>
         [SwaggerIgnore]
