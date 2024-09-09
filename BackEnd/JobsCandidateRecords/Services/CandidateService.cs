@@ -1,9 +1,8 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Enums;
-using JobsCandidateRecords.Models.DTO;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace JobsCandidateRecords.Services
 {
@@ -53,8 +52,8 @@ namespace JobsCandidateRecords.Services
                     a.ApplicationStatusHistories?.Count > 0
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
-                            .FirstOrDefault()?.ApplicationStatus.ToString() ?? string.Empty
-                        : string.Empty
+                            .FirstOrDefault()?.ApplicationStatus ?? ApplicationStatusEnum.NotSelected
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             ));
 
@@ -99,8 +98,8 @@ namespace JobsCandidateRecords.Services
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
                             .Select(s => s.ApplicationStatus)
-                            .FirstOrDefault().ToString()
-                        : string.Empty
+                            .FirstOrDefault()
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             );
         }
@@ -249,8 +248,8 @@ namespace JobsCandidateRecords.Services
                         ? app.ApplicationStatusHistories
                             .OrderByDescending(ash => ash.DecisionDate)
                             .Select(ash => ash.ApplicationStatus)
-                            .FirstOrDefault().ToString()
-                        : string.Empty
+                            .FirstOrDefault()
+                        : ApplicationStatusEnum.NotSelected
                 ))?.ToList() ?? []
             ));
 

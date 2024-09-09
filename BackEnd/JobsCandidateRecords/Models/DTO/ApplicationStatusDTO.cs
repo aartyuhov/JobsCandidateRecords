@@ -20,7 +20,7 @@ namespace JobsCandidateRecords.Models.DTO
         /// <summary>
         /// Current status of the application.
         /// </summary>
-        public string ApplicationStatus { get; init; }
+        public ApplicationStatusEnum ApplicationStatus { get; init; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationStatusDTO"/> class with specified application ID, request name, and application status.
@@ -28,7 +28,7 @@ namespace JobsCandidateRecords.Models.DTO
         /// <param name="applicationId">The unique identifier for the application.</param>
         /// <param name="requestName">The name of the request associated with the application.</param>
         /// <param name="applicationStatus">The current status of the application represented by an <see cref="ApplicationStatusEnum"/> value.</param>
-        public ApplicationStatusDTO(int applicationId, string requestName, string applicationStatus)
+        public ApplicationStatusDTO(int applicationId, string requestName, ApplicationStatusEnum applicationStatus)
         {
             ApplicationId = applicationId;
             RequestName = requestName;

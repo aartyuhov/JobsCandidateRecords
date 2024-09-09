@@ -1,30 +1,41 @@
 ﻿using JobsCandidateRecords.Data;
 using JobsCandidateRecords.Models;
+using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobsCandidateRecords.Controllers
 {
     /// <summary>
     /// Controller for managing application status history.
     /// </summary>
+    /// /// <remarks>
+    /// Initializes a new instance of the <see cref="ApplicationStatusHistoryController"/> class.
+    /// </remarks>
+    /// <param name="userManager">The user manager instance used for user management operations.</param>
+    /// <param name="context">The application database context instance.</param>
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class ApplicationStatusHistoryController : ControllerBase
+    public class ApplicationStatusHistoryController(UserManager<IdentityUser> userManager, ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context = context;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ApplicationStatusHistoryController"/> class.
-        /// </summary>
-        /// <param name="context">The application database context.</param>
-        public ApplicationStatusHistoryController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ApplicationStatusHistoryController"/> class.
+        ///// </summary>
+        ///// /// <param name="userManager">The application database context.</param>
+        ///// <param name="context">The application database context.</param>
+        //public ApplicationStatusHistoryController(UserManager<IdentityUser> userManager, ApplicationDbContext context)
+        //{
+        //    _context = context;
+        //    _userManager = userManager;
+        //}
 
         /// <summary>
         /// GetApplicationStatusHistories.
@@ -100,12 +111,41 @@ namespace JobsCandidateRecords.Controllers
         /// PostApplicationStatusHistory.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<ApplicationStatusHistory>> PostApplicationStatusHistory(ApplicationStatusHistory applicationStatusHistory)
+        public async Task<ActionResult<ApplicationStatusHistory>> PostApplicationStatusHistory(ApplicationStatusDTO applicationStatusDTO)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var userId = HttpContext.User.FindFirstValue("Id");
+
+            if (userId == null)
+            {
+                return NotFound("User with Employee wasn't found");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User with Employee wasn't found");
+            }
+
+            var employeeId = await _context.Employees
+                .Where(e => e.IdentityUserId == userId)
+                .Select(e => e.Id).FirstOrDefaultAsync();
+
+
+            var applicationStatusHistory = new ApplicationStatusHistory
+            {
+                ApplicationId = applicationStatusDTO.ApplicationId,
+                IdentityUserId = userId,
+                EmployeeId = employeeId.ToString(),
+                ApplicationStatus = applicationStatusDTO.ApplicationStatus,
+                DecisionDate = DateTime.Now,
+            };
+
 
             _context.ApplicationStatusHistories.Add(applicationStatusHistory);
             await _context.SaveChangesAsync();
