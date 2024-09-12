@@ -23,6 +23,7 @@ import { useParams } from "react-router-dom";
 import api from "../../services/api";
 import { ApplicationStatus, UserFriendlyStatusLabels } from "../../constants/applicationstatus";
 import StatusSection from "../small-components/StatusSection";
+import Chip from "@mui/material/Chip";
 
 const ApplicationPage = () => {
     const { id } = useParams();
@@ -138,7 +139,19 @@ const ApplicationPage = () => {
                                     {applications.map((app) => (
                                         <React.Fragment key={app.applicationId}>
                                             <ListItem className="d-flex justify-content-between align-items-center">
-                                                <ListItemText primary={app.requestName} />
+                                                <Box display="flex" gap={1}>
+                                                    <ListItemText primary={app.requestName} />
+                                                    <Chip
+                                                        label={"Test position"}
+                                                        variant="outlined"
+                                                        sx={{
+                                                            marginLeft: '10px',
+                                                            color: 'white',
+                                                            borderColor: '#800000',
+                                                            alignSelf: 'flex-start'
+                                                        }}
+                                                    />
+                                                </Box>
                                                 <Box display="flex" alignItems="center" gap={1}>
                                                     <Box mr={2}>
                                                         <Typography variant="body2" color="textSecondary">
