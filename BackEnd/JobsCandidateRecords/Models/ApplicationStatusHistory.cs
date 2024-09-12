@@ -35,6 +35,11 @@ namespace JobsCandidateRecords.Models
         public string? EmployeeId { get; set; }
 
         /// <summary>
+        /// Gets or sets the Fullname of the employee associated with the creating application status hystory.
+        /// </summary>
+        public virtual string? EmployeeFullname { get; set; }
+
+        /// <summary>
         /// Gets or sets the related application.
         /// </summary>
         [SwaggerIgnore]

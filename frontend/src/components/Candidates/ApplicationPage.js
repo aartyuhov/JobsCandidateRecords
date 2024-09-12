@@ -56,7 +56,7 @@ const ApplicationPage = () => {
                 // Инициализация статуса для каждого приложения, перевод из label в value
                 const initialStatusMap = {};
                 applications.forEach(app => {
-                    const status = Object.values(ApplicationStatus).find(s => s.label === app.applicationStatus);
+                    const status = Object.values(ApplicationStatus).find(s => s.value === app.applicationStatus);
                     if (status) {
                         initialStatusMap[app.applicationId] = status.value;
                     }
@@ -106,10 +106,11 @@ const ApplicationPage = () => {
         const newStatusValue = statusMap[applicationId];
         try {
             const data = {
-                applicationIds: [applicationId],
-                newStatus: newStatusValue
+                applicationId: applicationId,
+                requestName:'',
+                applicationStatus: newStatusValue
             };
-            await api.put(`/api/CandidatesDTO/updateStatus`, data);
+            await api.post(`/api/ApplicationStatusHistory`, data);
 
             setApplications(applications.map(app =>
                 app.applicationId === applicationId ? { ...app, applicationStatus: Object.keys(UserFriendlyStatusLabels).find(key => ApplicationStatus[key].value === newStatusValue) } : app

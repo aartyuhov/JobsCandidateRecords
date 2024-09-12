@@ -72,6 +72,12 @@ function StatusSection({ statuses }) {
                             position: "relative",
                         }}
                     >
+                        <Typography variant="body2"
+                                    sx={{ fontWeight: "bold",
+                                            padding: "4px"
+                                    }}>
+                            {status.employeeFullname ?? ''}
+                        </Typography>
                         <Typography variant="body2" sx={{ fontWeight: "bold" }}>
                             {getStatusName(status.applicationStatus)}
                         </Typography>

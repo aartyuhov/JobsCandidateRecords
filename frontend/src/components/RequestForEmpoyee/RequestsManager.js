@@ -81,6 +81,7 @@ const RequestsManager = ({ viewType }) => {
 
 	const handleCloseModal = () => {
 		setCurrentRequest(null);
+		setSelectedPositionId('');
 		setShowModal(false);
 	};
 
@@ -283,9 +284,7 @@ const RequestsManager = ({ viewType }) => {
 
 							<div style={{ marginright: '50px', marginBottom: '20px' }}>
 								<PositionList
-									selectedPositionId={
-										currentRequest ? currentRequest.positionId : ''
-									}
+									selectedPositionId={selectedPositionId}
 									handlePositionChange={handlePositionChange}
 									disabled={viewOnly}
 								/>
