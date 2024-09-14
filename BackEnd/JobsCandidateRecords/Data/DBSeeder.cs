@@ -29,10 +29,10 @@ namespace JobsCandidateRecords.Data
 
                 // Seed company and department data
                 SeedCompanyAndDepartments(_context);
-                
+
                 // Seed positions
                 SeedPositions(_context);
-                
+
                 // Seed admin user if it does not already exist
                 SeedAdminUser(userMgr, _context);
 

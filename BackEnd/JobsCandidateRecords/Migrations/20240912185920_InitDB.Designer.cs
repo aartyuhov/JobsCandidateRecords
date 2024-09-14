@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobsCandidateRecords.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240908192132_AddAPIApplication")]
-    partial class AddAPIApplication
+    [Migration("20240912185920_InitDB")]
+    partial class InitDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,6 +98,9 @@ namespace JobsCandidateRecords.Migrations
 
                     b.Property<DateTime?>("DecisionDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EmployeeFullname")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeId")
                         .HasColumnType("nvarchar(max)");
