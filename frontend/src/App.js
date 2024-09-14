@@ -19,60 +19,123 @@ import ApplicationPage from "./components/Candidates/ApplicationPage";
 import DepartmentsManagement from "./components/Department/DepartmentsManagement";
 import CompaniesManagement from "./components/Company/CompaniesManagement";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import UserList from "./components/User/UserList";
+import ListRoles from "./components/Role/ListRoles";
+import RoleProtectedRoute from "./components/small-components/RoleProtectedRoute";
 
 const App = () => {
-
   const [username, setUsername] = React.useState(localStorage.getItem('username'));
+  const [userRoles, setUserRoles] = React.useState(JSON.parse(localStorage.getItem('roles')) || []);
   const navigate = useNavigate();
 
   const logoutHandler = () => {
     setUsername(null);
+    setUserRoles([]);
     localStorage.removeItem('username');
+    localStorage.removeItem('roles'); // Обновлено
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');
     navigate('/login');
   }
 
+
   return (
-    <div className='App'>
+      <div className='App'>
         <Routes>
-          <Route element={ <ProtectedRoute isAllowed={!username} redirectPath={"/"}/> }>
-            <Route path="login" element={<Login />} />
-            <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route element={<ProtectedRoute isAllowed={!username} redirectPath={"/"}/>}>
+            <Route path="login" element={<Login/>}/>
+            <Route path="forgot-password" element={<ForgotPassword/>}/>
           </Route>
           <Route element={
-            <Layout username={username} logoutHandler={logoutHandler}>
+            <Layout username={username} userRoles={userRoles} logoutHandler={logoutHandler}>
               <ProtectedRoute isAllowed={!!username}/>
-            </Layout> }>
+            </Layout>}>
             {/*=======For authorized users=========*/}
-            <Route path="" element={<Dashboard />} />
-            <Route path="account" element={<Account />} />
-            <Route path="security" element={<Security />} />
+            <Route path="" element={<Dashboard/>}/>
+            <Route path="account" element={<Account/>}/>
+            <Route path="security" element={<Security/>}/>
 
-            <Route path="employees" element={<EmployeesList />} />
-            <Route path="employeecard" element={<EmployeeCard />} />
-            <Route path="/employeeedit/:id" element={<EmployeeEdit />} />
+            <Route path="employees" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <EmployeesList/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="employeecard" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin']}>
+                <EmployeeCard/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="/employeeedit/:id" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin']}>
+                <EmployeeEdit/>
+              </RoleProtectedRoute>
+            }/>
 
-            <Route path="candidates" element={<CandidateList />} />
-            <Route path="/candidates/new" element={<CandidateProfile />} />
-            <Route path="/candidates/:id" element={<CandidateProfile />} />
-            <Route path="/application/:id" element={<ApplicationPage />} />
+            <Route path="candidates" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <CandidateList/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="/candidates/new" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <CandidateProfile/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="/candidates/:id" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <CandidateProfile/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="/application/:id" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <ApplicationPage/>
+              </RoleProtectedRoute>
+            }/>
 
-            <Route path="myrequests" element={<RequestsManager viewType="my" />} />
-            <Route path="allrequests" element={<RequestsManager viewType="all" />} />
+            <Route path="myrequests" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <RequestsManager viewType="my"/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="allrequests" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['HR', 'Admin', 'Head of Department']}>
+                <RequestsManager viewType="all"/>
+              </RoleProtectedRoute>
+            }/>
 
             {/*=======!For authorized users=========*/}
-            
-            
+
             {/*=======For admin=========*/}
-            <Route path="positions" element={<PositionsManagement />} />
-            <Route path="departments" element={<DepartmentsManagement />} />
-            <Route path="companies" element={<CompaniesManagement />} />
+            <Route path="positions" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['Admin']}>
+                <PositionsManagement/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="departments" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['Admin']}>
+                <DepartmentsManagement/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="companies" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['Admin']}>
+                <CompaniesManagement/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="roles" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['Admin']}>
+                <ListRoles/>
+              </RoleProtectedRoute>
+            }/>
+            <Route path="users" element={
+              <RoleProtectedRoute roles={userRoles} allowedRoles={['Admin']}>
+                <UserList/>
+              </RoleProtectedRoute>
+            }/>
             {/*=======!For admin=========*/}
           </Route>
-          <Route path="*" element={<NotExistPage />} />
+          <Route path="*" element={<NotExistPage/>}/>
         </Routes>
-    </div>
+      </div>
   );
 };
 

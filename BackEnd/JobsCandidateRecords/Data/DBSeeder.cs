@@ -29,10 +29,10 @@ namespace JobsCandidateRecords.Data
 
                 // Seed company and department data
                 SeedCompanyAndDepartments(_context);
-                
+
                 // Seed positions
                 SeedPositions(_context);
-                
+
                 // Seed admin user if it does not already exist
                 SeedAdminUser(userMgr, _context);
 
@@ -55,6 +55,14 @@ namespace JobsCandidateRecords.Data
             if (!roleMgr.RoleExistsAsync(Roles.User.ToString()).Result)
             {
                 roleMgr.CreateAsync(new IdentityRole(Roles.User.ToString())).Wait();
+            }
+            if (!roleMgr.RoleExistsAsync("HR").Result)
+            {
+                roleMgr.CreateAsync(new IdentityRole("HR")).Wait();
+            }
+            if (!roleMgr.RoleExistsAsync("Head of Department").Result)
+            {
+                roleMgr.CreateAsync(new IdentityRole("Head of Department")).Wait();
             }
         }
 

@@ -16,7 +16,7 @@ namespace JobsCandidateRecords.Controllers.DTO
     /// <param name="candidateService">The service used for candidate-related operations.</param>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize]
     public class CandidatesDTOController(ICandidateService candidateService) : ControllerBase
     {
         private readonly ICandidateService _candidateService = candidateService;

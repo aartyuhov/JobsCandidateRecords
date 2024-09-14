@@ -23,6 +23,7 @@ const Login = () => {
 				if(user.status === 200)
 				{
 					localStorage.setItem('username', user.data.username);
+					localStorage.setItem('roles', JSON.stringify(user.data.roles));
 					window.location.replace(window.location.origin);
 				}
 			}
@@ -72,7 +73,6 @@ const Login = () => {
 							placeholder='Enter your password'
 						/>
 					</div>
-					{/* Добавляем ссылку "Забыли пароль?" */}
 					<div className={styles.forgotPasswordContainer}>
 						<a href="/forgot-password" className={styles.forgotPasswordLink}>
 							Forgot password?

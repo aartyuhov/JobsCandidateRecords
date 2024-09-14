@@ -49,6 +49,7 @@ namespace JobsCandidateRecords.Services
                     a.ApplicationsForRequests?.Count > 0
                         ? a.ApplicationsForRequests.First().RequestForEmployee?.Name ?? string.Empty
                         : string.Empty,
+                    GetPosition(a.Id),
                     a.ApplicationStatusHistories?.Count > 0
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
@@ -94,6 +95,7 @@ namespace JobsCandidateRecords.Services
                     (a.ApplicationsForRequests?.Count != 0) == true
                         ? a.ApplicationsForRequests?.First().RequestForEmployee?.Name ?? string.Empty
                         : string.Empty,
+                        GetPosition(a.Id),
                     a.ApplicationStatusHistories != null && a.ApplicationStatusHistories.Count != 0
                         ? a.ApplicationStatusHistories
                             .OrderByDescending(s => s.DecisionDate)
@@ -244,6 +246,7 @@ namespace JobsCandidateRecords.Services
                     app.ApplicationsForRequests?.Where(r => r.RequestForEmployee != null && r.RequestForEmployee.PositionId == positionId)
                         .Select(r => r.RequestForEmployee?.Name)
                         .FirstOrDefault() ?? "Unknown",
+                    GetPosition(app.Id),
                     app.ApplicationStatusHistories != null && app.ApplicationStatusHistories.Count != 0
                         ? app.ApplicationStatusHistories
                             .OrderByDescending(ash => ash.DecisionDate)
@@ -255,5 +258,31 @@ namespace JobsCandidateRecords.Services
 
             return candidateDTOs;
         }
+
+        /// <summary>
+        /// Asynchronously returns the list of positions by their application ID.
+        /// </summary>
+        /// <param name="applicationId">The unique identifier of the application to filter applications by ID.</param>
+        /// <returns>A task that represents the asynchronous operation, containing a list of positions/> objects.</returns>
+        public List<string> GetPosition(int applicationId)
+        {
+
+            var query = from positions in _context.Positions
+                        join requestsForEmployees in _context.RequestsForEmployees on positions.Id equals requestsForEmployees.PositionId
+                        join applicationsForRequests in _context.ApplicationsForRequests on requestsForEmployees.Id equals applicationsForRequests.RequestForEmployeeId
+                        join applications in _context.Applications on applicationsForRequests.ApplicationId equals applications.Id
+                        where applications.Id == applicationId
+                        select positions.Title.ToString();
+
+
+            var positionTitles = query.ToList();
+
+            return positionTitles;
+        }
+
+
+
+
+
     }
 }

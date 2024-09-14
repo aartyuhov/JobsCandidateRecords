@@ -142,7 +142,7 @@ const ApplicationPage = () => {
                                                 <Box display="flex" gap={1}>
                                                     <ListItemText primary={app.requestName} />
                                                     <Chip
-                                                        label={"Test position"}
+                                                        label={app.positionTitles}
                                                         variant="outlined"
                                                         sx={{
                                                             marginLeft: '10px',

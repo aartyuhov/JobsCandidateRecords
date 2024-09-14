@@ -168,7 +168,7 @@ app.UseSwaggerUI(c =>
 
 app.MapControllers();
 
-////Create roles and admin - run DBSeeder
+//Create roles and admin - run DBSeeder
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
