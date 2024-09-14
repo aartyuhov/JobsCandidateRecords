@@ -48,13 +48,13 @@ namespace JobsCandidateRecords.Services
         public async Task<IEnumerable<UserDTO>> GetAllUsersWithRolesAsync()
         {
             var users = await _userManager.Users.ToListAsync();
-            return await Task.WhenAll(users.Select(async u => new UserDTO
+            return Task.WhenAll(users.Select(async u => new UserDTO
             {
                 Id = u.Id,
                 Username = u.UserName,
                 Email = u.Email,
                 Roles = await _userManager.GetRolesAsync(u)
-            }));
+            })).Result;
         }
 
         /// <summary>

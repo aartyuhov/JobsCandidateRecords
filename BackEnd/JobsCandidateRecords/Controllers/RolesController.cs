@@ -11,7 +11,7 @@ namespace JobsCandidateRecords.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Admin")] // Requires "Admin" role for access
+    [Authorize] // Requires "Admin" role for access
     [ApiController]
     public class RolesController : ControllerBase
     {

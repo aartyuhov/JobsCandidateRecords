@@ -9,10 +9,10 @@ import {
     CardContent,
     Typography,
     Avatar,
-    CircularProgress, OutlinedInput, InputAdornment, IconButton, Chip
+    CircularProgress
 } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {ArrowBack, Visibility, VisibilityOff} from "@mui/icons-material";
+import {ArrowBack} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import BasicDatePicker from "../../small-components/BasicDatePicker";
 import React, {useEffect, useState} from "react";
@@ -61,54 +61,9 @@ const PositionList = () => {
     );
 };
 
-const RolesList = () => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get(`/api/Roles`);
-                setData(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                setError('An error occurred while fetching the data. Please try again later.');
-                setLoading(false);
-            }
-        };
-
-        fetchData().catch(error => console.log(error));
-    }, []);
-    return (
-        <>
-            { loading ? (
-                <div className={"d-flex align-content-center"}>
-                    <CircularProgress color="inherit" />
-                </div>
-            ) : error ? (
-                    <h4 className={"text-center"}>{error}</h4>
-                ) :
-                (
-                    <FormControl variant="outlined" fullWidth required>
-                        <InputLabel>Role</InputLabel>
-                        <Select label="Role" name="role" defaultValue="">
-                            {data.map(item =>
-                                <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
-                            )}
-                        </Select>
-                    </FormControl>
-                )
-            }
-        </>
-    );
-};
-
 const EmployeeCard = () => {
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
     const [errorText, setErrorText] = useState(null);
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const SubmitHandler = async (event) =>
     {
@@ -116,39 +71,21 @@ const EmployeeCard = () => {
         setErrorText(null);
         try
         {
-            const responseUser = await api.post('/api/Users', {
-                "username" : event.target.username.value,
-                "email" : event.target.userEmail.value,
-                "password" : event.target.password.value,
-                "confirmPassword" : event.target.confirmPassword.value
+            const response = await api.post('/api/Employees', {
+                "id": 0,
+                "firstName": event.target.firstName.value,
+                "lastName": event.target.lastName.value,
+                "dateOfBirth": new Date(event.target.birthDay.value).toJSON().split('T')[0],
+                "gender": event.target.gender.value,
+                "email": event.target.email.value,
+                "phoneNumber": event.target.phoneNumber.value,
+                "address": event.target.address.value,
+                "hireDate": new Date(event.target.hireDate.value).toJSON(),
+                "positionId": event.target.position.value,
             });
-            if(responseUser.status === 200)
-            {
-                const createdUser = await  api.get('/api/Users/user/email/' + event.target.userEmail.value);
-                if(createdUser.status === 200)
-                {
-                    await api.post(`/api/Roles/${createdUser.data.id}/assign/${event.target.role.value}`);
-                    const responseEmployee = await api.post('/api/Employees', {
-                        "id": 0,
-                        "firstName": event.target.firstName.value,
-                        "lastName": event.target.lastName.value,
-                        "dateOfBirth": new Date(event.target.birthDay.value).toJSON().split('T')[0],
-                        "gender": event.target.gender.value,
-                        "email": event.target.email.value,
-                        "phoneNumber": event.target.phoneNumber.value,
-                        "address": event.target.address.value,
-                        "hireDate": new Date(event.target.hireDate.value).toJSON(),
-                        "positionId": event.target.position.value,
-                    });
-                    if(responseEmployee.status === 201)
-                    {
-                        await api.post(`/api/Users/${createdUser.data.id}/assign/${responseEmployee.data.id}`, {});
-                        navigate(-1);
-                    }
-                }
+            if(response.status === 200) {
+                navigate(-1);
             }
-
-
         }
         catch (e)
         {
@@ -229,73 +166,6 @@ const EmployeeCard = () => {
                                     <div className="form-group col-md-12">
                                         <BasicDatePicker label="Birthday" name="birthDay" className="col-md-6"
                                                          required/>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mb-4">
-                                <Typography variant="h5" component="h2" className="font-weight-bold mb-3">User
-                                    information</Typography>
-                                <div className="form-row mb-2">
-                                    <div className="form-group col-md-12 my-3 d-flex align-content-between gap-md-2">
-                                        <TextField label="Username" name="username" variant="outlined" fullWidth
-                                                   required/>
-                                        <TextField label="Email for user" name="userEmail" type="email" variant="outlined" fullWidth
-                                                   required/>
-                                    </div>
-                                </div>
-                                <div className="form-row">
-
-                                    { errorText ? (<Chip label={errorText} className="mb-3" color="warning" size="small" />) : ""}
-
-                                    <div className="form-group col-md-6">
-                                        <div className="d-flex flex-lg-column flex-md-row mb-3">
-                                            <FormControl variant="outlined">
-                                                <InputLabel htmlFor="password">Password</InputLabel>
-                                                <OutlinedInput
-                                                    id="password"
-                                                    name="password"
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    endAdornment={
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="toggle password visibility"
-                                                                onClick={handleClickShowPassword}
-                                                                edge="end"
-                                                            >
-                                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                    }
-                                                    label="Password"
-                                                />
-                                            </FormControl>
-                                        </div>
-                                        <div className="d-flex flex-lg-column flex-md-row mb-3">
-                                            <FormControl variant="outlined">
-                                                <InputLabel htmlFor="confirmPassword">Confirm password</InputLabel>
-                                                <OutlinedInput
-                                                    id="confirmPassword"
-                                                    name="confirmPassword"
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    endAdornment={
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="toggle password visibility"
-                                                                onClick={handleClickShowPassword}
-                                                                edge="end"
-                                                            >
-                                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                    }
-                                                    label="Confirm password"
-                                                />
-                                            </FormControl>
-                                        </div>
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <RolesList/>
                                     </div>
                                 </div>
                             </div>

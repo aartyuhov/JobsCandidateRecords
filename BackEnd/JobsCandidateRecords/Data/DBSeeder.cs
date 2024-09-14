@@ -56,6 +56,14 @@ namespace JobsCandidateRecords.Data
             {
                 roleMgr.CreateAsync(new IdentityRole(Roles.User.ToString())).Wait();
             }
+            if (!roleMgr.RoleExistsAsync("HR").Result)
+            {
+                roleMgr.CreateAsync(new IdentityRole("HR")).Wait();
+            }
+            if (!roleMgr.RoleExistsAsync("Head of Department").Result)
+            {
+                roleMgr.CreateAsync(new IdentityRole("Head of Department")).Wait();
+            }
         }
 
         private static void SeedAdminUser(UserManager<IdentityUser> userMgr, ApplicationDbContext _context)

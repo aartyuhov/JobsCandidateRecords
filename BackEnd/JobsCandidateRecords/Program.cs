@@ -169,20 +169,20 @@ app.UseSwaggerUI(c =>
 app.MapControllers();
 
 //Create roles and admin - run DBSeeder
-//using (var scope = app.Services.CreateScope())
-//{
-//    var services = scope.ServiceProvider;
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
-//    try
-//    {
-//        var context = services.GetRequiredService<ApplicationDbContext>();
-//        DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
-//    }
-//    catch (Exception ex)
-//    {
-//        var logger = services.GetRequiredService<ILogger<Program>>();
-//        logger.LogError(ex, "an error occurred seeding the db.");
-//    }
-//}
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        DBSeeder.SeedDefaultData(scope.ServiceProvider, context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "an error occurred seeding the db.");
+    }
+}
 
 app.Run();
