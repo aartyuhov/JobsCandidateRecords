@@ -53,9 +53,17 @@ namespace JobsCandidateRecords.Controllers
         [HttpGet("applicationId={applicationId}")]
         public async Task<ActionResult<IEnumerable<ApplicationStatusHistory>>> GetApplicationStatusHistoryByApplicationId(int applicationId)
         {
-            return await _context.ApplicationStatusHistories
-                                                .Where(status => status.ApplicationId == applicationId)
-                                                .ToListAsync();
+            var statuses = await _context.ApplicationStatusHistories
+                                                .Where(status => status.ApplicationId == applicationId).ToListAsync();
+            statuses.ForEach(status =>
+            {
+                if (status.EmployeeId is null)
+                    return;
+                var employee = _context.Employees.Find(int.Parse(status.EmployeeId));
+                status.EmployeeFullname = $"{employee?.LastName} {employee?.FirstName}";
+            });
+
+            return statuses;
         }
 
         /// <summary>

@@ -3,8 +3,10 @@ using JobsCandidateRecords.Models;
 using JobsCandidateRecords.Models.DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace JobsCandidateRecords.Controllers
 {
@@ -14,9 +16,10 @@ namespace JobsCandidateRecords.Controllers
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
-    public class ApplicationController(ApplicationDbContext context) : ControllerBase
+    public class ApplicationController(UserManager<IdentityUser> userManager, ApplicationDbContext context) : ControllerBase
     {
         private readonly ApplicationDbContext _context = context;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
 
         /// <summary>
         /// GetApplications.
@@ -115,9 +118,28 @@ namespace JobsCandidateRecords.Controllers
             await _context.SaveChangesAsync();
 
 
+            var userId = HttpContext.User.FindFirstValue("Id");
+
+            if (userId == null)
+            {
+                return NotFound("User with Employee wasn't found");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User with Employee wasn't found");
+            }
+
+            var employeeId = await _context.Employees
+                .Where(e => e.IdentityUserId == userId)
+                .Select(e => e.Id).FirstOrDefaultAsync();
+
             var applicationStatusHistory = new ApplicationStatusHistory
             {
                 ApplicationId = application.Id,
+                IdentityUserId = userId,
+                EmployeeId = employeeId.ToString(),
                 ApplicationStatus = Enums.ApplicationStatusEnum.New,
                 DecisionDate = DateTime.UtcNow
             };
